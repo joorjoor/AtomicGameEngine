@@ -40,26 +40,6 @@ The Atomic Editor can be built for your platform using these <a href="https://gi
 
 <a href="https://discord.gg/7yy3HayK/">Discord</a>  
 
-##### Documentation
-
-<a href="https://github.com/joorjoor/AtomicGameEngine/wiki/">Wiki</a>  
-
----
-
-#### Screenshots
-
-##### Atomic Examples
-[DevSnapshot]: https://github.com/joorjoor/AtomicGameEngine/wiki/images/repo/DevSnapshot2116.png
-![alt text][DevSnapshot]
-
-##### Atomic on Mobile
-[ToonTown]: https://github.com/joorjoor/AtomicGameEngine/wiki/images/repo/ToonTownTouchUpdate.gif
-![alt text][ToonTown]
-
-##### Atomic Build Settings
-[AndroidBuildSettings]: https://github.com/joorjoor/AtomicGameEngine/wiki/images/repo/AndroidBuildSettings.png
-![alt text][AndroidBuildSettings]
-
 #### Atomic History
 
 THUNDERBEAST GAMES began developing the Atomic Game Engine on November 12th, 2014 by forking Urho3D.  It was released under the permissive MIT license during GDC 2016.  Atomic is now being used in production environments, <a href="https://github.com/joorjoor/AtomicGameEngine/graphs/contributors" target="_blank">has 27 contributors</a>, and runs on Windows, macOS, Android, iOS, Linux, and WebGL!
