@@ -338,21 +338,36 @@ namespace ToolCore
             {
                 vs2017ToolsPath += "Common7\\Tools\\";
             }
+			
+			// VS2019
+            String vs2019ToolsPath = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\";
 
+            // validate still installed
+
+            installCheck = vs2019ToolsPath;
+            installCheck.Replace("Tools\\", "IDE\\devenv.exe");
+
+            if (!fileSystem->FileExists(installCheck))
+                vs2019ToolsPath.Clear();
+			
             String cmdToolsPath;
-
-            if (!vs2015ToolsPath.Length() || (toolVersion_ == "VS2017" && vs2017ToolsPath.Length()))
+		
+			if (vs2019ToolsPath.Length())
+			{
+				cmdToolsPath = vs2019ToolsPath;
+			}
+			else if (!vs2019ToolsPath.Length() || !vs2015ToolsPath.Length() || (toolVersion_ == "VS2017" && vs2017ToolsPath.Length()))
             {
                 cmdToolsPath = vs2017ToolsPath;
             }
-            else
+			else
             {
                 cmdToolsPath = vs2015ToolsPath;
             }
 
             if (!cmdToolsPath.Length())
             {
-                CurrentBuildError("VS140COMNTOOLS environment variable and VS2017 registry key not found, cannot proceed");
+                CurrentBuildError("VS140COMNTOOLS environment variable and VS2017 registry key not found, cannot proceed.\nOr VS2015, VS2017, VS2019 don't installed!");
                 return;
             }
 

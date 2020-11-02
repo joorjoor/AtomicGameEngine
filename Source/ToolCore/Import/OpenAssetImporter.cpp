@@ -324,7 +324,7 @@ bool OpenAssetImporter::BuildAndSaveModel(OutModel& model)
 
     bool combineBuffers = true;
     // Check if buffers can be combined (same vertex element mask, under 65535 vertices)
-    unsigned elementMask = (model.meshes_.Size() > 0) ? GetElementMask(model.meshes_[0]) : 0;
+    unsigned elementMask = (model.meshes_.Size() > 0) ? GetElementMask(model.meshes_[0]) : MASK_NONE;
     for (unsigned i = 0; i < model.meshes_.Size(); ++i)
     {
         if (GetNumValidFaces(model.meshes_[i]))

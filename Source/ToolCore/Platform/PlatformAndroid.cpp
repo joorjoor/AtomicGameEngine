@@ -114,6 +114,9 @@ void PlatformAndroid::RefreshAndroidTargets()
 
     String androidCommand = GetAndroidCommand();
 
+	//DEBUG COMMAND
+	ATOMIC_LOGDEBUGF("Command: %s", androidCommand.CString());
+
     Vector<String> args;
     PrependAndroidCommandArgs(args);
     args.Push("list");
@@ -124,13 +127,15 @@ void PlatformAndroid::RefreshAndroidTargets()
 
     if (refreshAndroidTargetsProcess_.NotNull())
     {
-
+		//DEBUG REFRESH IS NULL?
+		ATOMIC_LOGDEBUGF("CMD LAUNCH NOT NULL");
         SubscribeToEvent(refreshAndroidTargetsProcess_, E_SUBPROCESSCOMPLETE, ATOMIC_HANDLER(PlatformAndroid, HandleRefreshAndroidTargetsEvent));
         SubscribeToEvent(refreshAndroidTargetsProcess_, E_SUBPROCESSOUTPUT, ATOMIC_HANDLER(PlatformAndroid, HandleRefreshAndroidTargetsEvent));
 
 
     }
-
+	//DEBUG FINISHED?
+	ATOMIC_LOGDEBUGF("CMD LAUNCH FINISH (UP NULL)???");
 }
 
 String PlatformAndroid::GetADBCommand() const

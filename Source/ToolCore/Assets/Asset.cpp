@@ -269,8 +269,15 @@ bool Asset::CreateImporter()
         textureFormats.Push(".tga");
         textureFormats.Push(".dds");
 
+		    Vector<String> ModelFormats;
+		    ModelFormats.Push(".fbx");
+        ModelFormats.Push(".blend");
+        ModelFormats.Push(".dae");
+        ModelFormats.Push(".mdl");
+        ModelFormats.Push(".obj");
+
         // todo, externalize recognizers
-        if (ext == ".fbx" || ext == ".blend" || ext == ".dae" || ext == ".mdl")
+        if (ModelFormats.Contains(ext))
         {
             importer_ = new ModelImporter(context_, this);
         }

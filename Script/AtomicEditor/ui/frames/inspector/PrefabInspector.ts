@@ -62,10 +62,21 @@ class PrefabInspector extends InspectorWidget {
 
         // Assembly Section
         var prefabLayout = this.createSection(rootLayout, "Prefab", 1);
+	
+		/*var mlp = new Atomic.UILayoutParams();
+        mlp.width = 310;
+	
+		var prefabLayout = new Atomic.UILayout();
+        prefabLayout.spacing = 4;
 
-        var container = InspectorUtils.createContainer();
-        container.gravity = Atomic.UI_GRAVITY.UI_GRAVITY_ALL;
-        prefabLayout.addChild(container);
+        prefabLayout.layoutDistribution = Atomic.UI_LAYOUT_DISTRIBUTION.UI_LAYOUT_DISTRIBUTION_GRAVITY;
+        prefabLayout.layoutPosition = Atomic.UI_LAYOUT_POSITION.UI_LAYOUT_POSITION_LEFT_TOP;
+        prefabLayout.layoutParams = mlp;
+        prefabLayout.axis = Atomic.UI_AXIS.UI_AXIS_Y;
+		
+        //var container = InspectorUtils.createContainer();
+        //container.gravity = Atomic.UI_GRAVITY.UI_GRAVITY_ALL;
+        //prefabLayout.addChild(container);
 
         var panel = new Atomic.UILayout();
         panel.axis = Atomic.UI_AXIS.UI_AXIS_Y;
@@ -73,12 +84,18 @@ class PrefabInspector extends InspectorWidget {
         panel.layoutPosition = Atomic.UI_LAYOUT_POSITION.UI_LAYOUT_POSITION_LEFT_TOP;
         container.addChild(panel);
 
+		prefabSectionvar prefabSection = new Atomic.UISection();
+        prefabSection.text = "Prefab";
+        prefabSection.value = 1;
+        prefabSection.fontDescription = this.fd;
+        rootLayout.addChild(prefabSection);*/
+
         // Name Edit
-        this.nameEdit = this.createAttrEditField("Name", panel);
+        this.nameEdit = this.createAttrEditField("Name", prefabLayout);
         this.nameEdit.text = this.asset.name;
 
         var applyButton = this.createApplyButton();
-        panel.addChild(applyButton);
+        rootLayout.addChild(applyButton);
 
         /*
         var editButton = new Atomic.UIButton();

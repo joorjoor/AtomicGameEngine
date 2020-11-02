@@ -1,4 +1,42 @@
+# Open Asset Import Library (assimp)
+# ----------------------------------------------------------------------
 #
+# Copyright (c) 2006-2017, assimp team
+
+# All rights reserved.
+#
+# Redistribution and use of this software in source and binary forms,
+# with or without modification, are permitted provided that the
+# following conditions are met:
+#
+# * Redistributions of source code must retain the above
+#   copyright notice, this list of conditions and the
+#   following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above
+#   copyright notice, this list of conditions and the
+#   following disclaimer in the documentation and/or other
+#   materials provided with the distribution.
+#
+# * Neither the name of the assimp team, nor the names of its
+#   contributors may be used to endorse or promote products
+#   derived from this software without specific prior
+#   written permission of the assimp team.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#----------------------------------------------------------------------
+
 # Listing and grouping of all the source files.
 # 1) Set the file lists for each component
 # 2) Create a Source Group for each component, for IDE project orginization
@@ -38,6 +76,7 @@ SET( PUBLIC_HEADERS
   ${HEADER_PATH}/color4.inl
   ${HEADER_PATH}/config.h
   ${HEADER_PATH}/defs.h
+  ${HEADER_PATH}/Defines.h
   ${HEADER_PATH}/cfileio.h
   ${HEADER_PATH}/light.h
   ${HEADER_PATH}/material.h
@@ -71,25 +110,14 @@ SET( PUBLIC_HEADERS
   ${HEADER_PATH}/NullLogger.hpp
   ${HEADER_PATH}/cexport.h
   ${HEADER_PATH}/Exporter.hpp
+  ${HEADER_PATH}/DefaultIOStream.h
+  ${HEADER_PATH}/DefaultIOSystem.h
+  ${HEADER_PATH}/SceneCombiner.h
 )
 
 SET( Core_SRCS
   code/Assimp.cpp
 )
-
-SET( Boost_SRCS
-  code/BoostWorkaround/boost/math/common_factor_rt.hpp
-  code/BoostWorkaround/boost/foreach.hpp
-  code/BoostWorkaround/boost/format.hpp
-  code/BoostWorkaround/boost/scoped_array.hpp
-  code/BoostWorkaround/boost/scoped_ptr.hpp
-  code/BoostWorkaround/boost/shared_array.hpp
-  code/BoostWorkaround/boost/shared_ptr.hpp
-  code/BoostWorkaround/boost/make_shared.hpp
-  code/BoostWorkaround/boost/static_assert.hpp
-  code/BoostWorkaround/boost/tuple/tuple.hpp
-)
-SOURCE_GROUP(Boost FILES ${Boost_SRCS})
 
 SET( Logging_SRCS
   ${HEADER_PATH}/DefaultLogger.hpp
@@ -117,9 +145,8 @@ SET( Common_SRCS
   code/ByteSwapper.h
   code/DefaultProgressHandler.h
   code/DefaultIOStream.cpp
-  code/DefaultIOStream.h
   code/DefaultIOSystem.cpp
-  code/DefaultIOSystem.h
+  code/CInterfaceIOWrapper.cpp
   code/CInterfaceIOWrapper.h
   code/Hash.h
   code/Importer.cpp
@@ -129,6 +156,7 @@ SET( Common_SRCS
   code/StreamReader.h
   code/StreamWriter.h
   code/StringComparison.h
+  code/StringUtils.h
   code/SGSpatialSort.cpp
   code/SGSpatialSort.h
   code/VertexTriangleAdjacency.cpp
@@ -137,13 +165,14 @@ SET( Common_SRCS
   code/SpatialSort.cpp
   code/SpatialSort.h
   code/SceneCombiner.cpp
-  code/SceneCombiner.h
   code/ScenePreprocessor.cpp
   code/ScenePreprocessor.h
   code/SkeletonMeshBuilder.cpp
   code/SkeletonMeshBuilder.h
   code/SplitByBoneCountProcess.cpp
   code/SplitByBoneCountProcess.h
+  code/ScaleProcess.cpp
+  code/ScaleProcess.h
   code/SmoothingGroups.h
   code/StandardShapes.cpp
   code/StandardShapes.h
@@ -153,6 +182,7 @@ SET( Common_SRCS
   code/RemoveComments.h
   code/Subdivision.cpp
   code/Subdivision.h
+  code/scene.cpp
   code/Vertex.h
   code/LineSplitter.h
   code/TinyFormatter.h
@@ -162,6 +192,9 @@ SET( Common_SRCS
   code/Bitmap.h
   code/XMLTools.h
   code/Version.cpp
+  code/IOStreamBuffer.h
+  code/CreateAnimMesh.h
+  code/CreateAnimMesh.cpp
 )
 SOURCE_GROUP(Common FILES ${Common_SRCS})
 
@@ -173,10 +206,16 @@ IF ( ASSIMP_BUILD_NONFREE_C4D_IMPORTER )
   SOURCE_GROUP( C4D FILES ${C4D_SRCS})
 ENDIF ( ASSIMP_BUILD_NONFREE_C4D_IMPORTER )
 
+# if this variable is set to TRUE, the user can manually disable importers by setting
+# ASSIMP_BUILD_XXX_IMPORTER to FALSE for each importer
+# if this variable is set to FALSE, the user can manually enable importers by setting
+# ASSIMP_BUILD_XXX_IMPORTER to TRUE for each importer
+OPTION(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT "default value of all ASSIMP_BUILD_XXX_IMPORTER value" TRUE)
+
 # macro to add the CMake Option ADD_ASSIMP_IMPORTER_<name> which enables compile of loader
 # this way selective loaders can be compiled (reduces filesize + compile time)
 MACRO(ADD_ASSIMP_IMPORTER name)
-  OPTION(ASSIMP_BUILD_${name}_IMPORTER "build the ${name} importer" TRUE)
+  OPTION(ASSIMP_BUILD_${name}_IMPORTER "build the ${name} importer" ${ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT})
   IF(ASSIMP_BUILD_${name}_IMPORTER)
     LIST(APPEND ASSIMP_LOADER_SRCS ${ARGN})
     SET(ASSIMP_IMPORTERS_ENABLED "${ASSIMP_IMPORTERS_ENABLED} ${name}")
@@ -186,6 +225,7 @@ MACRO(ADD_ASSIMP_IMPORTER name)
     SET(${name}_SRC "")
     SET(ASSIMP_IMPORTERS_DISABLED "${ASSIMP_IMPORTERS_DISABLED} ${name}")
     add_definitions(-DASSIMP_BUILD_NO_${name}_IMPORTER)
+    add_definitions(-DASSIMP_BUILD_NO_${name}_EXPORTER)
   ENDIF()
 ENDMACRO()
 
@@ -193,7 +233,17 @@ SET(ASSIMP_LOADER_SRCS "")
 SET(ASSIMP_IMPORTERS_ENABLED "") # list of enabled importers
 SET(ASSIMP_IMPORTERS_DISABLED "") # disabled list (used to print)
 
-ADD_ASSIMP_IMPORTER(3DS
+ADD_ASSIMP_IMPORTER( AMF
+  code/AMFImporter.hpp
+  code/AMFImporter_Macro.hpp
+  code/AMFImporter_Node.hpp
+  code/AMFImporter.cpp
+  code/AMFImporter_Geometry.cpp
+  code/AMFImporter_Material.cpp
+  code/AMFImporter_Postprocess.cpp
+)
+
+ADD_ASSIMP_IMPORTER( 3DS
   code/3DSConverter.cpp
   code/3DSHelper.h
   code/3DSLoader.cpp
@@ -202,41 +252,41 @@ ADD_ASSIMP_IMPORTER(3DS
   code/3DSExporter.cpp
 )
 
-ADD_ASSIMP_IMPORTER(AC
+ADD_ASSIMP_IMPORTER( AC
   code/ACLoader.cpp
   code/ACLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(ASE
+ADD_ASSIMP_IMPORTER( ASE
   code/ASELoader.cpp
   code/ASELoader.h
   code/ASEParser.cpp
   code/ASEParser.h
 )
 
-ADD_ASSIMP_IMPORTER(ASSBIN
+ADD_ASSIMP_IMPORTER( ASSBIN
   code/AssbinExporter.h
   code/AssbinExporter.cpp
   code/AssbinLoader.h
   code/AssbinLoader.cpp
 )
 
-ADD_ASSIMP_IMPORTER(ASSXML
+ADD_ASSIMP_IMPORTER( ASSXML
   code/AssxmlExporter.h
   code/AssxmlExporter.cpp
 )
 
-ADD_ASSIMP_IMPORTER(B3D
+ADD_ASSIMP_IMPORTER( B3D
   code/B3DImporter.cpp
   code/B3DImporter.h
 )
 
-ADD_ASSIMP_IMPORTER(BVH
+ADD_ASSIMP_IMPORTER( BVH
   code/BVHLoader.cpp
   code/BVHLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(COLLADA
+ADD_ASSIMP_IMPORTER( COLLADA
   code/ColladaHelper.h
   code/ColladaLoader.cpp
   code/ColladaLoader.h
@@ -246,35 +296,39 @@ ADD_ASSIMP_IMPORTER(COLLADA
   code/ColladaExporter.cpp
 )
 
-ADD_ASSIMP_IMPORTER(DXF
+ADD_ASSIMP_IMPORTER( DXF
   code/DXFLoader.cpp
   code/DXFLoader.h
   code/DXFHelper.h
 )
 
-ADD_ASSIMP_IMPORTER(CSM
+ADD_ASSIMP_IMPORTER( CSM
   code/CSMLoader.cpp
   code/CSMLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(HMP
+ADD_ASSIMP_IMPORTER( HMP
   code/HMPFileData.h
   code/HMPLoader.cpp
   code/HMPLoader.h
   code/HalfLifeFileData.h
 )
 
-#FIXME: allow to set IRRMESH by option
-ADD_ASSIMP_IMPORTER(IRR
-  code/IRRLoader.cpp
-  code/IRRLoader.h
+ADD_ASSIMP_IMPORTER( IRRMESH
   code/IRRMeshLoader.cpp
   code/IRRMeshLoader.h
   code/IRRShared.cpp
   code/IRRShared.h
 )
 
-ADD_ASSIMP_IMPORTER(LWO
+ADD_ASSIMP_IMPORTER( IRR
+  code/IRRLoader.cpp
+  code/IRRLoader.h
+  code/IRRShared.cpp
+  code/IRRShared.h
+)
+
+ADD_ASSIMP_IMPORTER( LWO
   code/LWOAnimation.cpp
   code/LWOAnimation.h
   code/LWOBLoader.cpp
@@ -284,39 +338,39 @@ ADD_ASSIMP_IMPORTER(LWO
   code/LWOMaterial.cpp
 )
 
-ADD_ASSIMP_IMPORTER(LWS
+ADD_ASSIMP_IMPORTER( LWS
   code/LWSLoader.cpp
   code/LWSLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(MD2
+ADD_ASSIMP_IMPORTER( MD2
   code/MD2FileData.h
   code/MD2Loader.cpp
   code/MD2Loader.h
   code/MD2NormalTable.h
 )
 
-ADD_ASSIMP_IMPORTER(MD3
+ADD_ASSIMP_IMPORTER( MD3
   code/MD3FileData.h
   code/MD3Loader.cpp
   code/MD3Loader.h
 )
 
-ADD_ASSIMP_IMPORTER(MD5
+ADD_ASSIMP_IMPORTER( MD5
   code/MD5Loader.cpp
   code/MD5Loader.h
   code/MD5Parser.cpp
   code/MD5Parser.h
 )
 
-ADD_ASSIMP_IMPORTER(MDC
+ADD_ASSIMP_IMPORTER( MDC
   code/MDCFileData.h
   code/MDCLoader.cpp
   code/MDCLoader.h
   code/MDCNormalTable.h
 )
 
-ADD_ASSIMP_IMPORTER(MDL
+ADD_ASSIMP_IMPORTER( MDL
   code/MDLDefaultColorMap.h
   code/MDLFileData.h
   code/MDLLoader.cpp
@@ -330,22 +384,22 @@ SET( MaterialSystem_SRCS
 )
 SOURCE_GROUP( MaterialSystem FILES ${MaterialSystem_SRCS})
 
-ADD_ASSIMP_IMPORTER(NFF
+ADD_ASSIMP_IMPORTER( NFF
   code/NFFLoader.cpp
   code/NFFLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(NDO
+ADD_ASSIMP_IMPORTER( NDO
   code/NDOLoader.cpp
   code/NDOLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(OFF
+ADD_ASSIMP_IMPORTER( OFF
   code/OFFLoader.cpp
   code/OFFLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(OBJ
+ADD_ASSIMP_IMPORTER( OBJ
   code/ObjFileData.h
   code/ObjFileImporter.cpp
   code/ObjFileImporter.h
@@ -358,7 +412,7 @@ ADD_ASSIMP_IMPORTER(OBJ
   code/ObjExporter.cpp
 )
 
-ADD_ASSIMP_IMPORTER(OGRE
+ADD_ASSIMP_IMPORTER( OGRE
   code/OgreImporter.h
   code/OgreStructs.h
   code/OgreParsingUtils.h
@@ -371,24 +425,15 @@ ADD_ASSIMP_IMPORTER(OGRE
   code/OgreMaterial.cpp
 )
 
-# ATOMIC BEGIN
-# https://github.com/AtomicGameEngine/AtomicGameEngine/issues/1045
-# Disable as it depends on openddl which has problems
-# TODO: update to latest Assimp which includes fixes for openddl
-# Though we still don't use opengex
-#ADD_ASSIMP_IMPORTER(OPENGEX
-#  code/OpenGEXExporter.cpp
-#  code/OpenGEXExporter.h
-#  code/OpenGEXImporter.cpp
-#  code/OpenGEXImporter.h
-#  code/OpenGEXStructs.h
-#)
+ADD_ASSIMP_IMPORTER( OPENGEX
+  code/OpenGEXExporter.cpp
+  code/OpenGEXExporter.h
+  code/OpenGEXImporter.cpp
+  code/OpenGEXImporter.h
+  code/OpenGEXStructs.h
+)
 
-add_definitions(-DASSIMP_BUILD_NO_OPENGEX_IMPORTER=1)
-
-# ATOMIC END
-
-ADD_ASSIMP_IMPORTER(PLY
+ADD_ASSIMP_IMPORTER( PLY
   code/PlyLoader.cpp
   code/PlyLoader.h
   code/PlyParser.cpp
@@ -397,18 +442,18 @@ ADD_ASSIMP_IMPORTER(PLY
   code/PlyExporter.h
 )
 
-ADD_ASSIMP_IMPORTER(MS3D
+ADD_ASSIMP_IMPORTER( MS3D
   code/MS3DLoader.cpp
   code/MS3DLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(COB
+ADD_ASSIMP_IMPORTER( COB
   code/COBLoader.cpp
   code/COBLoader.h
   code/COBScene.h
 )
 
-ADD_ASSIMP_IMPORTER(BLEND
+ADD_ASSIMP_IMPORTER( BLEND
   code/BlenderLoader.cpp
   code/BlenderLoader.h
   code/BlenderDNA.cpp
@@ -426,10 +471,11 @@ ADD_ASSIMP_IMPORTER(BLEND
   code/BlenderTessellator.cpp
 )
 
-ADD_ASSIMP_IMPORTER(IFC
+ADD_ASSIMP_IMPORTER( IFC
   code/IFCLoader.cpp
   code/IFCLoader.h
-  code/IFCReaderGen.cpp
+  code/IFCReaderGen1.cpp
+  code/IFCReaderGen2.cpp
   code/IFCReaderGen.h
   code/IFCUtil.h
   code/IFCUtil.cpp
@@ -445,14 +491,21 @@ ADD_ASSIMP_IMPORTER(IFC
   code/STEPFileEncoding.cpp
   code/STEPFileEncoding.h
 )
+if (ASSIMP_BUILD_IFC_IMPORTER)
+  if (MSVC)
+    set_source_files_properties(IFCReaderGen1.cpp IFCReaderGen2.cpp PROPERTIES COMPILE_FLAGS "/bigobj")
+  elseif(CMAKE_COMPILER_IS_MINGW)
+    set_source_files_properties(IFCReaderGen1.cpp IFCReaderGen2.cpp PROPERTIES COMPILE_FLAGS "-O2")   # Urho3D: Remove -Wa,-mbig-obj flag as some older MinGW version may not support it yet
+  endif()
+endif (ASSIMP_BUILD_IFC_IMPORTER)
 
-ADD_ASSIMP_IMPORTER(XGL
+ADD_ASSIMP_IMPORTER( XGL
   code/XGLLoader.cpp
   code/XGLLoader.h
 )
 
 
-ADD_ASSIMP_IMPORTER(FBX
+ADD_ASSIMP_IMPORTER( FBX
   code/FBXImporter.cpp
   code/FBXCompileConfig.h
   code/FBXImporter.h
@@ -469,6 +522,7 @@ ADD_ASSIMP_IMPORTER(FBX
   code/FBXDocument.cpp
   code/FBXProperties.h
   code/FBXProperties.cpp
+  code/FBXMeshGeometry.h
   code/FBXMeshGeometry.cpp
   code/FBXMaterial.cpp
   code/FBXModel.cpp
@@ -531,15 +585,19 @@ SET( PostProcessing_SRCS
   code/PolyTools.h
   code/MakeVerboseFormat.cpp
   code/MakeVerboseFormat.h
+  ${HEADER_PATH}/SceneCombiner.h
 )
 SOURCE_GROUP( PostProcessing FILES ${PostProcessing_SRCS})
 
-ADD_ASSIMP_IMPORTER(Q3D
+SET( IrrXML_SRCS code/irrXMLWrapper.h )
+SOURCE_GROUP( IrrXML FILES ${IrrXML_SRCS})
+
+ADD_ASSIMP_IMPORTER( Q3D
   code/Q3DLoader.cpp
   code/Q3DLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(Q3BSP
+ADD_ASSIMP_IMPORTER( Q3BSP
   code/Q3BSPFileData.h
   code/Q3BSPFileParser.h
   code/Q3BSPFileParser.cpp
@@ -549,34 +607,39 @@ ADD_ASSIMP_IMPORTER(Q3BSP
   code/Q3BSPZipArchive.cpp
 )
 
-ADD_ASSIMP_IMPORTER(RAW
+ADD_ASSIMP_IMPORTER( RAW
   code/RawLoader.cpp
   code/RawLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(SMD
+ADD_ASSIMP_IMPORTER( SIB
+  code/SIBImporter.cpp
+  code/SIBImporter.h
+)
+
+ADD_ASSIMP_IMPORTER( SMD
   code/SMDLoader.cpp
   code/SMDLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(STL
+ADD_ASSIMP_IMPORTER( STL
   code/STLLoader.cpp
   code/STLLoader.h
   code/STLExporter.h
   code/STLExporter.cpp
 )
 
-ADD_ASSIMP_IMPORTER(TERRAGEN
+ADD_ASSIMP_IMPORTER( TERRAGEN
   code/TerragenLoader.cpp
   code/TerragenLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(3D
+ADD_ASSIMP_IMPORTER( 3D
   code/UnrealLoader.cpp
   code/UnrealLoader.h
 )
 
-ADD_ASSIMP_IMPORTER(X
+ADD_ASSIMP_IMPORTER( X
   code/XFileHelper.h
   code/XFileImporter.cpp
   code/XFileImporter.h
@@ -584,6 +647,67 @@ ADD_ASSIMP_IMPORTER(X
   code/XFileParser.h
   code/XFileExporter.h
   code/XFileExporter.cpp
+)
+
+ADD_ASSIMP_IMPORTER(X3D
+  code/X3DExporter.cpp
+  code/X3DExporter.hpp
+  code/X3DImporter.cpp
+  code/X3DImporter.hpp
+  code/X3DImporter_Geometry2D.cpp
+  code/X3DImporter_Geometry3D.cpp
+  code/X3DImporter_Group.cpp
+  code/X3DImporter_Light.cpp
+  code/X3DImporter_Macro.hpp
+  code/X3DImporter_Metadata.cpp
+  code/X3DImporter_Networking.cpp
+  code/X3DImporter_Node.hpp
+  code/X3DImporter_Postprocess.cpp
+  code/X3DImporter_Rendering.cpp
+  code/X3DImporter_Shape.cpp
+  code/X3DImporter_Texturing.cpp
+  code/FIReader.hpp
+  code/FIReader.cpp
+  code/X3DVocabulary.cpp
+)
+
+ADD_ASSIMP_IMPORTER( GLTF
+  code/glTFAsset.h
+  code/glTFAsset.inl
+  code/glTFAssetWriter.h
+  code/glTFAssetWriter.inl
+  code/glTFImporter.cpp
+  code/glTFImporter.h
+  code/glTFExporter.h
+  code/glTFExporter.cpp
+  code/glTF2Asset.h
+  code/glTF2Asset.inl
+  code/glTF2AssetWriter.h
+  code/glTF2AssetWriter.inl
+  code/glTF2Importer.cpp
+  code/glTF2Importer.h
+  code/glTF2Exporter.h
+  code/glTF2Exporter.cpp
+)
+
+ADD_ASSIMP_IMPORTER( 3MF
+  code/D3MFImporter.h
+  code/D3MFImporter.cpp
+  code/D3MFExporter.h
+  code/D3MFExporter.cpp
+  code/D3MFOpcPackage.h
+  code/D3MFOpcPackage.cpp
+  code/3MFXmlTags.h
+)
+
+ADD_ASSIMP_IMPORTER( MMD
+  code/MMDCpp14.h
+  code/MMDImporter.cpp
+  code/MMDImporter.h
+  code/MMDPmdParser.h
+  code/MMDPmxParser.h
+  code/MMDPmxParser.cpp
+  code/MMDVmdParser.h
 )
 
 SET( Step_SRCS
@@ -604,6 +728,7 @@ SET( Extra_SRCS
 )
 SOURCE_GROUP( Extra FILES ${Extra_SRCS})
 
+# Urho3D: Always build irrXML in-house
 SET( IrrXML_SRCS
   code/irrXMLWrapper.h
   contrib/irrXML/CXMLReaderImpl.h
@@ -616,18 +741,11 @@ SET( IrrXML_SRCS
 )
 SOURCE_GROUP( IrrXML FILES ${IrrXML_SRCS})
 
-SET( ConvertUTF_SRCS
-  contrib/ConvertUTF/ConvertUTF.h
-  contrib/ConvertUTF/ConvertUTF.c
-)
-SOURCE_GROUP( ConvertUTF FILES ${ConvertUTF_SRCS})
-
 SET( Clipper_SRCS
   contrib/clipper/clipper.hpp
   contrib/clipper/clipper.cpp
 )
 SOURCE_GROUP( Clipper FILES ${Clipper_SRCS})
-
 
 SET( Poly2Tri_SRCS
   contrib/poly2tri/poly2tri/common/shapes.cc
@@ -653,6 +771,14 @@ SET( unzip_SRCS
 )
 SOURCE_GROUP( unzip FILES ${unzip_SRCS})
 
+SET( ziplib_SRCS
+  contrib/zip/src/miniz.h
+  contrib/zip/src/zip.c
+  contrib/zip/src/zip.h
+)
+SOURCE_GROUP( ziplib FILES ${ziplib_SRCS} )
+
+# Urho3D: Always build zlib in-house
 SET( zlib_SRCS
   contrib/zlib/adler32.c
   contrib/zlib/compress.c
@@ -660,11 +786,11 @@ SET( zlib_SRCS
   contrib/zlib/crc32.h
   contrib/zlib/deflate.c
   contrib/zlib/deflate.h
-#  contrib/zlib/gzclose.c
-#  contrib/zlib/gzguts.h
-#  contrib/zlib/gzlib.c
-#  contrib/zlib/gzread.c
-#  contrib/zlib/gzwrite.c
+  contrib/zlib/gzclose.c
+  contrib/zlib/gzguts.h
+  contrib/zlib/gzlib.c
+  contrib/zlib/gzread.c
+  contrib/zlib/gzwrite.c
   contrib/zlib/infback.c
   contrib/zlib/inffast.c
   contrib/zlib/inffast.h
@@ -676,29 +802,81 @@ SET( zlib_SRCS
   contrib/zlib/trees.c
   contrib/zlib/trees.h
   contrib/zlib/uncompr.c
-  contrib/zlib/zconf.h
+ contrib/zlib/zconf.h
   contrib/zlib/zlib.h
   contrib/zlib/zutil.c
   contrib/zlib/zutil.h
 )
 SOURCE_GROUP( zlib FILES ${zlib_SRCS})
 
-# ATOMIC BEGIN
-# https://github.com/AtomicGameEngine/AtomicGameEngine/issues/1045
-# Disable openddl which has problems
-# TODO: update to latest Assimp which includes fixes for openddl
-# Though we still don't use opengex
-#SET ( openddl_parser_SRCS
-#  contrib/openddlparser/code/OpenDDLParser.cpp
-#  contrib/openddlparser/code/DDLNode.cpp
-#  contrib/openddlparser/code/Value.cpp
-#  contrib/openddlparser/include/openddlparser/OpenDDLParser.h
-#  contrib/openddlparser/include/openddlparser/OpenDDLParserUtils.h
-#  contrib/openddlparser/include/openddlparser/OpenDDLCommon.h
-#  contrib/openddlparser/include/openddlparser/DDLNode.h
-#  contrib/openddlparser/include/openddlparser/Value.h
-#)
-#SOURCE_GROUP( openddl_parser FILES ${openddl_parser_SRCS})
+SET ( openddl_parser_SRCS
+  contrib/openddlparser/code/OpenDDLParser.cpp
+  contrib/openddlparser/code/DDLNode.cpp
+  contrib/openddlparser/code/OpenDDLCommon.cpp
+  contrib/openddlparser/code/OpenDDLExport.cpp
+  contrib/openddlparser/code/Value.cpp
+  contrib/openddlparser/code/OpenDDLStream.cpp
+  contrib/openddlparser/include/openddlparser/OpenDDLParser.h
+  contrib/openddlparser/include/openddlparser/OpenDDLParserUtils.h
+  contrib/openddlparser/include/openddlparser/OpenDDLCommon.h
+  contrib/openddlparser/include/openddlparser/OpenDDLExport.h
+  contrib/openddlparser/include/openddlparser/OpenDDLStream.h
+  contrib/openddlparser/include/openddlparser/DDLNode.h
+  contrib/openddlparser/include/openddlparser/Value.h
+)
+SOURCE_GROUP( openddl_parser FILES ${openddl_parser_SRCS})
+
+SET ( open3dgc_SRCS
+  contrib/Open3DGC/o3dgcAdjacencyInfo.h
+  contrib/Open3DGC/o3dgcArithmeticCodec.cpp
+  contrib/Open3DGC/o3dgcArithmeticCodec.h
+  contrib/Open3DGC/o3dgcBinaryStream.h
+  contrib/Open3DGC/o3dgcCommon.h
+  contrib/Open3DGC/o3dgcDVEncodeParams.h
+  contrib/Open3DGC/o3dgcDynamicVectorDecoder.cpp
+  contrib/Open3DGC/o3dgcDynamicVectorDecoder.h
+  contrib/Open3DGC/o3dgcDynamicVectorEncoder.cpp
+  contrib/Open3DGC/o3dgcDynamicVectorEncoder.h
+  contrib/Open3DGC/o3dgcDynamicVector.h
+  contrib/Open3DGC/o3dgcFIFO.h
+  contrib/Open3DGC/o3dgcIndexedFaceSet.h
+  contrib/Open3DGC/o3dgcIndexedFaceSet.inl
+  contrib/Open3DGC/o3dgcSC3DMCDecoder.h
+  contrib/Open3DGC/o3dgcSC3DMCDecoder.inl
+  contrib/Open3DGC/o3dgcSC3DMCEncodeParams.h
+  contrib/Open3DGC/o3dgcSC3DMCEncoder.h
+  contrib/Open3DGC/o3dgcSC3DMCEncoder.inl
+  contrib/Open3DGC/o3dgcTimer.h
+  contrib/Open3DGC/o3dgcTools.cpp
+  contrib/Open3DGC/o3dgcTriangleFans.cpp
+  contrib/Open3DGC/o3dgcTriangleFans.h
+  contrib/Open3DGC/o3dgcTriangleListDecoder.h
+  contrib/Open3DGC/o3dgcTriangleListDecoder.inl
+  contrib/Open3DGC/o3dgcTriangleListEncoder.h
+  contrib/Open3DGC/o3dgcTriangleListEncoder.inl
+  contrib/Open3DGC/o3dgcVector.h
+  contrib/Open3DGC/o3dgcVector.inl
+)
+SOURCE_GROUP( open3dgc FILES ${open3dgc_SRCS})
+
+# Check dependencies for glTF importer with Open3DGC-compression.
+# RT-extensions is used in "contrib/Open3DGC/o3dgcTimer.h" for collecting statistics. Pointed file
+# has implementation for different platforms: WIN32, __MACH__ and other ("else" block).
+# Urho3D: Only perform the dependency search on non-MSVC build
+IF (NOT MSVC)
+  FIND_PACKAGE(rt QUIET)
+ENDIF ()
+IF (RT_FOUND OR MSVC)
+  SET( ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC 1 )
+  ADD_DEFINITIONS( -DASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1 )
+ELSE ()
+  SET (open3dgc_SRCS "")
+  MESSAGE (STATUS "RT-extension not found. glTF import/export will be built without Open3DGC-compression.")
+  #!TODO: off course is better to remove statistics timers from o3dgc codec. Or propose to choose what to use.
+ENDIF ()
+
+INCLUDE_DIRECTORIES( "contrib/rapidjson/include" )
+INCLUDE_DIRECTORIES( "contrib" )
 
 # VC2010 fixes
 if(MSVC10)
@@ -713,9 +891,10 @@ if ( MSVC )
   ADD_DEFINITIONS( -D_CRT_SECURE_NO_WARNINGS )
 endif ( MSVC )
 
+
 # Urho3D: disable status prints
-# MESSAGE(STATUS "Enabled formats:${ASSIMP_IMPORTERS_ENABLED}")
-# MESSAGE(STATUS "Disabled formats:${ASSIMP_IMPORTERS_DISABLED}")
+#MESSAGE(STATUS "Enabled formats:${ASSIMP_IMPORTERS_ENABLED}")
+#MESSAGE(STATUS "Disabled formats:${ASSIMP_IMPORTERS_DISABLED}")
 
 SET( SOURCE_FILES
   # Assimp Files
@@ -732,23 +911,24 @@ SET( SOURCE_FILES
 
   # Third-party libraries
   ${IrrXML_SRCS}
-  ${ConvertUTF_SRCS}
   ${unzip_SRCS}
-  ${zlib_SRCS}
   ${Poly2Tri_SRCS}
   ${Clipper_SRCS}
   ${openddl_parser_SRCS}
+  ${open3dgc_SRCS}
+  ${ziplib_SRCS}
+  ${zlib_SRCS}
   # Necessary to show the headers in the project when using the VC++ generator:
-  ${Boost_SRCS}
 
   ${PUBLIC_HEADERS}
   ${COMPILER_HEADERS}
 
 )
-add_definitions( -DOPENDDLPARSER_BUILD )
+ADD_DEFINITIONS( -DOPENDDLPARSER_BUILD )
 
 INCLUDE_DIRECTORIES(
-  contrib/openddlparser/include
+    contrib/irrXML
+    contrib/openddlparser/include
 )
 
 # Urho3D: set the corresponding "no importer" define
@@ -765,3 +945,4 @@ list (APPEND TARGET_PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH YES)   # Since w
 set (INCLUDE_DIRS include)
 # ATOMIC END
 setup_library ()
+

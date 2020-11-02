@@ -54,6 +54,9 @@
 
 // ATOMIC BEGIN
 
+#include "Water.h"
+
+
 #include "Text3D/Text3DFont.h"
 #include "Text3D/Text3DText.h"
 #include "Text3D/Text3D.h"
@@ -411,6 +414,8 @@ void RegisterGraphicsLibrary(Context* context)
     Zone::RegisterObject(context);
 
     // ATOMIC BEGIN
+	Water::RegisterObject(context);
+	
     Text3DFont::RegisterObject(context);
     Text3DText::RegisterObject(context);
     Text3D::RegisterObject(context);

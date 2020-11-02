@@ -117,9 +117,9 @@ class ATOMIC_API Object : public RefCounted
 
 public:
     /// Construct.
-    Object(Context* context);
+    explicit Object(Context* context);
     /// Destruct. Clean up self from event sender & receiver structures.
-    virtual ~Object();
+    ~Object() override;
 
     /// Return type hash.
     virtual StringHash GetType() const = 0;

@@ -2,7 +2,8 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2015, assimp team
+Copyright (c) 2006-2017, assimp team
+
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -50,7 +51,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "STEPFile.h"
 #include "../include/assimp/mesh.h"
 #include "../include/assimp/material.h"
-
 
 struct aiNode;
 
@@ -120,8 +120,8 @@ struct TempOpening
     const IFC::IfcSolidModel* solid;
     IfcVector3 extrusionDir;
 
-    boost::shared_ptr<TempMesh> profileMesh;
-    boost::shared_ptr<TempMesh> profileMesh2D;
+    std::shared_ptr<TempMesh> profileMesh;
+    std::shared_ptr<TempMesh> profileMesh2D;
 
     // list of points generated for this opening. This is used to
     // create connections between two opposing holes created
@@ -140,8 +140,8 @@ struct TempOpening
 
     // ------------------------------------------------------------------------------
     TempOpening(const IFC::IfcSolidModel* solid,IfcVector3 extrusionDir,
-        boost::shared_ptr<TempMesh> profileMesh,
-        boost::shared_ptr<TempMesh> profileMesh2D)
+        std::shared_ptr<TempMesh> profileMesh,
+        std::shared_ptr<TempMesh> profileMesh2D)
         : solid(solid)
         , extrusionDir(extrusionDir)
         , profileMesh(profileMesh)

@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -58,9 +58,7 @@ ParticleEmitter2D::ParticleEmitter2D(Context* context) :
     sourceBatches_[0].owner_ = this;
 }
 
-ParticleEmitter2D::~ParticleEmitter2D()
-{
-}
+ParticleEmitter2D::~ParticleEmitter2D() = default;
 
 void ParticleEmitter2D::RegisterObject(Context* context)
 {
@@ -90,12 +88,12 @@ void ParticleEmitter2D::OnSetEnabled()
     }
 }
 
-void ParticleEmitter2D::SetEffect(ParticleEffect2D* model)
+void ParticleEmitter2D::SetEffect(ParticleEffect2D* effect)
 {
-    if (model == effect_)
+    if (effect == effect_)
         return;
 
-    effect_ = model;
+    effect_ = effect;
     MarkNetworkUpdate();
 
     if (!effect_)
@@ -153,7 +151,7 @@ Sprite2D* ParticleEmitter2D::GetSprite() const
 
 void ParticleEmitter2D::SetParticleEffectAttr(const ResourceRef& value)
 {
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    auto* cache = GetSubsystem<ResourceCache>();
     SetEffect(cache->GetResource<ParticleEffect2D>(value.name_));
 }
 
@@ -171,11 +169,13 @@ void ParticleEmitter2D::SetSpriteAttr(const ResourceRef& value)
 
 void ParticleEmitter2D::SetEmitting(bool enable)
 {
-    if (enable != emitting_)
-    {
-        emitting_ = enable;
-        emitParticleTime_ = 0.0f;
-    }
+    if (enable == emitting_)
+        return;
+
+    emitting_ = enable;
+    emitParticleTime_ = 0.0f;
+
+    MarkNetworkUpdate();
 }
 
 ResourceRef ParticleEmitter2D::GetSpriteAttr() const
@@ -273,7 +273,7 @@ void ParticleEmitter2D::UpdateMaterial()
     if (sprite_ && renderer_)
         sourceBatches_[0].material_ = renderer_->GetMaterial(sprite_->GetTexture(), blendMode_);
     else
-        sourceBatches_[0].material_ = 0;
+        sourceBatches_[0].material_ = nullptr;
 }
 
 void ParticleEmitter2D::HandleScenePostUpdate(StringHash eventType, VariantMap& eventData)

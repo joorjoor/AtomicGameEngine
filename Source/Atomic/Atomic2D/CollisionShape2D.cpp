@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@
 #include "../Scene/Node.h"
 #include "../Scene/Scene.h"
 #include "../Atomic2D/CollisionShape2D.h"
+#include "../Atomic2D/CollisionCircle2D.h"
 #include "../Atomic2D/PhysicsUtils2D.h"
 #include "../Atomic2D/RigidBody2D.h"
 
@@ -37,7 +38,7 @@ namespace Atomic
 
 CollisionShape2D::CollisionShape2D(Context* context) :
     Component(context),
-    fixture_(0),
+    fixture_(nullptr),
     cachedWorldScale_(Vector3::ONE)
 {
 
@@ -249,7 +250,7 @@ void CollisionShape2D::ReleaseFixture()
     body->DestroyFixture(fixture_);
     if (!rigidBody_->GetUseFixtureMass()) // Workaround for resetting mass in DestroyFixture().
         body->SetMassData(&massData);
-    fixture_ = 0;
+    fixture_ = nullptr;
 }
 
 float CollisionShape2D::GetMass() const
@@ -320,8 +321,7 @@ void CollisionShape2D::OnMarkedDirty(Node* node)
 
     cachedWorldScale_ = newWorldScale;
 
-    if (fixture_)
-        ApplyNodeWorldScale();
+    ApplyNodeWorldScale();
 }
 
 }

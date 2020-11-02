@@ -29,6 +29,7 @@ import ModelInspector = require("./ModelInspector");
 import PrefabInspector = require("./PrefabInspector");
 import TextureInspector = require("./TextureInspector");
 import AssemblyInspector = require("./AssemblyInspector");
+import TMXInspector = require("./TMXInspector");
 import ServiceLocator from "../../../hostExtensions/ServiceLocator";
 import SelectionInspector = require("./SelectionInspector");
 // make sure these are hooked in
@@ -227,6 +228,15 @@ class InspectorFrame extends ScriptWidget {
           var assemblyInspector = new AssemblyInspector();
           container.addChild(assemblyInspector);
           assemblyInspector.inspect(asset);
+
+        }
+
+		if (asset.importerTypeName == "TMXImporter") {
+
+          var TMX = new TMXInspector();
+            container.addChild(TMX);
+
+            TMX.inspect(asset);
 
         }
 

@@ -458,7 +458,7 @@ void DebugRenderer::AddCircle(const Vector3& center, const Vector3& normal, floa
     }
 
     p = center + normal * (radius / 4.0f);
-    AddLine(center, p, uintColor, depthTest);
+    //AddLine(center, p, uintColor, depthTest);
 }
 
 void DebugRenderer::AddCross(const Vector3& center, float size, const Color& color, bool depthTest)

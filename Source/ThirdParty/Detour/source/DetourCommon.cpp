@@ -21,11 +21,6 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-float dtSqrt(float x)
-{
-	return dtMathSqrtf(x);
-}
-
 void dtClosestPtPointTriangle(float* closest, const float* p,
 							  const float* a, const float* b, const float* c)
 {
@@ -347,8 +342,8 @@ void dtRandomPointInConvexPoly(const float* pts, const int npts, float* areas,
 	// Find sub triangle weighted by area.
 	const float thr = s*areasum;
 	float acc = 0.0f;
-	float u = 0.0f;
-	int tri = 0;
+	float u = 1.0f;
+	int tri = npts - 1;
 	for (int i = 2; i < npts; i++) {
 		const float dacc = areas[i];
 		if (thr >= acc && thr < (acc+dacc))
@@ -360,7 +355,7 @@ void dtRandomPointInConvexPoly(const float* pts, const int npts, float* areas,
 		acc += dacc;
 	}
 	
-	float v = dtSqrt(t);
+	float v = dtMathSqrtf(t);
 	
 	const float a = 1 - v;
 	const float b = (1 - u) * v;

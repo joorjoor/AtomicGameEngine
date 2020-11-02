@@ -69,6 +69,7 @@ namespace('build', function() {
         if (os.platform() == 'win32') {
 
           var vsver = (config["vs2017"] ? "VS2017" : "VS2015");
+		  var vsver = (config["vs2019"] ? "VS2019" : "VS2015");
           netCmd += " -toolversion " + vsver;
 
         }

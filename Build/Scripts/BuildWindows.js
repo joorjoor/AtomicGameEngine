@@ -84,6 +84,7 @@ namespace('build', function() {
         process.chdir(buildDir);
 
         var vsver = (config["vs2017"] ? "VS2017" : "VS2015");
+        var vsver = (config["vs2019"] ? "VS2019" : "VS2015");
 
         var cmds = [];
         cmds.push(atomicRoot + "Build/Scripts/Windows/CompileAtomicEditorPhase2.bat " + config["config"] + " " + vsver);
@@ -123,7 +124,8 @@ namespace('build', function() {
         process.chdir(buildDir);
 
         var vsver = (config["vs2017"] ? "VS2017" : "VS2015");
-
+		var vsver = (config["vs2019"] ? "VS2019" : "VS2015");
+		
         var cmds = [];
 
         // Generate Atomic solution, AtomicTool binary, and script bindings

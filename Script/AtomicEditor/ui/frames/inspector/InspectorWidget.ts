@@ -183,4 +183,4 @@ class InspectorWidget extends ScriptWidget {
     attrFontDesc:Atomic.UIFontDescription;
 }
 
-export  = InspectorWidget;
+export = InspectorWidget;

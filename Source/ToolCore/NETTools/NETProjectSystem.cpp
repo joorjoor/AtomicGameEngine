@@ -512,7 +512,7 @@ namespace ToolCore
 
 #ifdef ATOMIC_PLATFORM_WINDOWS
 
-        // On Windows, we first check for VS2015, then VS2017 which
+        // On Windows, we first check for VS2015, then VS2017, then VS2019 which
         // at the time of this comment is in RC, refactor once
         // in general release
 
@@ -549,7 +549,23 @@ namespace ToolCore
                 idePath_ += "Common7\\IDE\\devenv.exe";
             }
         }
+		
+		// If we didn't find VS2015, VS2017 look for VS2019
+		idePath_ = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\";
 
+        if (idePath_.Length())
+        {
+            // Ensure the path ends with a slash
+            if (!idePath_.EndsWith("\\"))
+            {
+                idePath_ += "\\";
+            }
+
+            idePath_.Replace("Tools\\", "IDE\\devenv.exe");
+
+            if (!fileSystem->FileExists(idePath_))
+                idePath_.Clear();
+        }
 #elif defined ATOMIC_PLATFORM_OSX
 
         FileSystem* fileSystem = GetSubsystem<FileSystem>();

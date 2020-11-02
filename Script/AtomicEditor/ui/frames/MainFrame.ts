@@ -25,8 +25,8 @@ import ResourceFrame = require("./ResourceFrame");
 import WelcomeFrame = require("./WelcomeFrame");
 import InspectorFrame = require("./inspector/InspectorFrame");
 import HierarchyFrame = require("./HierarchyFrame");
-import MainToolbar = require("ui//MainToolbar");
-import AnimationToolbar = require("ui//AnimationToolbar");
+import MainToolbar = require("ui/MainToolbar");
+import AnimationToolbar = require("ui/AnimationToolbar");
 
 import ScriptWidget = require("ui/ScriptWidget");
 import MainFrameMenu = require("./menus/MainFrameMenu");

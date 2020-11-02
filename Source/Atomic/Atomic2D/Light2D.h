@@ -54,9 +54,9 @@ class ATOMIC_API Light2D : public Component
 
 public:
     /// Construct.
-    Light2D(Context* context);
+    explicit Light2D(Context* context);
     /// Destruct.
-    virtual ~Light2D();
+    ~Light2D() override;
     /// Register object factory
     static void RegisterObject(Context* context);
 

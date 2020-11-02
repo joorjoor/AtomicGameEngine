@@ -127,7 +127,7 @@ class HierarchyFrame extends Atomic.UIWidget {
         this.subscribeToEvent(Atomic.ComponentRemovedEvent((ev: Atomic.ComponentRemovedEvent) => {
 
             if (!ev.component || ev.component.typeName != "PrefabComponent") return;
-
+			
             var node = ev.node;
 
             var itemID = this.nodeIDToItemID[node.id];
@@ -458,22 +458,25 @@ class HierarchyFrame extends Atomic.UIWidget {
 
         } else if (data.type == Atomic.UI_EVENT_TYPE.UI_EVENT_TYPE_CLICK) {
 
-            if (this.menu.handleNodeContextMenu(data.target, data.refid, this.sceneEditor)) {
+			
+			var selectedId = Number(this.hierList.rootList.selectedItemID);
+			var node = this.scene.getNode(selectedId);
+			if (!node)
+				node = this.scene;
+			if (this.menu.handlePopupMenu(data.target, data.refid, node, this.sceneEditor))
+				return true;
+            /*if (this.menu.handleNodeContextMenu(data.target, data.refid, node, this.sceneEditor)) {
                 return true;
-            }
+            }*/
+
 
             var id = data.target.id;
 
-            if (id == "create popup") {
+            //if (id == "create popup") {
 
-                var selectedId = Number(this.hierList.rootList.selectedItemID);
-                var node = this.scene.getNode(selectedId);
-                if (!node)
-                    node = this.scene;
-                if (this.menu.handlePopupMenu(data.target, data.refid, node))
-                    return true;
+                
 
-            }
+            //}
 
             // create
             if (id == "menu create") {
@@ -482,8 +485,9 @@ class HierarchyFrame extends Atomic.UIWidget {
                 var menu = new Atomic.UIMenuWindow(data.target, "create popup");
                 menu.show(src);
                 return true;
-
             }
+		
+		
 
             // cancel search
             if (id == "cancel search") {
@@ -502,7 +506,6 @@ class HierarchyFrame extends Atomic.UIWidget {
                     this.hierList.selectItemByID(this.selectedNode.id.toString(), true);    //maintains selected item after search is cancelled
                 }
             }
-
 
         } else if (data.type == Atomic.UI_EVENT_TYPE.UI_EVENT_TYPE_RIGHT_POINTER_UP) {
 

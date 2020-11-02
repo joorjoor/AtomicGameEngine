@@ -23,6 +23,7 @@
 #include <Atomic/Core/Context.h>
 #include <Atomic/Core/CoreEvents.h>
 #include <Atomic/IO/FileSystem.h>
+#include <Atomic/IO/Log.h>
 #include <Atomic/Resource/ResourceCache.h>
 
 #include "Platform/PlatformWeb.h"
@@ -186,6 +187,8 @@ Platform* ToolSystem::GetPlatformByName(const String& name)
     HashMap<unsigned, SharedPtr<Platform> >::Iterator itr = platforms_.Begin();
     while (itr != platforms_.End())
     {
+		//DEBUG API LEVEL NAME
+		ATOMIC_LOGDEBUGF("%s",(*itr).second_->GetName().CString());
         if ((*itr).second_->GetName().ToLower()== name.ToLower())
             return (*itr).second_;
         itr++;

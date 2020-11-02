@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@
 #include "../Core/Context.h"
 #include "../Atomic2D/CollisionCircle2D.h"
 #include "../Atomic2D/PhysicsUtils2D.h"
+#include "../Graphics/DebugRenderer.h"
+#include "../Scene/Node.h"
 
 #include "../DebugNew.h"
 
@@ -43,9 +45,7 @@ CollisionCircle2D::CollisionCircle2D(Context* context) :
     fixtureDef_.shape = &circleShape_;
 }
 
-CollisionCircle2D::~CollisionCircle2D()
-{
-}
+CollisionCircle2D::~CollisionCircle2D() = default;
 
 void CollisionCircle2D::RegisterObject(Context* context)
 {
@@ -100,5 +100,18 @@ void CollisionCircle2D::RecreateFixture()
 
     CreateFixture();
 }
+
+//ATOMIC BEGIN
+void CollisionCircle2D::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
+{
+	if (debug && IsEnabledEffective())
+	{	
+		float radius = radius_ * cachedWorldScale_.x_;
+		Vector3 pos_ = node_->GetPosition() + Vector3(center_);
+		Vector3 v1(pos_.x_, pos_.y_, 0.0f);
+		debug->AddCircle(v1, Vector3::FORWARD, radius, Color::WHITE, 64, depthTest);
+	}
+}
+//ATOMIC END
 
 }

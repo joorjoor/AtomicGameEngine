@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,7 @@
 #include "../Precompiled.h"
 
 #include "../Core/Context.h"
+#include "../Atomic2D/StretchableSprite2D.h"
 #include "../Atomic2D/AnimatedSprite2D.h"
 #include "../Atomic2D/AnimationSet2D.h"
 #include "../Atomic2D/CollisionBox2D.h"
@@ -51,6 +52,7 @@
 #include "../Atomic2D/TileMap2D.h"
 #include "../Atomic2D/TileMapLayer2D.h"
 #include "../Atomic2D/TmxFile2D.h"
+#include "../Atomic2D/Atomic2D.h"
 
 // ATOMIC BEGIN
 
@@ -75,6 +77,8 @@ void RegisterAtomic2DLibrary(Context* context)
     // Must register objects from base to derived order
     Drawable2D::RegisterObject(context);
     StaticSprite2D::RegisterObject(context);
+
+    StretchableSprite2D::RegisterObject(context);
 
     AnimationSet2D::RegisterObject(context);
     AnimatedSprite2D::RegisterObject(context);

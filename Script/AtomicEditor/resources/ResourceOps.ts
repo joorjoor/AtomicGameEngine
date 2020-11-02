@@ -324,7 +324,7 @@ export function CreateNewAnimationPreviewScene(reportError: boolean = true): boo
     }
 
     //Reset the animation viewer scene to a blank scene
-    animFile = templateFile;
+	var animFile = templateFile;
 
     resourceOps.sendEvent(Editor.EditorEditResourceEventData({ path: animFilename, lineNumber: 0 }));
 

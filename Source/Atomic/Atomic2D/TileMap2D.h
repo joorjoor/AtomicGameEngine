@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -38,14 +38,14 @@ class ATOMIC_API TileMap2D : public Component
 
 public:
     /// Construct.
-    TileMap2D(Context* context);
+    explicit TileMap2D(Context* context);
     /// Destruct.
-    ~TileMap2D();
+    ~TileMap2D() override;
     /// Register object factory.
     static void RegisterObject(Context* context);
 
     /// Visualize the component as debug geometry.
-    virtual void DrawDebugGeometry(DebugRenderer* debug, bool depthTest);
+    void DrawDebugGeometry(DebugRenderer* debug, bool depthTest) override;
 
     /// Set tmx file.
     void SetTmxFile(TmxFile2D* tmxFile);
@@ -73,18 +73,19 @@ public:
     /// Return tile map file attribute.
     ResourceRef GetTmxFileAttr() const;
     ///
-    Vector<SharedPtr<TileMapObject2D> > GetTileCollisionShapes(int gid) const;
-    // ATOMIC BEGIN
+    Vector<SharedPtr<TileMapObject2D> > GetTileCollisionShapes(unsigned gid) const;
+	
+	// ATOMIC BEGIN
 
     TileMapLayer2D* GetLayerByName(const String& name) const;
 
     // ATOMIC END
-
+	
 private:
     /// Tmx file.
     SharedPtr<TmxFile2D> tmxFile_;
     /// Tile map information.
-    TileMapInfo2D info_;
+    TileMapInfo2D info_{};
     /// Root node for tile map layer.
     SharedPtr<Node> rootNode_;
     /// Tile map layers.

@@ -199,16 +199,19 @@ var assetGeneralContextItems = {
 };
 
 var assetFolderContextItems = {
-    "Create Folder": ["create_folder", undefined, "Folder.icon"],
-    "Create Component": ["create_component", undefined, "ComponentBitmap"],
-    "Create Script": ["create_script", undefined, "ComponentBitmap"],
-    "Create Material": ["create_material", undefined, "ComponentBitmap"],
-    "Create Scene": ["create_scene", undefined, "ComponentBitmap"],
+	"Create": {
+		"Create Folder": ["create_folder", undefined, "Folder.icon"],
+		"Create Component": ["create_component", undefined, "ComponentBitmap"],
+		"Create Script": ["create_script", undefined, "ComponentBitmap"],
+		"Create Material": ["create_material", undefined, "ComponentBitmap"],
+		"Create Scene": ["create_scene", undefined, "ComponentBitmap"],
+	},
+	"-1": null,
     "Force Reimport": ["force_reimport_folder", undefined, ""],
     "Import Asset...": ["import_asset", undefined, ""],
-    "-1": null,
-    [showInFs]: ["reveal_folder", undefined, ""],
     "-2": null,
+    [showInFs]: ["reveal_folder", undefined, ""],
+    "-3": null,
     "Delete": ["delete_asset", undefined, "FolderDeleteBitmap"]
 };
 

@@ -31,7 +31,7 @@ dtLocalBoundary::dtLocalBoundary() :
 	m_npolys(0)
 {
 	dtVset(m_center, FLT_MAX,FLT_MAX,FLT_MAX);
-
+	
 	// Urho3D: initialize all class members
 	memset(&m_segs, 0, sizeof(m_segs));
 	memset(&m_polys, 0, sizeof(m_polys));

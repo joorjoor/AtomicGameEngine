@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@
 #include "../Core/Context.h"
 #include "../Atomic2D/CollisionBox2D.h"
 #include "../Atomic2D/PhysicsUtils2D.h"
+#include "../Graphics/DebugRenderer.h"
+#include "../Scene/Node.h"
 
 #include "../DebugNew.h"
 
@@ -46,9 +48,7 @@ CollisionBox2D::CollisionBox2D(Context* context) :
     fixtureDef_.shape = &boxShape_;
 }
 
-CollisionBox2D::~CollisionBox2D()
-{
-}
+CollisionBox2D::~CollisionBox2D() = default;
 
 void CollisionBox2D::RegisterObject(Context* context)
 {
@@ -126,5 +126,28 @@ void CollisionBox2D::RecreateFixture()
 
     CreateFixture();
 }
+
+//ATOMIC BEGIN
+void CollisionBox2D::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
+{
+	if (debug && IsEnabledEffective())
+	{
+		float halfWidth = size_.x_ * 0.5f * cachedWorldScale_.x_;
+		float halfHeight = size_.y_ * 0.5f * cachedWorldScale_.y_;
+		
+		Vector3 pos_ = node_->GetPosition() + Vector3(center_);
+		
+		Vector3 v1(pos_.x_ - halfWidth, pos_.y_ - halfHeight, 0);
+		Vector3 v2(pos_.x_ + halfWidth, pos_.y_ - halfHeight, 0);
+		Vector3 v3(pos_.x_ + halfWidth, pos_.y_ + halfHeight, 0);
+		Vector3 v4(pos_.x_ - halfWidth, pos_.y_ + halfHeight, 0);
+		
+		debug->AddLine(v1, v2, Color::WHITE, depthTest);
+		debug->AddLine(v2, v3, Color::WHITE, depthTest);
+		debug->AddLine(v3, v4, Color::WHITE, depthTest);
+		debug->AddLine(v4, v1, Color::WHITE, depthTest);
+	}
+}
+//ATOMIC END
 
 }

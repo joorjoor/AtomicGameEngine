@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
+
+/// \file
 
 #pragma once
 
@@ -48,17 +50,17 @@ class ATOMIC_API RigidBody2D : public Component
 
 public:
     /// Construct.
-    RigidBody2D(Context* context);
+    explicit RigidBody2D(Context* context);
     /// Destruct.
-    virtual ~RigidBody2D();
+    ~RigidBody2D() override;
     /// Register object factory.
     static void RegisterObject(Context* context);
 
     /// Handle enabled/disabled state change.
-    virtual void OnSetEnabled();
+    void OnSetEnabled() override;
 
     /// Set body type.
-    void SetBodyType(BodyType2D bodyType);
+    void SetBodyType(BodyType2D type);
     /// Set mass.
     void SetMass(float mass);
     /// Set inertia.
@@ -166,11 +168,11 @@ public:
 
 private:
     /// Handle node being assigned.
-    virtual void OnNodeSet(Node* node);
+    void OnNodeSet(Node* node) override;
     /// Handle scene being assigned.
-    virtual void OnSceneSet(Scene* scene);
+    void OnSceneSet(Scene* scene) override;
     /// Handle node transform being dirtied.
-    virtual void OnMarkedDirty(Node* node);
+    void OnMarkedDirty(Node* node) override;
 
     /// Physics world.
     WeakPtr<PhysicsWorld2D> physicsWorld_;
@@ -186,7 +188,7 @@ private:
     Vector<WeakPtr<CollisionShape2D> > collisionShapes_;
     /// Constraints.
     Vector<WeakPtr<Constraint2D> > constraints_;
-
+	
 // ATOMIC BEGIN
     bool castShadows_;
 // ATOMIC END

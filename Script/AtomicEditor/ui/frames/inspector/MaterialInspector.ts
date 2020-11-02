@@ -29,9 +29,9 @@ var techniqueSource = new Atomic.UIMenuItemSource();
 
 var solidSource = new Atomic.UIMenuItemSource();
 solidSource.addItem(new Atomic.UIMenuItem("Diffuse", "Diffuse"));
-solidSource.addItem(new Atomic.UIMenuItem("Diffuse Emissive", "Diffuse Emissive"));
 solidSource.addItem(new Atomic.UIMenuItem("Diffuse Normal", "Diffuse Normal"));
 solidSource.addItem(new Atomic.UIMenuItem("Diffuse Specular", "Diffuse Specular"));
+solidSource.addItem(new Atomic.UIMenuItem("Diffuse Emissive", "Diffuse Emissive"));
 solidSource.addItem(new Atomic.UIMenuItem("Diffuse Normal Specular", "Diffuse Normal Specular"));
 solidSource.addItem(new Atomic.UIMenuItem("Diffuse Unlit", "Diffuse Unlit"));
 solidSource.addItem(new Atomic.UIMenuItem("No Texture", "No Texture"));
@@ -49,6 +49,15 @@ var lightmapSource = new Atomic.UIMenuItemSource();
 lightmapSource.addItem(new Atomic.UIMenuItem("Lightmap", "Lightmap"));
 lightmapSource.addItem(new Atomic.UIMenuItem("Lightmap Alpha", "Lightmap Alpha"));
 
+var pbrSource = new Atomic.UIMenuItemSource();
+pbrSource.addItem(new Atomic.UIMenuItem("PBR Diffuse", "PBR Diffuse"));
+pbrSource.addItem(new Atomic.UIMenuItem("PBR Diffuse Normal", "PBR Diffuse Normal"));
+pbrSource.addItem(new Atomic.UIMenuItem("PBR Diffuse Specular", "PBR Diffuse Specular"));
+pbrSource.addItem(new Atomic.UIMenuItem("PBR Diffuse Emissive", "PBR Diffuse Emissive"));
+pbrSource.addItem(new Atomic.UIMenuItem("PBR Metallic Diffuse Normal Specular", "PBR Metallic Diffuse Normal Specular"));
+pbrSource.addItem(new Atomic.UIMenuItem("PBR Metallic Diffuse Normal Specular Emissive", "PBR Metallic Diffuse Normal Specular Emissive"));
+pbrSource.addItem(new Atomic.UIMenuItem("PBR No Texture", "PBR No Texture"));
+
 var projectSource = new Atomic.UIMenuItemSource();
 var _ = new Atomic.UIMenuItem();
 
@@ -64,7 +73,15 @@ var techniqueLookup = {
     "Techniques/DiffAdd.xml": "Additive",
     "Techniques/NoTexture.xml": "No Texture",
     "Techniques/DiffLightMap.xml": "Lightmap",
-    "Techniques/DiffLightMapAlpha.xml": "Lightmap Alpha"
+    "Techniques/DiffLightMapAlpha.xml": "Lightmap Alpha",
+	
+	"Techniques/PBR/PBRDiff.xml": "PBR Diffuse",
+	"Techniques/PBR/PBRDiffNormalEmissive.xml": "PBR Diffuse Emissive",
+	"Techniques/PBR/PBRDiffNormal.xml": "PBR Diffuse Normal",
+	"Techniques/PBR/.xml": "PBR Diffuse Specular",
+	"Techniques/PBR/PBRMetallicRoughDiffNormalSpec.xml": "PBR Metallic Diffuse Normal Specular",
+	"Techniques/PBR/PBRMetallicRoughDiffNormalSpecEmissive.xml": "PBR Metallic Diffuse Normal Specular Emissive",
+	"Techniques/PBR/PBRNoTexture.xml": "PBR No Texture"
 };
 
 var techniqueReverseLookup = {};
@@ -483,6 +500,10 @@ class MaterialInspector extends ScriptWidget {
 
         _ = new Atomic.UIMenuItem("Lightmap");
         _.subSource = lightmapSource;
+        techniqueSource.addItem(_);
+
+        _ = new Atomic.UIMenuItem("PBR");
+        _.subSource = pbrSource;
         techniqueSource.addItem(_);
 
         var projectTechniquesPath = ToolCore.toolSystem.project.getResourcePath() + "Techniques";

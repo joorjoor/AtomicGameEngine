@@ -44,13 +44,19 @@ class HierarchyFrameMenus extends Atomic.ScriptObject {
 
     }
 
-    handlePopupMenu(target: Atomic.UIWidget, refid: string, node: Atomic.Node): boolean {
+	handleNodeContextMenu(target: Atomic.UIWidget, refid: string, node: Atomic.Node, editor: Editor.SceneEditor3D): boolean {
 
-        if (!target || !refid) return false;
+        if (target.id == "node context menu" || target.id == "create popup") {
+	
+			//if (target.id == "node context menu")
+            //var node = <Atomic.Node>target["node"];
 
-        if (target.id == "create popup") {
+            if (!node) {
+                return false;
+            }
 
-            var child: Atomic.Node;
+
+			var child: Atomic.Node;
 
             if (refid == "create_node") {
 
@@ -60,7 +66,6 @@ class HierarchyFrameMenus extends Atomic.ScriptObject {
                 }
 
             }
-
             else if (refid == "create_light") {
 
                 if (node) {
@@ -71,30 +76,7 @@ class HierarchyFrameMenus extends Atomic.ScriptObject {
                 }
 
             }
-
-            if (child) {
-                child.scene.sendEvent(Editor.SceneEditNodeCreatedEventData({ node: child }));
-            }
-
-            return true;
-
-        }
-
-        return false;
-
-    }
-
-    handleNodeContextMenu(target: Atomic.UIWidget, refid: string, editor: Editor.SceneEditor3D): boolean {
-
-        if (target.id == "node context menu") {
-
-            var node = <Atomic.Node>target["node"];
-
-            if (!node) {
-                return false;
-            }
-
-            if (refid == "delete_node") {
+            else if (refid == "delete_node") {
 
                 if (node instanceof Atomic.Scene)
                     return;
@@ -119,10 +101,32 @@ class HierarchyFrameMenus extends Atomic.ScriptObject {
 
                 return true;
             }
+			
+			
+            if (child) {
+                child.scene.sendEvent(Editor.SceneEditNodeCreatedEventData({ node: child }));
+				return true;
+            }
 
             // Let plugins handle context
             return ServiceLocator.uiServices.hierarchyContextItemClicked(node, refid);
         }
+
+        return false;
+
+    }
+
+    handlePopupMenu(target: Atomic.UIWidget, refid: string, node: Atomic.Node, editor: Editor.SceneEditor3D): boolean {
+
+        if (!target || !refid) return false;
+
+		if (this.handleNodeContextMenu(target, refid, node, editor)) {
+
+            return true;
+
+        }
+
+        
 
         return false;
 
@@ -160,15 +164,23 @@ export = HierarchyFrameMenus;
 var StringID = strings.StringID;
 
 var createItems = {
-    Node: ["create_node", undefined, "Folder.icon"],
+    "Node": ["create_node", undefined, "Folder.icon"],
     "-1": null,
     "3D": {
-        Light: ["create_light", undefined, "JavascriptBitmap"]
+        "Light": ["create_light", undefined, "JavascriptBitmap"]
     }
 };
 
 var nodeGeneralContextItems = {
+	"Create": {
+		"Node": ["create_node", undefined, "Folder.icon"],
+		"-1": null,
+		"3D": {
+			"Light": ["create_light", undefined, "JavascriptBitmap"]
+		}
+	},
+	"-1": null,
     "Duplicate": ["duplicate_node", undefined, ""],
-    "-1": null,
+    "-2": null,
     "Delete": ["delete_node", undefined, ""]
 };

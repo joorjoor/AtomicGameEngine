@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,13 +44,13 @@ static const char* bodyTypeNames[] =
     "Static",
     "Kinematic",
     "Dynamic",
-    0
+    nullptr
 };
 
 RigidBody2D::RigidBody2D(Context* context) :
     Component(context),
     useFixtureMass_(true),
-    body_(0),
+    body_(nullptr),
 // ATOMIC BEGIN
     castShadows_(true)
 // ATOMIC END
@@ -90,8 +90,7 @@ void RigidBody2D::RegisterObject(Context* context)
     ATOMIC_ACCESSOR_ATTRIBUTE("Awake", IsAwake, SetAwake, bool, true, AM_DEFAULT);
     ATOMIC_MIXED_ACCESSOR_ATTRIBUTE("Linear Velocity", GetLinearVelocity, SetLinearVelocity, Vector2, Vector2::ZERO, AM_DEFAULT);
     ATOMIC_ACCESSOR_ATTRIBUTE("Angular Velocity", GetAngularVelocity, SetAngularVelocity, float, 0.0f, AM_DEFAULT);
-
-    // ATOMIC BEGIN
+	// ATOMIC BEGIN
     ATOMIC_ACCESSOR_ATTRIBUTE("CastShadows", GetCastShadows, SetCastShadows, bool, true, AM_DEFAULT);
     // ATOMIC END
 }
@@ -111,7 +110,7 @@ void RigidBody2D::OnSetEnabled()
 
 void RigidBody2D::SetBodyType(BodyType2D type)
 {
-    b2BodyType bodyType = (b2BodyType)type;
+    auto bodyType = (b2BodyType)type;
     if (body_)
     {
         body_->SetType(bodyType);
@@ -422,7 +421,7 @@ void RigidBody2D::ReleaseBody()
     }
 
     physicsWorld_->GetWorld()->DestroyBody(body_);
-    body_ = 0;
+    body_ = nullptr;
 }
 
 void RigidBody2D::ApplyWorldTransform()
@@ -432,7 +431,7 @@ void RigidBody2D::ApplyWorldTransform()
 
     // If the rigid body is parented to another rigid body, can not set the transform immediately.
     // In that case store it to PhysicsWorld2D for delayed assignment
-    RigidBody2D* parentRigidBody = 0;
+    RigidBody2D* parentRigidBody = nullptr;
     Node* parent = node_->GetParent();
     if (parent != GetScene() && parent)
         parentRigidBody = parent->GetComponent<RigidBody2D>();

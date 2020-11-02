@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,9 +34,9 @@ class ATOMIC_API CollisionBox2D : public CollisionShape2D
 
 public:
     /// Construct.
-    CollisionBox2D(Context* context);
+    explicit CollisionBox2D(Context* context);
     /// Destruct.
-    virtual ~CollisionBox2D();
+    ~CollisionBox2D() override;
     /// Register object factory.
     static void RegisterObject(Context* context);
 
@@ -60,9 +60,16 @@ public:
     /// Return angle.
     float GetAngle() const { return angle_; }
 
+protected:
+
+	//ATOMIC BEGIN
+    /// Visualize the component as debug geometry.
+    virtual void DrawDebugGeometry(DebugRenderer* debug, bool depthTest);
+	//ATOMIC END
+
 private:
     /// Apply node world scale.
-    virtual void ApplyNodeWorldScale();
+    void ApplyNodeWorldScale() override;
     /// Recreate fixture.
     void RecreateFixture();
 

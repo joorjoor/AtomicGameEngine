@@ -1,6 +1,6 @@
 @echo OFF
 
-call %0\..\SetupVSEnvironment.bat %1
+call %0\..\SetupVSEnvironment2019.bat %1
 
 if not defined ATOMIC_CMAKE_GENERATOR (
   @echo Problem setting up %1 compilation environment

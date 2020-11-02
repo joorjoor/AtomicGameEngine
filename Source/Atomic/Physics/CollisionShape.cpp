@@ -472,7 +472,6 @@ void CollisionShape::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
         }
         else
             worldTransform = node_->GetWorldTransform();
-
         // Special case code for convex hull: bypass Bullet's own rendering to draw triangles correctly, not just edges
         if (shapeType_ == SHAPE_CONVEXHULL)
         {
@@ -510,9 +509,9 @@ void CollisionShape::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
             Vector3 worldPosition(worldTransform * position);
             Quaternion worldRotation(worldTransform.Rotation() * rotation_);
 
+			UpdateShape();
             btDiscreteDynamicsWorld* world = physicsWorld_->GetWorld();
-            world->debugDrawObject(btTransform(ToBtQuaternion(worldRotation), ToBtVector3(worldPosition)), shape_.Get(), bodyActive ?
-                WHITE : GREEN);
+            world->debugDrawObject(btTransform(ToBtQuaternion(worldRotation), ToBtVector3(worldPosition)), shape_.Get(), WHITE);
 
             physicsWorld_->SetDebugRenderer(0);
         }
@@ -1041,7 +1040,9 @@ void CollisionShape::UpdateShape()
     {
         Scene* scene = GetScene();
         Vector3 newWorldScale = node_->GetWorldScale();
-
+		
+		//if (shape_) delete &shape_;
+	
         switch (shapeType_)
         {
         case SHAPE_BOX:

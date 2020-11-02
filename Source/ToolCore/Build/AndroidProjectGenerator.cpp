@@ -24,6 +24,7 @@
 
 #include <Atomic/IO/FileSystem.h>
 #include <Atomic/IO/File.h>
+#include <Atomic/IO/Log.h>
 
 #include "../ToolSystem.h"
 #include "../ToolEnvironment.h"
@@ -131,7 +132,10 @@ bool AndroidProjectGenerator::GenerateLocalProperties( )
     ToolEnvironment* tenv = GetSubsystem<ToolEnvironment>();
     ToolPrefs* prefs = tenv->GetToolPrefs();
     String sdkPath = prefs->GetAndroidSDKPath();
-
+	
+	//DEBUG PATH
+	ATOMIC_LOGDEBUGF("SDKPATH: %s", sdkPath.CString());
+	
     if (!sdkPath.Length())
     {
         errorText_ = "Invalid Android SDK Path, select the path in Build Settings.";
@@ -184,7 +188,10 @@ bool AndroidProjectGenerator::GenerateProjectProperties()
     AndroidBuildSettings* settings = project->GetBuildSettings()->GetAndroidBuildSettings();
 
     String apiString = settings->GetSDKVersion();
-
+	
+	//DEBUG API LEVEL
+	ATOMIC_LOGDEBUGF("API: %s", apiString.CString());
+	
     if (!apiString.Length())
     {
         errorText_ = "Invalid Android API level, Press Refresh and select a valid level.";

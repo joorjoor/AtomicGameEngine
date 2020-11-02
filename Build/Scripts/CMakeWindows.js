@@ -81,6 +81,18 @@ namespace('build', function() {
 
   }
 
+    
+  task('genvs2019', {
+    async: true
+  }, function() {
+
+    spawnCMake("VS2019");
+
+  }, {
+    printStdout: true,
+    printStderr: true
+  });
+
   task('genvs2017', {
     async: true
   }, function() {

@@ -105,9 +105,9 @@ class ATOMIC_API Text3DText : public Animatable
 
 public:
     /// Construct.
-    Text3DText(Context* context);
+    explicit Text3DText(Context* context);
     /// Destruct.
-    virtual ~Text3DText();
+    ~Text3DText() override;
     /// Register object factory.
     static void RegisterObject(Context* context);
 

@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2019 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "../Scene/Component.h"
+#include "../Math/BoundingBox.h"
 
 #include <Box2D/Box2D.h>
 
@@ -38,14 +39,14 @@ class ATOMIC_API CollisionShape2D : public Component
 
 public:
     /// Construct.
-    CollisionShape2D(Context* context);
+    explicit CollisionShape2D(Context* context);
     /// Destruct.
-    virtual ~CollisionShape2D();
+    ~CollisionShape2D() override;
     /// Register object factory.
     static void RegisterObject(Context* context);
 
     /// Handle enabled/disabled state change.
-    virtual void OnSetEnabled();
+    void OnSetEnabled() override;
 
     /// Set trigger.
     void SetTrigger(bool trigger);
@@ -100,12 +101,12 @@ public:
 
 protected:
     /// Handle node being assigned.
-    virtual void OnNodeSet(Node* node);
+    void OnNodeSet(Node* node) override;
     /// Handle node transform being dirtied.
-    virtual void OnMarkedDirty(Node* node);
+    void OnMarkedDirty(Node* node) override;
     /// Apply Node world scale.
     virtual void ApplyNodeWorldScale() = 0;
-
+	
     /// Rigid body.
     WeakPtr<RigidBody2D> rigidBody_;
     /// Fixture def.

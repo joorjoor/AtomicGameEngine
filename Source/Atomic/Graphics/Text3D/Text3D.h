@@ -39,20 +39,20 @@ class ATOMIC_API Text3D : public Drawable
 
 public:
     /// Construct.
-    Text3D(Context* context);
+    explicit Text3D(Context* context);
     /// Destruct.
-    ~Text3D();
+    ~Text3D() override;
     /// Register object factory. Drawable must be registered first.
     static void RegisterObject(Context* context);
 
     /// Apply attribute changes that can not be applied immediately.
-    virtual void ApplyAttributes();
+    void ApplyAttributes() override;
     /// Calculate distance and prepare batches for rendering. May be called from worker thread(s), possibly re-entrantly.
-    virtual void UpdateBatches(const FrameInfo& frame);
+    void UpdateBatches(const FrameInfo& frame) override;
     /// Prepare geometry for rendering. Called from a worker thread if possible (no GPU update.)
-    virtual void UpdateGeometry(const FrameInfo& frame);
+    void UpdateGeometry(const FrameInfo& frame) override;
     /// Return whether a geometry update is necessary, and if it can happen in a worker thread.
-    virtual UpdateGeometryType GetUpdateGeometryType();
+    UpdateGeometryType GetUpdateGeometryType() override;
 
     /// Set font by looking from resource cache by name and font size. Return true if successful.
     bool SetFont(const String& fontName, float size = TEXT3D_DEFAULT_FONT_SIZE);
@@ -174,9 +174,9 @@ public:
 
 protected:
     /// Handle node being assigned.
-    virtual void OnNodeSet(Node* node);
+    void OnNodeSet(Node* node) override;
     /// Recalculate the world-space bounding box.
-    virtual void OnWorldBoundingBoxUpdate();
+    void OnWorldBoundingBoxUpdate() override;
     /// Mark text & geometry dirty.
     void MarkTextDirty();
     /// Update text %UI batches.

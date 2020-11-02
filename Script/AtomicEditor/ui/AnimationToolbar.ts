@@ -200,6 +200,7 @@ class AnimationToolbar extends Atomic.UIWidget {
         var modelNode = this.asset.instantiateNode(this.scene, this.asset.name);
         this.modelNode = modelNode;
 
+		this.sceneEditor.registerNode(modelNode);
         this.sceneEditor.selection.addNode(modelNode, true);
         this.sceneEditor.sceneView3D.frameSelection();
 
