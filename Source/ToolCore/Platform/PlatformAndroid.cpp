@@ -76,6 +76,12 @@ void PlatformAndroid::HandleRefreshAndroidTargetsEvent(StringHash eventType, Var
         while (!reader.IsEof())
         {
             String line = reader.ReadLine();
+			
+#if DEBUG	
+			//DEBUG LINE READ
+			ATOMIC_LOGDEBUGF("LINE READ: %s", line.CString());
+#endif
+		
             if (line.StartsWith("id:"))
             {
                 //id: 33 or "Google Inc.:Google APIs (x86 System Image):19"
@@ -113,29 +119,27 @@ void PlatformAndroid::RefreshAndroidTargets()
     SubprocessSystem* subs = GetSubsystem<SubprocessSystem>();
 
     String androidCommand = GetAndroidCommand();
-
+	
+#if DEBUG
 	//DEBUG COMMAND
 	ATOMIC_LOGDEBUGF("Command: %s", androidCommand.CString());
+#endif
 
     Vector<String> args;
     PrependAndroidCommandArgs(args);
     args.Push("list");
-    args.Push("targets");
+    args.Push("target");
 
     targetOutput_.Clear();
     refreshAndroidTargetsProcess_ = subs->Launch(androidCommand, args);
 
     if (refreshAndroidTargetsProcess_.NotNull())
     {
-		//DEBUG REFRESH IS NULL?
-		ATOMIC_LOGDEBUGF("CMD LAUNCH NOT NULL");
         SubscribeToEvent(refreshAndroidTargetsProcess_, E_SUBPROCESSCOMPLETE, ATOMIC_HANDLER(PlatformAndroid, HandleRefreshAndroidTargetsEvent));
         SubscribeToEvent(refreshAndroidTargetsProcess_, E_SUBPROCESSOUTPUT, ATOMIC_HANDLER(PlatformAndroid, HandleRefreshAndroidTargetsEvent));
 
 
     }
-	//DEBUG FINISHED?
-	ATOMIC_LOGDEBUGF("CMD LAUNCH FINISH (UP NULL)???");
 }
 
 String PlatformAndroid::GetADBCommand() const

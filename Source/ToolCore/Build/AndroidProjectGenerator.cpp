@@ -133,9 +133,10 @@ bool AndroidProjectGenerator::GenerateLocalProperties( )
     ToolPrefs* prefs = tenv->GetToolPrefs();
     String sdkPath = prefs->GetAndroidSDKPath();
 	
-	//DEBUG PATH
-	ATOMIC_LOGDEBUGF("SDKPATH: %s", sdkPath.CString());
-	
+#if DEBUG
+	//DEBUG SDK PATH
+	ATOMIC_LOGDEBUGF("SDK PATH: %s", sdkPath.CString());
+#endif
     if (!sdkPath.Length())
     {
         errorText_ = "Invalid Android SDK Path, select the path in Build Settings.";
@@ -188,9 +189,11 @@ bool AndroidProjectGenerator::GenerateProjectProperties()
     AndroidBuildSettings* settings = project->GetBuildSettings()->GetAndroidBuildSettings();
 
     String apiString = settings->GetSDKVersion();
-	
+
+#if DEBUG
 	//DEBUG API LEVEL
-	ATOMIC_LOGDEBUGF("API: %s", apiString.CString());
+	ATOMIC_LOGDEBUGF("API LEVEL: %s", apiString.CString());
+#endif
 	
     if (!apiString.Length())
     {

@@ -93,11 +93,11 @@ class HierarchyFrameMenus extends Atomic.ScriptObject {
 
             } else if (refid == "duplicate_node") {
 
-                if (node instanceof Atomic.Scene)
-                    return;
+				if (node instanceof Atomic.Scene)
+					return;
 
-                var newnode = node.clone();
-                node.scene.sendEvent(Editor.SceneEditNodeCreatedEventData({ node: newnode }));
+				var newnode = node.clone();
+				node.scene.sendEvent(Editor.SceneEditNodeCreatedEventData({ node: newnode }));
 
                 return true;
             }

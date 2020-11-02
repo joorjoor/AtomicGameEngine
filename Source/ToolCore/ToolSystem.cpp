@@ -185,10 +185,20 @@ Platform* ToolSystem::GetPlatformByID(PlatformID platform)
 Platform* ToolSystem::GetPlatformByName(const String& name)
 {
     HashMap<unsigned, SharedPtr<Platform> >::Iterator itr = platforms_.Begin();
+
+#if DEBUG
+	//DEBUG API FOUND #1
+	ATOMIC_LOGDEBUGF("API FOUND #1: %s",(*itr).second_->GetName().CString());
+#endif
+	
     while (itr != platforms_.End())
     {
-		//DEBUG API LEVEL NAME
-		ATOMIC_LOGDEBUGF("%s",(*itr).second_->GetName().CString());
+		
+#if DEBUG
+		//DEBUG API FOUND #2
+		ATOMIC_LOGDEBUGF("API FOUND #2: %s",(*itr).second_->GetName().CString());
+#endif	
+	
         if ((*itr).second_->GetName().ToLower()== name.ToLower())
             return (*itr).second_;
         itr++;

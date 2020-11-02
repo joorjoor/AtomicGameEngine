@@ -370,7 +370,7 @@ class MainFrameMenu extends Atomic.ScriptObject {
                 "help api csharp" : "http://docs.atomicgameengine.com/csharp/AtomicEngine/",
                 "help api cplusplus" : "http://docs.atomicgameengine.com/cpp",
                 "help support" : "https://discourse.atomicgameengine.com/",
-                "help github" : "https://github.com/AtomicGameEngine/AtomicGameEngine/"
+                "help github" : "https://github.com/joorjoor/AtomicGameEngine/"
             };
 
             if (urlLookup[refid]) {

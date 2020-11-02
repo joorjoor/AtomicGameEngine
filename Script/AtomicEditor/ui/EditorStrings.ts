@@ -42,7 +42,8 @@ export enum StringID {
     ShortcutBuild,
     ShortcutBuildSettings,
     ShortcutFrameSelected,
-    ShortcutScreenshot
+    ShortcutScreenshot,
+	ShortcutDuplicateNode
 }
 
 export class EditorString {
@@ -98,6 +99,8 @@ export class EditorString {
 
         lookup[StringID.ShortcutBuild] = shortcutKey + "B";
         lookup[StringID.ShortcutScreenshot] = shortcutKey + "9";
+		
+        lookup[StringID.ShortcutDuplicateNode] = shortcutKey + "D";
 
     })();
 
