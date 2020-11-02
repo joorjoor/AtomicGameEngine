@@ -1,9 +1,9 @@
-[AtomicLogo]: https://github.com/AtomicGameEngine/AtomicGameEngine/wiki/images/repo/Atomic-Game-Engine-512.png
+[AtomicLogo]: https://github.com/joorjoor/AtomicGameEngine/wiki/images/repo/Atomic-Game-Engine-512.png
 ![alt text][AtomicLogo]
 
 #### Please note that Atomic is no longer actively being developed or maintained. Issues will not be attended to, though PRs that fix build issues may be considered. The remainder of this README has been kept in place for future reference.
 
-Website: <a href="https://github.com/AtomicGameEngine/AtomicGameEngine" target="_blank">https://github.com/AtomicGameEngine/AtomicGameEngine</a>
+Website: <a href="https://github.com/joorjoor/AtomicGameEngine" target="_blank">https://github.com/joorjoor/AtomicGameEngine</a>
 
 #### Why Atomic?
 
@@ -32,35 +32,34 @@ Atomic can also be used as a library in existing projects with a C++ SDK, C# NuG
 
 ### Build Instructions
 
-The Atomic Editor can be built for your platform using these <a href="https://github.com/AtomicGameEngine/AtomicGameEngine/wiki/Building-Atomic-from-Source" target="_blank">build instructions.</a>
+The Atomic Editor can be built for your platform using these <a href="https://github.com/joorjoor/AtomicGameEngine/wiki/Building-Atomic-from-Source" target="_blank">build instructions.</a>
 
 #### Atomic Resources
 
 ##### Community
 
-<a href="https://discourse.atomicgameengine.com/">Discourse</a>  
-<a href="https://gitter.im/AtomicGameEngine/AtomicGameEngine/">Gitter Chat</a>
+<a href="https://discord.gg/7yy3HayK/">Discord</a>  
 
 ##### Documentation
 
-<a href="https://github.com/AtomicGameEngine/AtomicGameEngine/wiki/">Wiki</a>  
+<a href="https://github.com/joorjoor/AtomicGameEngine/wiki/">Wiki</a>  
 
 ---
 
 #### Screenshots
 
 ##### Atomic Examples
-[DevSnapshot]: https://github.com/AtomicGameEngine/AtomicGameEngine/wiki/images/repo/DevSnapshot2116.png
+[DevSnapshot]: https://github.com/joorjoor/AtomicGameEngine/wiki/images/repo/DevSnapshot2116.png
 ![alt text][DevSnapshot]
 
 ##### Atomic on Mobile
-[ToonTown]: https://github.com/AtomicGameEngine/AtomicGameEngine/wiki/images/repo/ToonTownTouchUpdate.gif
+[ToonTown]: https://github.com/joorjoor/AtomicGameEngine/wiki/images/repo/ToonTownTouchUpdate.gif
 ![alt text][ToonTown]
 
 ##### Atomic Build Settings
-[AndroidBuildSettings]: https://github.com/AtomicGameEngine/AtomicGameEngine/wiki/images/repo/AndroidBuildSettings.png
+[AndroidBuildSettings]: https://github.com/joorjoor/AtomicGameEngine/wiki/images/repo/AndroidBuildSettings.png
 ![alt text][AndroidBuildSettings]
 
 #### Atomic History
 
-THUNDERBEAST GAMES began developing the Atomic Game Engine on November 12th, 2014 by forking Urho3D.  It was released under the permissive MIT license during GDC 2016.  Atomic is now being used in production environments, <a href="https://github.com/AtomicGameEngine/AtomicGameEngine/graphs/contributors" target="_blank">has 27 contributors</a>, and runs on Windows, macOS, Android, iOS, Linux, and WebGL!
+THUNDERBEAST GAMES began developing the Atomic Game Engine on November 12th, 2014 by forking Urho3D.  It was released under the permissive MIT license during GDC 2016.  Atomic is now being used in production environments, <a href="https://github.com/joorjoor/AtomicGameEngine/graphs/contributors" target="_blank">has 27 contributors</a>, and runs on Windows, macOS, Android, iOS, Linux, and WebGL!
