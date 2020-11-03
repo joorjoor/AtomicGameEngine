@@ -197,23 +197,6 @@ class Shortcuts extends Atomic.ScriptObject {
         else EditorUI.showEditorStatus ( "Error - could not take screenshot.");
     }
 
-	invokeDuplicateNode() {
-		var hierarchyFrame = EditorUI.getMainFrame().hierarchyFrame;
-		if (!hierarchyFrame)
-			return
-		
-		var scene = hierarchyFrame.scene;
-		var selectedId = Number(hierarchyFrame.hierList.rootList.selectedItemID);
-		var node = scene.getNode(selectedId);
-		
-		if (node instanceof Atomic.Scene)
-			return;
-
-		var newnode = node.clone();
-		node.scene.sendEvent(Editor.SceneEditNodeCreatedEventData({ node: newnode }));
-		
-	}
-
     handleKeyDown(ev: Atomic.KeyDownEvent) {
 
         // if the right mouse buttons isn't down
@@ -301,7 +284,7 @@ class Shortcuts extends Atomic.ScriptObject {
                 this.invokeScreenshot();
             }
 			else if (ev.key == Atomic.KEY_D) {
-				this.invokeDuplicateNode();
+				EditorUI.getMainFrame().hierarchyFrame.menu.duplicate_node(EditorUI.getMainFrame().hierarchyFrame.selectedNode);
 			}
 
         }

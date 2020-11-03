@@ -92,14 +92,7 @@ class HierarchyFrameMenus extends Atomic.ScriptObject {
                 return true;
 
             } else if (refid == "duplicate_node") {
-
-				if (node instanceof Atomic.Scene)
-					return;
-
-				var newnode = node.clone();
-				node.scene.sendEvent(Editor.SceneEditNodeCreatedEventData({ node: newnode }));
-
-                return true;
+				this.duplicate_node(node);
             }
 			
 			
@@ -148,6 +141,17 @@ class HierarchyFrameMenus extends Atomic.ScriptObject {
 
     }
 
+	duplicate_node(node: Atomic.Node)
+	{
+		if (node instanceof Atomic.Scene || !node)
+			return;
+		
+		var newnode = node.clone();
+		node.scene.sendEvent(Editor.SceneEditNodeCreatedEventData({ node: newnode }));
+
+		return true;
+	}
+
     createPluginItemSource(id: string, items: any): Atomic.UIMenuItemSource {
         return MenuItemSources.createSubMenuItemSource(this.contextMenuItemSource , id, items);
     }
@@ -180,7 +184,7 @@ var nodeGeneralContextItems = {
 		}
 	},
 	"-1": null,
-    "Duplicate": ["duplicate_node", undefined, ""],
+    "Duplicate": ["duplicate_node", StringID.ShortcutDuplicateNode, ""],
     "-2": null,
     "Delete": ["delete_node", undefined, ""]
 };
