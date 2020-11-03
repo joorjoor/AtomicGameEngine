@@ -40,6 +40,8 @@ elements
 		text-color #ffffff
 	Folder.icon: type: Image, bitmap: folder.png
 
+	Cube: type: Image, bitmap: cube.png
+
 	ImageCaption
 		background-color #c6c6c6
 	ImageFrame

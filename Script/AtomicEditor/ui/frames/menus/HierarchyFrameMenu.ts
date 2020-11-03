@@ -47,17 +47,16 @@ class HierarchyFrameMenus extends Atomic.ScriptObject {
 	handleNodeContextMenu(target: Atomic.UIWidget, refid: string, node: Atomic.Node, editor: Editor.SceneEditor3D): boolean {
 
         if (target.id == "node context menu" || target.id == "create popup") {
-	
-			//if (target.id == "node context menu")
-            //var node = <Atomic.Node>target["node"];
 
-            if (!node) {
+            if (!node) 
                 return false;
-            }
+            
+			if (target.id == "node context menu")
+				node = node.scene;
 
 
 			var child: Atomic.Node;
-
+			
             if (refid == "create_node") {
 
                 if (node) {
@@ -66,7 +65,19 @@ class HierarchyFrameMenus extends Atomic.ScriptObject {
                 }
 
             }
-            else if (refid == "create_light") {
+            else if (refid == "create_box" || refid == "create_cone" || refid == "create_cylinder" || refid == "create_plane" || refid == "create_sphere") {
+
+                if (node) {
+					
+					var object = refid.split('_')[1];
+					var cache = Atomic.getResourceCache();
+                    child = node.createChild(object);
+                    var staticModel = <Atomic.StaticModel>child.createComponent("StaticModel");
+					staticModel.setModel(<Atomic.Model>cache.getResource("Models", object));
+					
+                }
+
+            }else if (refid == "create_light") {
 
                 if (node) {
 
@@ -171,18 +182,18 @@ var createItems = {
     "Node": ["create_node", undefined, "Folder.icon"],
     "-1": null,
     "3D": {
-        "Light": ["create_light", undefined, "JavascriptBitmap"]
+        "Box": ["create_box", undefined, "Cube"],
+        "Cone": ["create_cone", undefined, "Cube"],
+        "Cylinder": ["create_cylinder", undefined, "Cube"],
+        "Plane": ["create_plane", undefined, "Cube"],
+        "Sphere": ["create_sphere", undefined, "Cube"],
+		"-1": null,
+        "Light": ["create_light", undefined, "cube"]
     }
 };
 
 var nodeGeneralContextItems = {
-	"Create": {
-		"Node": ["create_node", undefined, "Folder.icon"],
-		"-1": null,
-		"3D": {
-			"Light": ["create_light", undefined, "JavascriptBitmap"]
-		}
-	},
+	"Create": createItems,
 	"-1": null,
     "Duplicate": ["duplicate_node", StringID.ShortcutDuplicateNode, ""],
     "-2": null,

@@ -39,6 +39,8 @@ elements
 	Folder.selected
 		text-color #ffffff
 	Folder.icon: type: Image, bitmap: folder.png
+	
+	Cube: type: Image, bitmap: cube.png
 
 	ImageCaption
 		background-color #00000066
