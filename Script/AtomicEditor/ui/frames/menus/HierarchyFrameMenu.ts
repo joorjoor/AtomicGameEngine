@@ -51,7 +51,7 @@ class HierarchyFrameMenus extends Atomic.ScriptObject {
             if (!node) 
                 return false;
             
-			if (target.id == "node context menu")
+			if (target.id == "create popup")
 				node = node.scene;
 
 
@@ -65,19 +65,20 @@ class HierarchyFrameMenus extends Atomic.ScriptObject {
                 }
 
             }
-            else if (refid == "create_box" || refid == "create_cone" || refid == "create_cylinder" || refid == "create_plane" || refid == "create_sphere") {
+            else if (refid == "create_Box" || refid == "create_Cone" || refid == "create_Cylinder" || refid == "create_Plane" || refid == "create_Sphere") {
 
                 if (node) {
 					
 					var object = refid.split('_')[1];
 					var cache = Atomic.getResourceCache();
+					var model = <Atomic.Model>cache.getResource("Model", "Models/" + object + ".mdl");
                     child = node.createChild(object);
                     var staticModel = <Atomic.StaticModel>child.createComponent("StaticModel");
-					staticModel.setModel(<Atomic.Model>cache.getResource("Models", object));
+					staticModel.setModel(model);
 					
                 }
 
-            }else if (refid == "create_light") {
+            }else if (refid == "create_Light") {
 
                 if (node) {
 
@@ -182,13 +183,13 @@ var createItems = {
     "Node": ["create_node", undefined, "Folder.icon"],
     "-1": null,
     "3D": {
-        "Box": ["create_box", undefined, "Cube"],
-        "Cone": ["create_cone", undefined, "Cube"],
-        "Cylinder": ["create_cylinder", undefined, "Cube"],
-        "Plane": ["create_plane", undefined, "Cube"],
-        "Sphere": ["create_sphere", undefined, "Cube"],
+        "Box": ["create_Box", undefined, "Cube"],
+        "Cone": ["create_Cone", undefined, "Cube"],
+        "Cylinder": ["create_Cylinder", undefined, "Cube"],
+        "Plane": ["create_Plane", undefined, "Cube"],
+        "Sphere": ["create_Sphere", undefined, "Cube"],
 		"-1": null,
-        "Light": ["create_light", undefined, "cube"]
+        "Light": ["create_Light", undefined, "cube"]
     }
 };
 
