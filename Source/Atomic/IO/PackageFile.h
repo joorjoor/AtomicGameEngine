@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -45,11 +45,11 @@ class ATOMIC_API PackageFile : public Object
 
 public:
     /// Construct.
-    PackageFile(Context* context);
+    explicit PackageFile(Context* context);
     /// Construct and open.
     PackageFile(Context* context, const String& fileName, unsigned startOffset = 0);
     /// Destruct.
-    virtual ~PackageFile();
+    ~PackageFile() override;
 
     /// Open the package file. Return true if successful.
     bool Open(const String& fileName, unsigned startOffset = 0);
@@ -62,24 +62,30 @@ public:
     const HashMap<String, PackageEntry>& GetEntries() const { return entries_; }
 
     /// Return the package file name.
+    /// @property
     const String& GetName() const { return fileName_; }
 
     /// Return hash of the package file name.
     StringHash GetNameHash() const { return nameHash_; }
 
     /// Return number of files.
+    /// @property
     unsigned GetNumFiles() const { return entries_.Size(); }
 
     /// Return total size of the package file.
+    /// @property
     unsigned GetTotalSize() const { return totalSize_; }
 
     /// Return total data size from all the file entries in the package file.
+    /// @property
     unsigned GetTotalDataSize() const { return totalDataSize_; }
 
     /// Return checksum of the package file contents.
+    /// @property
     unsigned GetChecksum() const { return checksum_; }
 
     /// Return whether the files are compressed.
+    /// @property
     bool IsCompressed() const { return compressed_; }
 
     /// Return list of file names in the package.

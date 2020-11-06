@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,7 @@ struct FrameInfo;
 struct SourceBatch2D;
 
 /// 2D view batch info.
+/// @nobind
 struct ViewBatchInfo2D
 {
     /// Construct.
@@ -54,7 +55,7 @@ struct ViewBatchInfo2D
     unsigned batchUpdatedFrameNumber_;
     /// Source batches.
     PODVector<const SourceBatch2D*> sourceBatches_;
-    /// Batch count;
+    /// Batch count.
     unsigned batchCount_;
     /// Distances.
     PODVector<float> distances_;
@@ -83,7 +84,7 @@ public:
     void ProcessRayQuery(const RayOctreeQuery& query, PODVector<RayQueryResult>& results) override;
     /// Calculate distance and prepare batches for rendering. May be called from worker thread(s), possibly re-entrantly.
     void UpdateBatches(const FrameInfo& frame) override;
-    /// Prepare geometry for rendering. Called from a worker thread if possible (no GPU update.)
+    /// Prepare geometry for rendering. Called from a worker thread if possible (no GPU update).
     void UpdateGeometry(const FrameInfo& frame) override;
     /// Return whether a geometry update is necessary, and if it can happen in a worker thread.
     UpdateGeometryType GetUpdateGeometryType() override;
@@ -98,7 +99,7 @@ public:
     /// Check visibility.
     bool CheckVisibility(Drawable2D* drawable) const;
 
-    // ATOMIC BEGIN
+	// ATOMIC BEGIN
 
     /// Whether this renderer uses triangles (instead of quads)
     void SetUseTris(bool useTris) { useTris_ = useTris; }

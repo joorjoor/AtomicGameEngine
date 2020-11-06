@@ -44,8 +44,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 
-#include "../include/assimp/ai_assert.h"
-#include "../include/assimp/DefaultIOStream.h"
+#include <assimp/ai_assert.h>
+#include <assimp/DefaultIOStream.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 

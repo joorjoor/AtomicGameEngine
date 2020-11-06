@@ -200,28 +200,28 @@ class Shortcuts extends Atomic.ScriptObject {
     handleKeyDown(ev: Atomic.KeyDownEvent) {
 
         // if the right mouse buttons isn't down
-        if (!(ev.buttons & Atomic.MOUSEB_RIGHT)) {
+        if (!(ev.buttons & Atomic.MouseButton.MOUSEB_RIGHT)) {
 
             // TODO: Make these customizable
 
             if (!Atomic.ui.focusedWidget && !this.cmdKeyDown()) {
 
-                if (ev.key == Atomic.KEY_ESCAPE) {
+                if (ev.key == Atomic.Key.KEY_ESCAPE) {
 
                     if (Atomic.ui.consoleIsVisible) {
                         Atomic.ui.showConsole(false);
                     }
                 }
 
-                if (ev.key == Atomic.KEY_W) {
+                if (ev.key == Atomic.Key.KEY_W) {
                     this.invokeGizmoEditModeChanged(Editor.EditMode.EDIT_MOVE);
-                } else if (ev.key == Atomic.KEY_E) {
+                } else if (ev.key == Atomic.Key.KEY_E) {
                     this.invokeGizmoEditModeChanged(Editor.EditMode.EDIT_ROTATE);
-                } else if (ev.key == Atomic.KEY_R) {
+                } else if (ev.key == Atomic.Key.KEY_R) {
                     this.invokeGizmoEditModeChanged(Editor.EditMode.EDIT_SCALE);
-                } else if (ev.key == Atomic.KEY_X) {
+                } else if (ev.key == Atomic.Key.KEY_X) {
                     this.toggleGizmoAxisMode();
-                } else if (ev.key == Atomic.KEY_F) {
+                } else if (ev.key == Atomic.Key.KEY_F) {
                     this.invokeFrameSelected();
                 }
             }
@@ -234,9 +234,9 @@ class Shortcuts extends Atomic.ScriptObject {
 
         var cmdKey;
         if (Atomic.platform == "MacOSX") {
-            cmdKey = (Atomic.input.getKeyDown(Atomic.KEY_LGUI) || Atomic.input.getKeyDown(Atomic.KEY_RGUI));
+            cmdKey = (Atomic.input.getKeyDown(Atomic.Key.KEY_LGUI) || Atomic.input.getKeyDown(Atomic.Key.KEY_RGUI));
         } else {
-            cmdKey = (Atomic.input.getKeyDown(Atomic.KEY_LCTRL) || Atomic.input.getKeyDown(Atomic.KEY_RCTRL));
+            cmdKey = (Atomic.input.getKeyDown(Atomic.Key.KEY_LCTRL) || Atomic.input.getKeyDown(Atomic.Key.KEY_RCTRL));
         }
 
         return cmdKey;
@@ -250,40 +250,40 @@ class Shortcuts extends Atomic.ScriptObject {
         var cmdKey = this.cmdKeyDown();
 
         if ( !cmdKey && ev.qualifiers > 0 ) { // check the event, the qualifier may have been programmitically set
-            cmdKey = ( ev.qualifiers == Atomic.QUAL_CTRL );
+            cmdKey = ( ev.qualifiers == Atomic.Qualifier.QUAL_CTRL );
         }
 
         if (cmdKey) {
 
-            if (ev.key == Atomic.KEY_S) {
+            if (ev.key == Atomic.Key.KEY_S) {
                 this.invokeFileSave();
             }
-            else if (ev.key == Atomic.KEY_W) {
+            else if (ev.key == Atomic.Key.KEY_W) {
                 this.invokeFileClose();
             }
-            else if (ev.key == Atomic.KEY_I) {
+            else if (ev.key == Atomic.Key.KEY_I) {
                 this.invokeFormatCode();
             }
-            else if (ev.key == Atomic.KEY_P) {
+            else if (ev.key == Atomic.Key.KEY_P) {
                 this.invokePlayOrStopPlayer();
-            } else if (ev.key == Atomic.KEY_B) {
-                if (ev.qualifiers & Atomic.QUAL_SHIFT) {
+            } else if (ev.key == Atomic.Key.KEY_B) {
+                if (ev.qualifiers & Atomic.Qualifier.QUAL_SHIFT) {
                     EditorUI.getModelOps().showBuildSettings();
                 } else {
                     EditorUI.getModelOps().showBuild();
                 }
             }
-            else if (ev.key == Atomic.KEY_U) {
-                if (ev.qualifiers & Atomic.QUAL_SHIFT) {
+            else if (ev.key == Atomic.Key.KEY_U) {
+                if (ev.qualifiers & Atomic.Qualifier.QUAL_SHIFT) {
                     this.invokeStepPausedPlayer();
                 } else {
                     this.invokePauseOrResumePlayer();
                 }
             }
-            else if (ev.key == Atomic.KEY_9) {
+            else if (ev.key == Atomic.Key.KEY_9) {
                 this.invokeScreenshot();
             }
-			else if (ev.key == Atomic.KEY_D) {
+			else if (ev.key == Atomic.Key.KEY_D) {
 				EditorUI.getMainFrame().hierarchyFrame.menu.duplicate_node(EditorUI.getMainFrame().hierarchyFrame.selectedNode);
 			}
 

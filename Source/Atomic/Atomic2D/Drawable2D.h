@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -85,14 +85,18 @@ public:
     void OnSetEnabled() override;
 
     /// Set layer.
+    /// @property
     void SetLayer(int layer);
     /// Set order in layer.
+    /// @property
     void SetOrderInLayer(int orderInLayer);
 
     /// Return layer.
+    /// @property
     int GetLayer() const { return layer_; }
 
     /// Return order in layer.
+    /// @property
     int GetOrderInLayer() const { return orderInLayer_; }
 
     /// Return all source batches (called by Renderer2D).

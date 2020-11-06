@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -37,11 +37,11 @@
 #include "../Scene/SceneEvents.h"
 #include "../Scene/SmoothedTransform.h"
 
-// ATOMIC BEGIN
+//ATOMIC BEGIN
 #include <Bullet/src/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include <Bullet/src/BulletDynamics/Dynamics/btRigidBody.h>
 #include <Bullet/src/BulletCollision/CollisionShapes/btCompoundShape.h>
-// ATOMIC END
+//ATOMIC END
 
 namespace Atomic
 {
@@ -58,7 +58,7 @@ static const char* collisionEventModeNames[] =
     "Never",
     "When Active",
     "Always",
-    0
+    nullptr
 };
 
 extern const char* PHYSICS_CATEGORY;
@@ -130,15 +130,6 @@ void RigidBody::RegisterObject(Context* context)
     ATOMIC_ACCESSOR_ATTRIBUTE("Gravity Override", GetGravityOverride, SetGravityOverride, Vector3, Vector3::ZERO, AM_DEFAULT);
 }
 
-void RigidBody::OnSetAttribute(const AttributeInfo& attr, const Variant& src)
-{
-    Serializable::OnSetAttribute(attr, src);
-
-    // Change of any non-accessor attribute requires the rigid body to be re-added to the physics world
-    if (!attr.accessor_)
-        readdBody_ = true;
-}
-
 void RigidBody::ApplyAttributes()
 {
     if (readdBody_)
@@ -172,9 +163,12 @@ void RigidBody::getWorldTransform(btTransform& worldTrans) const
 
 void RigidBody::setWorldTransform(const btTransform& worldTrans)
 {
+    if (!body_->isActive()) // Fix #2491
+        return;
+
     Quaternion newWorldRotation = ToQuaternion(worldTrans.getRotation());
     Vector3 newWorldPosition = ToVector3(worldTrans.getOrigin()) - newWorldRotation * centerOfMass_;
-    RigidBody* parentRigidBody = 0;
+    RigidBody* parentRigidBody = nullptr;
 
     // It is possible that the RigidBody component has been kept alive via a shared pointer,
     // while its scene node has already been destroyed
@@ -215,7 +209,7 @@ void RigidBody::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
         world->debugDrawObject(body_->getWorldTransform(), shiftedCompoundShape_.Get(), IsActive() ? btVector3(1.0f, 1.0f, 1.0f) :
             btVector3(0.0f, 1.0f, 0.0f));
 
-        physicsWorld_->SetDebugRenderer(0);
+        physicsWorld_->SetDebugRenderer(nullptr);
     }
 }
 
@@ -272,7 +266,7 @@ void RigidBody::SetRotation(const Quaternion& rotation)
                 interpTrans.setOrigin(worldTrans.getOrigin());
             body_->setInterpolationWorldTransform(interpTrans);
         }
-        
+
         body_->updateInertiaTensor();
 
         Activate();
@@ -754,7 +748,7 @@ void RigidBody::UpdateMass()
     principal.setOrigin(btVector3(0.0f, 0.0f, 0.0f));
 
     // Calculate center of mass shift from all the collision shapes
-    unsigned numShapes = (unsigned)compoundShape_->getNumChildShapes();
+    auto numShapes = (unsigned)compoundShape_->getNumChildShapes();
     if (numShapes)
     {
         PODVector<float> masses(numShapes);

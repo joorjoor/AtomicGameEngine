@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,7 @@ public:
     static void RegisterObject(Context* context);
 
     /// Set vertex count.
+    /// @property
     void SetVertexCount(unsigned count);
     /// Set vertex.
     void SetVertex(unsigned index, const Vector2& vertex);
@@ -48,6 +49,7 @@ public:
     void SetVertices(const PODVector<Vector2>& vertices);
 
     /// Return vertex count.
+    /// @property
     unsigned GetVertexCount() const { return vertices_.Size(); }
 
     /// Return vertex.

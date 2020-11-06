@@ -55,8 +55,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include "Exceptional.h"
-#include "../include/assimp/IOStream.hpp"
-#include "../include/assimp/types.h"
+#include <assimp/IOStream.hpp>
+#include <assimp/types.h>
 #include "MemoryIOWrapper.h"
 #include "irrXMLWrapper.h"
 #include "../contrib/utf8cpp/source/utf8.h"

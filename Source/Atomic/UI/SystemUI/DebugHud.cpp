@@ -265,6 +265,7 @@ void DebugHud::RenderUi(StringHash eventType, VariantMap& eventData)
         unsigned editorPrimitives = graphics->GetNumPrimitives() - renderer->GetNumPrimitives();
 
         ImGui::SetNextWindowPos(ImVec2(posStats_.x_, posStats_.y_));
+		ImGui::SetNextWindowSize(ImVec2(200, 200));
         if (ImGui::Begin("DebugHud Stats", 0, ImVec2(0, 0), 0,
                          backgroundTextWindowFlags))
         {

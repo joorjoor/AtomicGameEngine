@@ -63,7 +63,11 @@ enum VariantType
     VAR_RECT,
     VAR_INTVECTOR3,
     VAR_INT64,
+	// Add new types here
+    VAR_CUSTOM_HEAP,
+    VAR_CUSTOM_STACK,
     MAX_VAR_TYPES
+
 };
 
 /// Union for the possible variant values. Also stores non-POD objects such as String and math objects (excluding Matrix) which must not exceed 16 bytes in size (or 32 bytes in a 64-bit build.) Objects exceeding the limit are allocated on the heap and pointed to by _ptr.

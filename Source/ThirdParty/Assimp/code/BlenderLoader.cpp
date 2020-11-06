@@ -54,8 +54,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "BlenderModifier.h"
 #include "BlenderBMesh.h"
 #include "StringUtils.h"
-#include "../include/assimp/scene.h"
-#include "../include/assimp/importerdesc.h"
+#include <assimp/scene.h>
+#include <assimp/importerdesc.h>
 
 #include "StringComparison.h"
 #include "StreamReader.h"
@@ -67,7 +67,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // zlib is needed for compressed blend files
 #ifndef ASSIMP_BUILD_NO_COMPRESSED_BLEND
 #   ifdef ASSIMP_BUILD_NO_OWN_ZLIB
-#       include "../contrib/zlib/zlib.h"
+#       include <zlib.h>
 #   else
 #       include "../contrib/zlib/zlib.h"
 #   endif

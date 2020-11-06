@@ -436,7 +436,7 @@ class HierarchyFrame extends Atomic.UIWidget {
             }
 
             // node deletion
-            if (data.key == Atomic.KEY_DELETE || data.key == Atomic.KEY_BACKSPACE) {
+            if (data.key == Atomic.Key.KEY_DELETE || data.key == Atomic.Key.KEY_BACKSPACE) {
                 this.sceneEditor.selection.delete();
             }
 

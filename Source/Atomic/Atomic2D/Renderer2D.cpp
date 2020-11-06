@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -150,7 +150,6 @@ void Renderer2D::UpdateGeometry(const FrameInfo& frame)
             // ATOMIC BEGIN
             unsigned quadCount =  useTris_ ? indexCount/3 : indexCount / 6;
             // ATOMIC END
-			
             if (largeIndices)
             {
                 auto* dest = reinterpret_cast<unsigned*>(buffer);

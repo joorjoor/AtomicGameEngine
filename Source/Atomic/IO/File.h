@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
+
+/// \file
 
 #pragma once
 
@@ -66,26 +68,23 @@ class ATOMIC_API File : public Object, public AbstractFile
 
 public:
     /// Construct.
-    File(Context* context);
+    explicit File(Context* context);
     /// Construct and open a filesystem file.
     File(Context* context, const String& fileName, FileMode mode = FILE_READ);
     /// Construct and open from a package file.
     File(Context* context, PackageFile* package, const String& fileName);
     /// Destruct. Close the file if open.
-    virtual ~File();
+    ~File() override;
 
     /// Read bytes from the file. Return number of bytes actually read.
-    virtual unsigned Read(void* dest, unsigned size);
+    unsigned Read(void* dest, unsigned size) override;
     /// Set position from the beginning of the file.
-    virtual unsigned Seek(unsigned position);
+    unsigned Seek(unsigned position) override;
     /// Write bytes to the file. Return number of bytes actually written.
-    virtual unsigned Write(const void* data, unsigned size);
-
-    /// Return the file name.
-    virtual const String& GetName() const { return fileName_; }
+    unsigned Write(const void* data, unsigned size) override;
 
     /// Return a checksum of the file contents using the SDBM hash algorithm.
-    virtual unsigned GetChecksum();
+    unsigned GetChecksum() override;
 
     /// Open a filesystem file. Return true if successful.
     bool Open(const String& fileName, FileMode mode = FILE_READ);
@@ -95,19 +94,20 @@ public:
     void Close();
     /// Flush any buffered output to the file.
     void Flush();
-    /// Change the file name. Used by the resource system.
-    void SetName(const String& name);
 
     /// Return the open mode.
+    /// @property
     FileMode GetMode() const { return mode_; }
 
     /// Return whether is open.
+    /// @property
     bool IsOpen() const;
 
     /// Return the file handle.
     void* GetHandle() const { return handle_; }
 
     /// Return whether the file originates from a package.
+    /// @property
     bool IsPackaged() const { return offset_ != 0; }
 
     // ATOMIC BEGIN
@@ -135,8 +135,6 @@ private:
     /// Seek in file internally using either C standard IO functions or SDL RWops for Android asset files.
     void SeekInternal(unsigned newPosition);
 
-    /// File name.
-    String fileName_;
     /// Open mode.
     FileMode mode_;
     /// File handle.
@@ -163,8 +161,8 @@ private:
     bool readSyncNeeded_;
     /// Synchronization needed before write -flag.
     bool writeSyncNeeded_;
-
-    // ATOMIC BEGIN
+	
+	// ATOMIC BEGIN
 
     /// Full path to file
     String fullPath_;

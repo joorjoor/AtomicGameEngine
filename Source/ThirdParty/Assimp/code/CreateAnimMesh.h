@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef INCLUDED_AI_CREATE_ANIM_MESH_H
 #define INCLUDED_AI_CREATE_ANIM_MESH_H
 
-#include "../include/assimp/mesh.h"
+#include <assimp/mesh.h>
 
 namespace Assimp    {
 

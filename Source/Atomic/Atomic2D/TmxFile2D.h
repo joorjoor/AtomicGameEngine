@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -100,7 +100,7 @@ class TmxTileLayer2D : public TmxLayer2D
 	
 public:
     explicit TmxTileLayer2D(TmxFile2D* tmxFile);
-	
+
     /// Load from XML element.
     bool Load(const XMLElement& element, const TileMapInfo2D& info);
     /// Return tile.
@@ -122,11 +122,12 @@ public:
 // ATOMIC BEGIN
     /// Load from XML element.
     bool Load(const XMLElement& element, const TileMapInfo2D& info, bool local = false);
-// ATOMIC END
 
-    /// Store object.
-    void StoreObject(XMLElement objectElem, SharedPtr<TileMapObject2D> object, const TileMapInfo2D& info,
-                     bool isTile = false, bool local = false);
+
+	/// Store object.
+    void StoreObject(const XMLElement& objectElem, const SharedPtr<TileMapObject2D>& object, const TileMapInfo2D& info, bool isTile = false, bool local = false);
+
+// ATOMIC END
 
     /// Return number of objects.
     unsigned GetNumObjects() const { return objects_.Size(); }
@@ -214,9 +215,11 @@ public:
     const TmxLayer2D* GetLayer(unsigned index) const;
 
     /// Set texture edge offset for all sprites, in pixels.
+    /// @property{set_edgeOffset}
     void SetSpriteTextureEdgeOffset(float offset);
 
     /// Return texture edge offset, in pixels.
+    /// @property{get_edgeOffset}
     float GetSpriteTextureEdgeOffset() const { return edgeOffset_; }
 
     // ATOMIC BEGIN
@@ -224,7 +227,6 @@ public:
     TmxObjectGroup2D* GetTileObjectGroup(int gid) const;
 
     // ATOMIC END
-
 
 private:
     /// Load TSX file.

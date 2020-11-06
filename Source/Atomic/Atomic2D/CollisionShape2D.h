@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
 #pragma once
 
 #include "../Scene/Component.h"
-#include "../Math/BoundingBox.h"
 
 #include <Box2D/Box2D.h>
 
@@ -49,18 +48,25 @@ public:
     void OnSetEnabled() override;
 
     /// Set trigger.
+    /// @property
     void SetTrigger(bool trigger);
     /// Set filter category bits.
+    /// @property
     void SetCategoryBits(int categoryBits);
     /// Set filter mask bits.
+    /// @property
     void SetMaskBits(int maskBits);
     /// Set filter group index.
+    /// @property
     void SetGroupIndex(int groupIndex);
     /// Set density.
+    /// @property
     void SetDensity(float density);
     /// Set friction.
+    /// @property
     void SetFriction(float friction);
-    /// Set restitution .
+    /// Set restitution.
+    /// @property
     void SetRestitution(float restitution);
 
     /// Create fixture.
@@ -69,31 +75,41 @@ public:
     void ReleaseFixture();
 
     /// Return trigger.
+    /// @property
     bool IsTrigger() const { return fixtureDef_.isSensor; }
 
     /// Return filter category bits.
+    /// @property
     int GetCategoryBits() const { return fixtureDef_.filter.categoryBits; }
 
     /// Return filter mask bits.
+    /// @property
     int GetMaskBits() const { return fixtureDef_.filter.maskBits; }
 
     /// Return filter group index.
+    /// @property
     int GetGroupIndex() const { return fixtureDef_.filter.groupIndex; }
 
     /// Return density.
+    /// @property
     float GetDensity() const { return fixtureDef_.density; }
 
     /// Return friction.
+    /// @property
     float GetFriction() const { return fixtureDef_.friction; }
 
     /// Return restitution.
+    /// @property
     float GetRestitution() const { return fixtureDef_.restitution; }
 
     /// Return mass.
+    /// @property
     float GetMass() const;
     /// Return inertia.
+    /// @property
     float GetInertia() const;
     /// Return mass center.
+    /// @property
     Vector2 GetMassCenter() const;
 
     /// Return fixture.
@@ -106,7 +122,7 @@ protected:
     void OnMarkedDirty(Node* node) override;
     /// Apply Node world scale.
     virtual void ApplyNodeWorldScale() = 0;
-	
+
     /// Rigid body.
     WeakPtr<RigidBody2D> rigidBody_;
     /// Fixture def.

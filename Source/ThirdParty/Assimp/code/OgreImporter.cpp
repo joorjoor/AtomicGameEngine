@@ -44,8 +44,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "OgreImporter.h"
 #include "OgreBinarySerializer.h"
 #include "OgreXmlSerializer.h"
-#include "../include/assimp/Importer.hpp"
-#include "../include/assimp/importerdesc.h"
+#include <assimp/Importer.hpp>
+#include <assimp/importerdesc.h>
 #include <memory>
 
 static const aiImporterDesc desc = {

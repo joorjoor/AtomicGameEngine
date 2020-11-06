@@ -1,0 +1,17 @@
+Source->Atomic:
+
+- Atomic2D
+- Physics
+- Input
+- IO
+
+~ Container
+
+Source->ThirdParty:
+
+- Assimp
+- Bullet
+- SDL
+
+- Complete replacement, with the addition of existing edits
+~ Some edits, adding files

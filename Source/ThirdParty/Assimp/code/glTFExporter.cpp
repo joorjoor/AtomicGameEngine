@@ -49,12 +49,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "SplitLargeMeshes.h"
 
-#include "../include/assimp/SceneCombiner.h"
-#include "../include/assimp/version.h"
-#include "../include/assimp/IOSystem.hpp"
-#include "../include/assimp/Exporter.hpp"
-#include "../include/assimp/material.h"
-#include "../include/assimp/scene.h"
+#include <assimp/SceneCombiner.h>
+#include <assimp/version.h>
+#include <assimp/IOSystem.hpp>
+#include <assimp/Exporter.hpp>
+#include <assimp/material.h>
+#include <assimp/scene.h>
 
 // Header files, standard library.
 #include <memory>

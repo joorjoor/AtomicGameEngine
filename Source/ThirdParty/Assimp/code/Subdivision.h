@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_SUBDISIVION_H_INC
 
 #include <cstddef>
-#include "../include/assimp/types.h"
+#include <assimp/types.h>
 
 struct aiMesh;
 

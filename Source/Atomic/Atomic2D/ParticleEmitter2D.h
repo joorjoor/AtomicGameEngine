@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -89,22 +89,29 @@ public:
     void OnSetEnabled() override;
 
     /// Set particle effect.
+    /// @property
     void SetEffect(ParticleEffect2D* effect);
     /// Set sprite.
+    /// @property
     void SetSprite(Sprite2D* sprite);
     /// Set blend mode.
+    /// @property
     void SetBlendMode(BlendMode blendMode);
     /// Set max particles.
     void SetMaxParticles(unsigned maxParticles);
     /// Set whether should be emitting. If the state was changed, also resets the emission period timer.
+    /// @property
     void SetEmitting(bool enable);
 
     /// Return particle effect.
+    /// @property
     ParticleEffect2D* GetEffect() const;
     /// Return sprite.
+    /// @property
     Sprite2D* GetSprite() const;
 
     /// Return blend mode.
+    /// @property
     BlendMode GetBlendMode() const { return blendMode_; }
 
     /// Return max particles.
@@ -119,6 +126,7 @@ public:
     /// Return sprite attribute.
     ResourceRef GetSpriteAttr() const;
     /// Return whether is currently emitting.
+    /// @property
     bool IsEmitting() const { return emitting_; }
 
 private:
@@ -151,7 +159,7 @@ private:
     unsigned numParticles_;
     /// Emission time.
     float emissionTime_;
-    /// Emit particle time
+    /// Emit particle time.
     float emitParticleTime_;
     /// Currently emitting flag.
     bool emitting_;

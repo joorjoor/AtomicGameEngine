@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -38,8 +38,10 @@ public:
     static void RegisterObject(Context* context);
 
     /// Set border as number of pixels from each side.
+    /// @property
     void SetBorder(const IntRect& border);
     /// Get border as number of pixels from each side.
+    /// @property
     const IntRect& GetBorder() const { return border_; }
 
 protected:

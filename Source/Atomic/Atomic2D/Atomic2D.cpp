@@ -1,4 +1,4 @@
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -112,8 +112,8 @@ void RegisterAtomic2DLibrary(Context* context)
     ConstraintRope2D::RegisterObject(context);
     ConstraintWeld2D::RegisterObject(context);
     ConstraintWheel2D::RegisterObject(context);
-
-// ATOMIC BEGIN
+	
+	// ATOMIC BEGIN
 
     Light2DGroup::RegisterObject(context);
     Light2D::RegisterObject(context);
@@ -121,7 +121,8 @@ void RegisterAtomic2DLibrary(Context* context)
     PositionalLight2D::RegisterObject(context);
     PointLight2D::RegisterObject(context);
 
-// ATOMIC END
+	// ATOMIC END
+	
 }
 
 }

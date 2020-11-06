@@ -52,7 +52,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "AMFImporter_Macro.hpp"
 
 #include "fast_atof.h"
-#include "../include/assimp/DefaultIOSystem.h"
+#include <assimp/DefaultIOSystem.h>
 
 // Header files, stdlib.
 #include <memory>

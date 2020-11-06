@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -52,12 +52,14 @@ public:
     bool EndLoad() override;
 
     /// Set texture.
+    /// @property
     void SetTexture(Texture2D* texture);
     /// Define sprite.
     void DefineSprite(const String& name, const IntRect& rectangle, const Vector2& hotSpot = Vector2(0.5f, 0.5f),
         const IntVector2& offset = IntVector2::ZERO);
 
     /// Return texture.
+    /// @property
     Texture2D* GetTexture() const { return texture_; }
     /// Return sprite.
     Sprite2D* GetSprite(const String& name) const;

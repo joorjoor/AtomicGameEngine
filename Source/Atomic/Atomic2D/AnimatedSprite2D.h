@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,9 @@ struct spAnimationStateData;
 struct spSkeleton;
 #endif
 
+namespace Atomic
+{
+
 /// Loop mode.
 enum LoopMode2D
 {
@@ -42,9 +45,6 @@ enum LoopMode2D
     /// Force clamped.
     LM_FORCE_CLAMPED
 };
-
-namespace Atomic
-{
 
 namespace Spriter
 {
@@ -70,25 +70,34 @@ public:
     void OnSetEnabled() override;
 
     /// Set animation set.
+    /// @property
     void SetAnimationSet(AnimationSet2D* animationSet);
     /// Set entity name (skin name for spine, entity name for spriter).
+    /// @property
     void SetEntity(const String& entity);
     /// Set animation by name and loop mode.
     void SetAnimation(const String& name, LoopMode2D loopMode = LM_DEFAULT);
     /// Set loop mode.
+    /// @property
     void SetLoopMode(LoopMode2D loopMode);
     /// Set speed.
+    /// @property
     void SetSpeed(float speed);
 
     /// Return animation.
+    /// @property
     AnimationSet2D* GetAnimationSet() const;
     /// Return entity name.
+    /// @property
     const String& GetEntity() const { return entity_; }
     /// Return animation name.
+    /// @property
     const String& GetAnimation() const { return animationName_; }
     /// Return loop mode.
+    /// @property
     LoopMode2D GetLoopMode() const { return loopMode_; }
     /// Return speed.
+    /// @property
     float GetSpeed() const { return speed_; }
 
     /// Set animation set attribute.
@@ -96,6 +105,7 @@ public:
     /// Return animation set attribute.
     ResourceRef GetAnimationSetAttr() const;
     /// Set animation by name.
+    /// @property{set_animation}
     void SetAnimationAttr(const String& name);
 
 protected:
@@ -112,7 +122,7 @@ protected:
     void SetSpineAnimation();
     /// Update spine animation.
     void UpdateSpineAnimation(float timeStep);
-    /// Update vertices for spine animation;
+    /// Update vertices for spine animation.
     void UpdateSourceBatchesSpine();
 #endif
     /// Handle set spriter animation.

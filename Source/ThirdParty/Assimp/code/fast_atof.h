@@ -21,10 +21,10 @@
 #include <limits>
 #include <stdint.h>
 #include <stdexcept>
-#include "../include/assimp/defs.h"
+#include <assimp/defs.h>
 
 #include "StringComparison.h"
-#include "../include/assimp/DefaultLogger.hpp"
+#include <assimp/DefaultLogger.hpp>
 
 
 #ifdef _MSC_VER

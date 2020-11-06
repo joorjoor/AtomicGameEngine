@@ -54,11 +54,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FBXImporter.h"
 #include "StringComparison.h"
 
-#include "../include/assimp/scene.h"
-#include <boost/foreach.hpp>
-#include <boost/scoped_array.hpp>
-#include <boost/tuple/tuple.hpp>
+#include <assimp/scene.h>
 
+#include <tuple>
 #include <memory>
 #include <iterator>
 #include <vector>

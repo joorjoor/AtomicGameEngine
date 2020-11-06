@@ -47,8 +47,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef ASSIMP_BUILD_NO_GLTF_IMPORTER
 
-#include "../include/assimp/types.h"
-#include "../include/assimp/material.h"
+#include <assimp/types.h>
+#include <assimp/material.h>
 
 #include <sstream>
 #include <vector>

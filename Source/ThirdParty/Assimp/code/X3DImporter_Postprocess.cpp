@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "X3DImporter.hpp"
 
 // Header files, Assimp.
-#include "../include/assimp/ai_assert.h"
+#include <assimp/ai_assert.h>
 #include "StandardShapes.h"
 #include "StringUtils.h"
 

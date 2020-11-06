@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "AMFImporter.hpp"
 
 // Header files, Assimp.
-#include "../include/assimp/SceneCombiner.h"
+#include <assimp/SceneCombiner.h>
 #include "StandardShapes.h"
 #include "StringUtils.h"
 

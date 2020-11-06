@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,13 +30,14 @@ namespace Atomic
 {
 
 /// Abstract stream for reading.
+/// @fakeref
 class ATOMIC_API Deserializer
 {
 public:
     /// Construct with zero size.
     Deserializer();
     /// Construct with defined size.
-    Deserializer(unsigned size);
+    explicit Deserializer(unsigned size);
     /// Destruct.
     virtual ~Deserializer();
 
@@ -45,20 +46,25 @@ public:
     /// Set position from the beginning of the stream. Return actual new position.
     virtual unsigned Seek(unsigned position) = 0;
     /// Return name of the stream.
+    /// @property
     virtual const String& GetName() const;
     /// Return a checksum if applicable.
+    /// @property
     virtual unsigned GetChecksum();
     /// Return whether the end of stream has been reached.
+    /// @property
     virtual bool IsEof() const { return position_ >= size_; }
 
     /// Set position relative to current position. Return actual new position.
     unsigned SeekRelative(int delta);
     /// Return current position.
+    /// @property
     unsigned GetPosition() const { return position_; }
     /// Return current position.
     unsigned Tell() const { return position_; }
 
     /// Return size.
+    /// @property
     unsigned GetSize() const { return size_; }
 
     /// Read a 64-bit integer.

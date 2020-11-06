@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -255,7 +255,7 @@ bool AnimationSet2D::EndLoadSpine()
 
     if (numAtlasPages > 1)
     {
-        ATOMIC_LOGERROR("Only one page is supported in Atomic");
+        ATOMIC_LOGERROR("Only one page is supported in Urho3D");
         return false;
     }
 

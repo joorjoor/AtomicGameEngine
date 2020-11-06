@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,16 +41,20 @@ public:
     static void RegisterObject(Context* context);
 
     /// Set vertex 1.
+    /// @property
     void SetVertex1(const Vector2& vertex);
     /// Set vertex 2.
+    /// @property
     void SetVertex2(const Vector2& vertex);
     /// Set vertices.
     void SetVertices(const Vector2& vertex1, const Vector2& vertex2);
 
     /// Return vertex 1.
+    /// @property
     const Vector2& GetVertex1() const { return vertex1_; }
 
     /// Return vertex 2.
+    /// @property
     const Vector2& GetVertex2() const { return vertex2_; }
 
 private:

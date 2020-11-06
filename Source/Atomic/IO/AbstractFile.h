@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,15 +29,25 @@ namespace Atomic
 {
 
 /// A common root class for objects that implement both Serializer and Deserializer.
+/// @fakeref
 class ATOMIC_API AbstractFile : public Deserializer, public Serializer
 {
 public:
     /// Construct.
     AbstractFile() : Deserializer() { }
     /// Construct.
-    AbstractFile(unsigned int size) : Deserializer(size) { }
+    explicit AbstractFile(unsigned int size) : Deserializer(size) { }
     /// Destruct.
-    virtual ~AbstractFile() { }
+    ~AbstractFile() override = default;
+    /// Change the file name. Used by the resource system.
+    /// @property
+    virtual void SetName(const String& name) { name_ = name; }
+    /// Return the file name.
+    const String& GetName() const override { return name_; }
+
+protected:
+    /// File name.
+    String name_;
 };
 
-};
+}

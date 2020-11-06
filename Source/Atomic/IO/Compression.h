@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,11 @@
 
 #pragma once
 
-#include "Atomic/Atomic.h"
+#ifdef ATOMIC_IS_BUILDING
+#include "Atomic.h"
+#else
+#include <Atomic/Atomic.h>
+#endif
 
 namespace Atomic
 {

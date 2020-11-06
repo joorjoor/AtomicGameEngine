@@ -41,8 +41,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Actually just a dummy, used by the compiler to build the precompiled header.
 
-#include "../include/assimp/version.h"
-#include "../include/assimp/scene.h"
+#include <assimp/version.h>
+#include <assimp/scene.h>
 #include "ScenePrivate.h"
 
 static const unsigned int MajorVersion = 4;
@@ -104,7 +104,7 @@ ASSIMP_API unsigned int aiGetCompileFlags ()    {
 }
 
 // include current build revision, which is even updated from time to time -- :-)
-#include  "../revision.h"
+#include "revision.h"
 
 // ------------------------------------------------------------------------------------------------
 ASSIMP_API unsigned int aiGetVersionRevision() {

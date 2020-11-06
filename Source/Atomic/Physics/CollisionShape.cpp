@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -53,9 +53,11 @@
 #include <Bullet/src/BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h>
 #include <Bullet/src/BulletCollision/CollisionShapes/btSphereShape.h>
 #include <Bullet/src/BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h>
-#include <Bullet/src/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include <Bullet/src/BulletCollision/CollisionShapes/btStaticPlaneShape.h>
+#include <Bullet/src/BulletCollision/Gimpact/btGImpactShape.h>
+#include <Bullet/src/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 // ATOMIC END
+
 #include <StanHull/hull.h>
 
 namespace Atomic
@@ -78,7 +80,8 @@ static const char* typeNames[] =
     "TriangleMesh",
     "ConvexHull",
     "Terrain",
-    0
+    "GImpactMesh",
+    nullptr
 };
 
 extern const char* PHYSICS_CATEGORY;
@@ -140,7 +143,7 @@ public:
         useQuantize_ = totalTriangles <= QUANTIZE_MAX_TRIANGLES;
     }
 
-    TriangleMeshInterface(CustomGeometry* custom) :
+    explicit TriangleMeshInterface(CustomGeometry* custom) :
         btTriangleIndexVertexArray()
     {
         const Vector<PODVector<CustomGeometryVertex> >& srcVertices = custom->GetVertices();
@@ -158,8 +161,8 @@ public:
             dataArrays_.Push(vertexData);
             dataArrays_.Push(indexData);
 
-            Vector3* destVertex = reinterpret_cast<Vector3*>(&vertexData[0]);
-            unsigned* destIndex = reinterpret_cast<unsigned*>(&indexData[0]);
+            auto* destVertex = reinterpret_cast<Vector3*>(&vertexData[0]);
+            auto* destIndex = reinterpret_cast<unsigned*>(&indexData[0]);
             unsigned k = 0;
 
             for (unsigned i = 0; i < srcVertices.Size(); ++i)
@@ -192,7 +195,7 @@ public:
     bool useQuantize_;
 
 private:
-    /// Shared vertex/index data used in the collision
+    /// Shared vertex/index data used in the collision.
     Vector<SharedArrayPtr<unsigned char> > dataArrays_;
 };
 
@@ -216,6 +219,16 @@ TriangleMeshData::TriangleMeshData(CustomGeometry* custom)
 
 TriangleMeshData::~TriangleMeshData()
 {
+}
+
+GImpactMeshData::GImpactMeshData(Model* model, unsigned lodLevel)
+{
+    meshInterface_ = new TriangleMeshInterface(model, lodLevel);
+}
+
+GImpactMeshData::GImpactMeshData(CustomGeometry* custom)
+{
+    meshInterface_ = new TriangleMeshInterface(custom);
 }
 
 ConvexData::ConvexData(Model* model, unsigned lodLevel)
@@ -308,10 +321,6 @@ void ConvexData::BuildHull(const PODVector<Vector3>& vertices)
     }
 }
 
-ConvexData::~ConvexData()
-{
-}
-
 HeightfieldData::HeightfieldData(Terrain* terrain, unsigned lodLevel) :
     heightData_(terrain->GetHeightData()),
     spacing_(terrain->GetSpacing()),
@@ -332,8 +341,8 @@ HeightfieldData::HeightfieldData(Terrain* terrain, unsigned lodLevel) :
                 skip *= 2;
                 lodSpacing.x_ *= 2.0f;
                 lodSpacing.z_ *= 2.0f;
-                int rX = lodSize.x_ & 1;
-                int rY = lodSize.y_ & 1;
+                int rX = lodSize.x_ & 1u;
+                int rY = lodSize.y_ & 1u;
                 lodSize.x_ >>= 1;
                 lodSize.y_ >>= 1;
                 lodSize.x_ += rX;
@@ -354,7 +363,7 @@ HeightfieldData::HeightfieldData(Terrain* terrain, unsigned lodLevel) :
             heightData_ = lodHeightData;
         }
 
-        unsigned points = (unsigned)(size_.x_ * size_.y_);
+        auto points = (unsigned)(size_.x_ * size_.y_);
         float* data = heightData_.Get();
 
         minHeight_ = maxHeight_ = data[0];
@@ -364,10 +373,6 @@ HeightfieldData::HeightfieldData(Terrain* terrain, unsigned lodLevel) :
             maxHeight_ = Max(maxHeight_, data[i]);
         }
     }
-}
-
-HeightfieldData::~HeightfieldData()
-{
 }
 
 bool HasDynamicBuffers(Model* model, unsigned lodLevel)
@@ -394,6 +399,65 @@ bool HasDynamicBuffers(Model* model, unsigned lodLevel)
     }
 
     return false;
+}
+
+CollisionGeometryData* CreateCollisionGeometryData(ShapeType shapeType, Model* model, unsigned lodLevel)
+{
+    switch (shapeType)
+    {
+    case SHAPE_TRIANGLEMESH:
+        return new TriangleMeshData(model, lodLevel);
+    case SHAPE_CONVEXHULL:
+        return new ConvexData(model, lodLevel);
+    case SHAPE_GIMPACTMESH:
+        return new GImpactMeshData(model, lodLevel);
+    default:
+        return nullptr;
+    }
+}
+
+CollisionGeometryData* CreateCollisionGeometryData(ShapeType shapeType, CustomGeometry* custom)
+{
+    switch (shapeType)
+    {
+    case SHAPE_TRIANGLEMESH:
+        return new TriangleMeshData(custom);
+    case SHAPE_CONVEXHULL:
+        return new ConvexData(custom);
+    case SHAPE_GIMPACTMESH:
+        return new GImpactMeshData(custom);
+    default:
+        return nullptr;
+    }
+}
+
+btCollisionShape* CreateCollisionGeometryDataShape(ShapeType shapeType, CollisionGeometryData* geometry, const Vector3& scale)
+{
+    switch (shapeType)
+    {
+    case SHAPE_TRIANGLEMESH:
+        {
+            auto* triMesh = static_cast<TriangleMeshData*>(geometry);
+            return new btScaledBvhTriangleMeshShape(triMesh->shape_.Get(), ToBtVector3(scale));
+        }
+    case SHAPE_CONVEXHULL:
+        {
+            auto* convex = static_cast<ConvexData*>(geometry);
+            auto* shape = new btConvexHullShape((btScalar*)convex->vertexData_.Get(), convex->vertexCount_, sizeof(Vector3));
+            shape->setLocalScaling(ToBtVector3(scale));
+            return shape;
+        }
+    case SHAPE_GIMPACTMESH:
+        {
+            auto* gimpactMesh = static_cast<GImpactMeshData*>(geometry);
+            auto* shape = new btGImpactMeshShape(gimpactMesh->meshInterface_.Get());
+            shape->setLocalScaling(ToBtVector3(scale));
+            shape->updateBound();
+            return shape;
+        }
+    default:
+        return nullptr;
+    }
 }
 
 CollisionShape::CollisionShape(Context* context) :
@@ -434,15 +498,6 @@ void CollisionShape::RegisterObject(Context* context)
     ATOMIC_ATTRIBUTE("CustomGeometry ComponentID", unsigned, customGeometryID_, 0, AM_DEFAULT | AM_COMPONENTID);
 }
 
-void CollisionShape::OnSetAttribute(const AttributeInfo& attr, const Variant& src)
-{
-    Serializable::OnSetAttribute(attr, src);
-
-    // Change of any non-accessor attribute requires recreation of the collision shape
-    if (!attr.accessor_)
-        recreateShape_ = true;
-}
-
 void CollisionShape::ApplyAttributes()
 {
     if (recreateShape_)
@@ -463,7 +518,7 @@ void CollisionShape::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
     {
         // Use the rigid body's world transform if possible, as it may be different from the rendering transform
         Matrix3x4 worldTransform;
-        RigidBody* body = GetComponent<RigidBody>();
+        auto* body = GetComponent<RigidBody>();
         bool bodyActive = false;
         if (body)
         {
@@ -472,11 +527,12 @@ void CollisionShape::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
         }
         else
             worldTransform = node_->GetWorldTransform();
+
         // Special case code for convex hull: bypass Bullet's own rendering to draw triangles correctly, not just edges
         if (shapeType_ == SHAPE_CONVEXHULL)
         {
-            ConvexData *convexData = static_cast<ConvexData*>(GetGeometryData());
-            RigidBody* body = GetComponent<RigidBody>();
+            auto*convexData = static_cast<ConvexData*>(GetGeometryData());
+            auto* body = GetComponent<RigidBody>();
             Color color = bodyActive ? Color::WHITE : Color::GREEN;
             Matrix3x4 shapeTransform(worldTransform * position_, worldTransform.Rotation() * rotation_, worldTransform.Scale());
 
@@ -502,18 +558,18 @@ void CollisionShape::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
             // For terrains, undo the height centering performed automatically by Bullet
             if (shapeType_ == SHAPE_TERRAIN && geometry_)
             {
-                HeightfieldData* heightfield = static_cast<HeightfieldData*>(geometry_.Get());
+                auto* heightfield = static_cast<HeightfieldData*>(geometry_.Get());
                 position.y_ += (heightfield->minHeight_ + heightfield->maxHeight_) * 0.5f;
             }
 
             Vector3 worldPosition(worldTransform * position);
             Quaternion worldRotation(worldTransform.Rotation() * rotation_);
 
-			UpdateShape();
             btDiscreteDynamicsWorld* world = physicsWorld_->GetWorld();
-            world->debugDrawObject(btTransform(ToBtQuaternion(worldRotation), ToBtVector3(worldPosition)), shape_.Get(), WHITE);
+            world->debugDrawObject(btTransform(ToBtQuaternion(worldRotation), ToBtVector3(worldPosition)), shape_.Get(), bodyActive ?
+                WHITE : GREEN);
 
-            physicsWorld_->SetDebugRenderer(0);
+            physicsWorld_->SetDebugRenderer(nullptr);
         }
     }
 }
@@ -622,116 +678,42 @@ void CollisionShape::SetCone(float diameter, float height, const Vector3& positi
 void CollisionShape::SetTriangleMesh(Model* model, unsigned lodLevel, const Vector3& scale, const Vector3& position,
     const Quaternion& rotation)
 {
-    if (!model)
-    {
-        ATOMIC_LOGERROR("Null model, can not set triangle mesh");
-        return;
-    }
-
-    if (model_)
-        UnsubscribeFromEvent(model_, E_RELOADFINISHED);
-
-    shapeType_ = SHAPE_TRIANGLEMESH;
-    model_ = model;
-    lodLevel_ = lodLevel;
-    size_ = scale;
-    position_ = position;
-    rotation_ = rotation;
-    customGeometryID_ = 0;
-
-    UpdateShape();
-    NotifyRigidBody();
-    MarkNetworkUpdate();
+    SetModelShape(SHAPE_TRIANGLEMESH, model, lodLevel, scale, position, rotation);
 }
 
 void CollisionShape::SetCustomTriangleMesh(CustomGeometry* custom, const Vector3& scale, const Vector3& position,
     const Quaternion& rotation)
 {
-    if (!custom)
-    {
-        ATOMIC_LOGERROR("Null custom geometry, can not set triangle mesh");
-        return;
-    }
-    if (custom->GetScene() != GetScene())
-    {
-        ATOMIC_LOGERROR("Custom geometry is not in the same scene as the collision shape, can not set triangle mesh");
-        return;
-    }
-
-    if (model_)
-        UnsubscribeFromEvent(model_, E_RELOADFINISHED);
-
-    shapeType_ = SHAPE_TRIANGLEMESH;
-    model_.Reset();
-    lodLevel_ = 0;
-    size_ = scale;
-    position_ = position;
-    rotation_ = rotation;
-    customGeometryID_ = custom->GetID();
-
-    UpdateShape();
-    NotifyRigidBody();
-    MarkNetworkUpdate();
+    SetCustomShape(SHAPE_TRIANGLEMESH, custom, scale, position, rotation);
 }
 
 void CollisionShape::SetConvexHull(Model* model, unsigned lodLevel, const Vector3& scale, const Vector3& position,
     const Quaternion& rotation)
 {
-    if (!model)
-    {
-        ATOMIC_LOGERROR("Null model, can not set convex hull");
-        return;
-    }
-
-    if (model_)
-        UnsubscribeFromEvent(model_, E_RELOADFINISHED);
-
-    shapeType_ = SHAPE_CONVEXHULL;
-    model_ = model;
-    lodLevel_ = lodLevel;
-    size_ = scale;
-    position_ = position;
-    rotation_ = rotation;
-    customGeometryID_ = 0;
-
-    UpdateShape();
-    NotifyRigidBody();
-    MarkNetworkUpdate();
+    SetModelShape(SHAPE_CONVEXHULL, model, lodLevel, scale, position, rotation);
 }
 
 void CollisionShape::SetCustomConvexHull(CustomGeometry* custom, const Vector3& scale, const Vector3& position,
     const Quaternion& rotation)
 {
-    if (!custom)
-    {
-        ATOMIC_LOGERROR("Null custom geometry, can not set convex hull");
-        return;
-    }
-    if (custom->GetScene() != GetScene())
-    {
-        ATOMIC_LOGERROR("Custom geometry is not in the same scene as the collision shape, can not set convex hull");
-        return;
-    }
+    SetCustomShape(SHAPE_CONVEXHULL, custom, scale, position, rotation);
+}
 
-    if (model_)
-        UnsubscribeFromEvent(model_, E_RELOADFINISHED);
+void CollisionShape::SetGImpactMesh(Model* model, unsigned lodLevel, const Vector3& scale, const Vector3& position,
+    const Quaternion& rotation)
+{
+    SetModelShape(SHAPE_GIMPACTMESH, model, lodLevel, scale, position, rotation);
+}
 
-    shapeType_ = SHAPE_CONVEXHULL;
-    model_.Reset();
-    lodLevel_ = 0;
-    size_ = scale;
-    position_ = position;
-    rotation_ = rotation;
-    customGeometryID_ = custom->GetID();
-
-    UpdateShape();
-    NotifyRigidBody();
-    MarkNetworkUpdate();
+void CollisionShape::SetCustomGImpactMesh(CustomGeometry* custom, const Vector3& scale, const Vector3& position,
+    const Quaternion& rotation)
+{
+    SetCustomShape(SHAPE_GIMPACTMESH, custom, scale, position, rotation);
 }
 
 void CollisionShape::SetTerrain(unsigned lodLevel)
 {
-    Terrain* terrain = GetComponent<Terrain>();
+    auto* terrain = GetComponent<Terrain>();
     if (!terrain)
     {
         ATOMIC_LOGERROR("No terrain component, can not set terrain shape");
@@ -851,7 +833,7 @@ BoundingBox CollisionShape::GetWorldBoundingBox() const
     if (shape_ && node_)
     {
         // Use the rigid body's world transform if possible, as it may be different from the rendering transform
-        RigidBody* body = GetComponent<RigidBody>();
+        auto* body = GetComponent<RigidBody>();
         Matrix3x4 worldTransform = body ? Matrix3x4(body->GetPosition(), body->GetRotation(), node_->GetWorldScale()) :
             node_->GetWorldTransform();
 
@@ -882,7 +864,7 @@ void CollisionShape::NotifyRigidBody(bool updateMass)
             // For terrains, undo the height centering performed automatically by Bullet
             if (shapeType_ == SHAPE_TERRAIN && geometry_)
             {
-                HeightfieldData* heightfield = static_cast<HeightfieldData*>(geometry_.Get());
+                auto* heightfield = static_cast<HeightfieldData*>(geometry_.Get());
                 position.y_ += (heightfield->minHeight_ + heightfield->maxHeight_) * 0.5f;
             }
 
@@ -900,7 +882,7 @@ void CollisionShape::NotifyRigidBody(bool updateMass)
 
 void CollisionShape::SetModelAttr(const ResourceRef& value)
 {
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    auto* cache = GetSubsystem<ResourceCache>();
     model_ = cache->GetResource<Model>(value.name_);
     recreateShape_ = true;
     MarkNetworkUpdate();
@@ -999,7 +981,7 @@ void CollisionShape::OnMarkedDirty(Node* node)
 
         case SHAPE_TERRAIN:
             {
-                HeightfieldData* heightfield = static_cast<HeightfieldData*>(geometry_.Get());
+                auto* heightfield = static_cast<HeightfieldData*>(geometry_.Get());
                 shape_->setLocalScaling(ToBtVector3(Vector3(heightfield->spacing_.x_, 1.0f, heightfield->spacing_.z_) *
                                                     newWorldScale * size_));
             }
@@ -1020,7 +1002,7 @@ btCompoundShape* CollisionShape::GetParentCompoundShape()
     if (!rigidBody_)
         rigidBody_ = GetComponent<RigidBody>();
 
-    return rigidBody_ ? rigidBody_->GetCompoundShape() : 0;
+    return rigidBody_ ? rigidBody_->GetCompoundShape() : nullptr;
 }
 
 void CollisionShape::UpdateShape()
@@ -1038,21 +1020,18 @@ void CollisionShape::UpdateShape()
 
     if (node_)
     {
-        Scene* scene = GetScene();
-        Vector3 newWorldScale = node_->GetWorldScale();
-		
-		//if (shape_) delete &shape_;
-	
+        cachedWorldScale_ = node_->GetWorldScale();
+
         switch (shapeType_)
         {
         case SHAPE_BOX:
             shape_ = new btBoxShape(ToBtVector3(size_ * 0.5f));
-            shape_->setLocalScaling(ToBtVector3(newWorldScale));
+            shape_->setLocalScaling(ToBtVector3(cachedWorldScale_));
             break;
 
         case SHAPE_SPHERE:
             shape_ = new btSphereShape(size_.x_ * 0.5f);
-            shape_->setLocalScaling(ToBtVector3(newWorldScale));
+            shape_->setLocalScaling(ToBtVector3(cachedWorldScale_));
             break;
 
         case SHAPE_STATICPLANE:
@@ -1061,116 +1040,51 @@ void CollisionShape::UpdateShape()
 
         case SHAPE_CYLINDER:
             shape_ = new btCylinderShape(btVector3(size_.x_ * 0.5f, size_.y_ * 0.5f, size_.x_ * 0.5f));
-            shape_->setLocalScaling(ToBtVector3(newWorldScale));
+            shape_->setLocalScaling(ToBtVector3(cachedWorldScale_));
             break;
 
         case SHAPE_CAPSULE:
             shape_ = new btCapsuleShape(size_.x_ * 0.5f, Max(size_.y_ - size_.x_, 0.0f));
-            shape_->setLocalScaling(ToBtVector3(newWorldScale));
+            shape_->setLocalScaling(ToBtVector3(cachedWorldScale_));
             break;
 
         case SHAPE_CONE:
             shape_ = new btConeShape(size_.x_ * 0.5f, size_.y_);
-            shape_->setLocalScaling(ToBtVector3(newWorldScale));
+            shape_->setLocalScaling(ToBtVector3(cachedWorldScale_));
             break;
 
         case SHAPE_TRIANGLEMESH:
-            size_ = size_.Abs();
-            if (customGeometryID_ && scene)
-            {
-                CustomGeometry* custom = dynamic_cast<CustomGeometry*>(scene->GetComponent(customGeometryID_));
-                if (custom)
-                {
-                    geometry_ = new TriangleMeshData(custom);
-                    TriangleMeshData* triMesh = static_cast<TriangleMeshData*>(geometry_.Get());
-                    shape_ = new btScaledBvhTriangleMeshShape(triMesh->shape_.Get(), ToBtVector3(newWorldScale * size_));
-                }
-                else
-                    ATOMIC_LOGWARNING("Could not find custom geometry component ID " + String(customGeometryID_) +
-                               " for triangle mesh shape creation");
-            }
-            else if (model_ && model_->GetNumGeometries())
-            {
-                // Check the geometry cache
-                Pair<Model*, unsigned> id = MakePair(model_.Get(), lodLevel_);
-                HashMap<Pair<Model*, unsigned>, SharedPtr<CollisionGeometryData> >& cache = physicsWorld_->GetTriMeshCache();
-                HashMap<Pair<Model*, unsigned>, SharedPtr<CollisionGeometryData> >::Iterator j = cache.Find(id);
-                if (j != cache.End())
-                    geometry_ = j->second_;
-                else
-                {
-                    geometry_ = new TriangleMeshData(model_, lodLevel_);
-                    // Check if model has dynamic buffers, do not cache in that case
-                    if (!HasDynamicBuffers(model_, lodLevel_))
-                        cache[id] = geometry_;
-                }
-
-                TriangleMeshData* triMesh = static_cast<TriangleMeshData*>(geometry_.Get());
-                shape_ = new btScaledBvhTriangleMeshShape(triMesh->shape_.Get(), ToBtVector3(newWorldScale * size_));
-                // Watch for live reloads of the collision model to reload the geometry if necessary
-                SubscribeToEvent(model_, E_RELOADFINISHED, ATOMIC_HANDLER(CollisionShape, HandleModelReloadFinished));
-            }
+            UpdateCachedGeometryShape(physicsWorld_->GetTriMeshCache());
             break;
 
         case SHAPE_CONVEXHULL:
-            size_ = size_.Abs();
-            if (customGeometryID_ && scene)
-            {
-                CustomGeometry* custom = dynamic_cast<CustomGeometry*>(scene->GetComponent(customGeometryID_));
-                if (custom)
-                {
-                    geometry_ = new ConvexData(custom);
-                    ConvexData* convex = static_cast<ConvexData*>(geometry_.Get());
-                    shape_ = new btConvexHullShape((btScalar*)convex->vertexData_.Get(), convex->vertexCount_, sizeof(Vector3));
-                    shape_->setLocalScaling(ToBtVector3(newWorldScale * size_));
-                }
-                else
-                    ATOMIC_LOGWARNING("Could not find custom geometry component ID " + String(customGeometryID_) +
-                               " for convex shape creation");
-            }
-            else if (model_ && model_->GetNumGeometries())
-            {
-                // Check the geometry cache
-                Pair<Model*, unsigned> id = MakePair(model_.Get(), lodLevel_);
-                HashMap<Pair<Model*, unsigned>, SharedPtr<CollisionGeometryData> >& cache = physicsWorld_->GetConvexCache();
-                HashMap<Pair<Model*, unsigned>, SharedPtr<CollisionGeometryData> >::Iterator j = cache.Find(id);
-                if (j != cache.End())
-                    geometry_ = j->second_;
-                else
-                {
-                    geometry_ = new ConvexData(model_, lodLevel_);
-                    // Check if model has dynamic buffers, do not cache in that case
-                    if (!HasDynamicBuffers(model_, lodLevel_))
-                        cache[id] = geometry_;
-                }
+            UpdateCachedGeometryShape(physicsWorld_->GetConvexCache());
+            break;
 
-                ConvexData* convex = static_cast<ConvexData*>(geometry_.Get());
-                shape_ = new btConvexHullShape((btScalar*)convex->vertexData_.Get(), convex->vertexCount_, sizeof(Vector3));
-                shape_->setLocalScaling(ToBtVector3(newWorldScale * size_));
-                SubscribeToEvent(model_, E_RELOADFINISHED, ATOMIC_HANDLER(CollisionShape, HandleModelReloadFinished));
-            }
+        case SHAPE_GIMPACTMESH:
+            UpdateCachedGeometryShape(physicsWorld_->GetGImpactTrimeshCache());
             break;
 
         case SHAPE_TERRAIN:
             size_ = size_.Abs();
             {
-                Terrain* terrain = GetComponent<Terrain>();
+                auto* terrain = GetComponent<Terrain>();
                 if (terrain && terrain->GetHeightData())
                 {
                     geometry_ = new HeightfieldData(terrain, lodLevel_);
-                    HeightfieldData* heightfield = static_cast<HeightfieldData*>(geometry_.Get());
+                    auto* heightfield = static_cast<HeightfieldData*>(geometry_.Get());
 
                     shape_ =
                         new btHeightfieldTerrainShape(heightfield->size_.x_, heightfield->size_.y_, heightfield->heightData_.Get(),
                             1.0f, heightfield->minHeight_, heightfield->maxHeight_, 1, PHY_FLOAT, false);
                     shape_->setLocalScaling(
-                        ToBtVector3(Vector3(heightfield->spacing_.x_, 1.0f, heightfield->spacing_.z_) * newWorldScale * size_));
+                        ToBtVector3(Vector3(heightfield->spacing_.x_, 1.0f, heightfield->spacing_.z_) * cachedWorldScale_ * size_));
                 }
             }
             break;
 
         default:
-            shape_ = this->UpdateDerivedShape(shapeType_, newWorldScale);
+            shape_ = this->UpdateDerivedShape(shapeType_, cachedWorldScale_);
             break;
         }
 
@@ -1179,8 +1093,6 @@ void CollisionShape::UpdateShape()
             shape_->setUserPointer(this);
             shape_->setMargin(margin_);
         }
-
-        cachedWorldScale_ = newWorldScale;
     }
 
     if (physicsWorld_)
@@ -1190,12 +1102,107 @@ void CollisionShape::UpdateShape()
     retryCreation_ = false;
 }
 
+void CollisionShape::UpdateCachedGeometryShape(CollisionGeometryDataCache& cache)
+{
+    Scene* scene = GetScene();
+    size_ = size_.Abs();
+    if (customGeometryID_ && scene)
+    {
+        auto* custom = dynamic_cast<CustomGeometry*>(scene->GetComponent(customGeometryID_));
+        if (custom)
+        {
+            geometry_ = CreateCollisionGeometryData(shapeType_, custom);
+            assert(geometry_);
+            shape_ = CreateCollisionGeometryDataShape(shapeType_, geometry_.Get(), cachedWorldScale_ * size_);
+            assert(shape_);
+        }
+        else
+            ATOMIC_LOGWARNING("Could not find custom geometry component ID " + String(customGeometryID_) +
+                " for collision shape creation");
+    }
+    else if (model_ && model_->GetNumGeometries())
+    {
+        // Check the geometry cache
+        Pair<Model*, unsigned> id = MakePair(model_.Get(), lodLevel_);
+        auto cachedGeometry = cache.Find(id);
+        if (cachedGeometry != cache.End())
+            geometry_ = cachedGeometry->second_;
+        else
+        {
+            geometry_ = CreateCollisionGeometryData(shapeType_, model_, lodLevel_);
+            assert(geometry_);
+            // Check if model has dynamic buffers, do not cache in that case
+            if (!HasDynamicBuffers(model_, lodLevel_))
+                cache[id] = geometry_;
+        }
+
+        shape_ = CreateCollisionGeometryDataShape(shapeType_, geometry_.Get(), cachedWorldScale_ * size_);
+        assert(shape_);
+        // Watch for live reloads of the collision model to reload the geometry if necessary
+        SubscribeToEvent(model_, E_RELOADFINISHED, ATOMIC_HANDLER(CollisionShape, HandleModelReloadFinished));
+    }
+}
+
+void CollisionShape::SetModelShape(ShapeType shapeType, Model* model, unsigned lodLevel,
+    const Vector3& scale, const Vector3& position, const Quaternion& rotation)
+{
+    if (!model)
+    {
+        ATOMIC_LOGERROR("Null model, can not set collsion shape");
+        return;
+    }
+
+    if (model_)
+        UnsubscribeFromEvent(model_, E_RELOADFINISHED);
+
+    shapeType_ = shapeType;
+    model_ = model;
+    lodLevel_ = lodLevel;
+    size_ = scale;
+    position_ = position;
+    rotation_ = rotation;
+    customGeometryID_ = 0;
+
+    UpdateShape();
+    NotifyRigidBody();
+    MarkNetworkUpdate();
+}
+
+void CollisionShape::SetCustomShape(ShapeType shapeType, CustomGeometry* custom,
+    const Vector3& scale, const Vector3& position, const Quaternion& rotation)
+{
+    if (!custom)
+    {
+        ATOMIC_LOGERROR("Null custom geometry, can not set collsion shape");
+        return;
+    }
+    if (custom->GetScene() != GetScene())
+    {
+        ATOMIC_LOGERROR("Custom geometry is not in the same scene as the collision shape, can not set collsion shape");
+        return;
+    }
+
+    if (model_)
+        UnsubscribeFromEvent(model_, E_RELOADFINISHED);
+
+    shapeType_ = shapeType;
+    model_.Reset();
+    lodLevel_ = 0;
+    size_ = scale;
+    position_ = position;
+    rotation_ = rotation;
+    customGeometryID_ = custom->GetID();
+
+    UpdateShape();
+    NotifyRigidBody();
+    MarkNetworkUpdate();
+}
+
 btCollisionShape* CollisionShape::UpdateDerivedShape(int shapeType, const Vector3& newWorldScale)
 {
     // To be overridden in derived classes.
-    return 0;
+    return nullptr;
 }
-
 
 void CollisionShape::HandleTerrainCreated(StringHash eventType, VariantMap& eventData)
 {

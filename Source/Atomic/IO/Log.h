@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,16 +32,18 @@ namespace Atomic
 
 /// Fictional message level to indicate a stored raw message.
 static const int LOG_RAW = -1;
+/// Trace message level.
+static const int LOG_TRACE = 0;
 /// Debug message level. By default only shown in debug mode.
-static const int LOG_DEBUG = 0;
+static const int LOG_DEBUG = 1;
 /// Informative message level.
-static const int LOG_INFO = 1;
+static const int LOG_INFO = 2;
 /// Warning message level.
-static const int LOG_WARNING = 2;
+static const int LOG_WARNING = 3;
 /// Error message level.
-static const int LOG_ERROR = 3;
+static const int LOG_ERROR = 4;
 /// Disable all log messages.
-static const int LOG_NONE = 4;
+static const int LOG_NONE = 5;
 
 class File;
 
@@ -49,9 +51,7 @@ class File;
 struct StoredLogMessage
 {
     /// Construct undefined.
-    StoredLogMessage()
-    {
-    }
+    StoredLogMessage() = default;
 
     /// Construct with parameters.
     StoredLogMessage(const String& message, int level, bool error) :
@@ -64,9 +64,9 @@ struct StoredLogMessage
     /// Message text.
     String message_;
     /// Message level. -1 for raw messages.
-    int level_;
+    int level_{};
     /// Error flag for raw messages.
-    bool error_;
+    bool error_{};
 };
 
 /// Logging subsystem.
@@ -76,34 +76,42 @@ class ATOMIC_API Log : public Object
 
 public:
     /// Construct.
-    Log(Context* context);
+    explicit Log(Context* context);
     /// Destruct. Close the log file if open.
-    virtual ~Log();
+    ~Log() override;
 
     /// Open the log file.
     void Open(const String& fileName);
     /// Close the log file.
     void Close();
     /// Set logging level.
+    /// @property
     void SetLevel(int level);
     /// Set whether to timestamp log messages.
+    /// @property
     void SetTimeStamp(bool enable);
     /// Set quiet mode ie. only print error entries to standard error stream (which is normally redirected to console also). Output to log file is not affected by this mode.
+    /// @property
     void SetQuiet(bool quiet);
 
     /// Return logging level.
+    /// @property
     int GetLevel() const { return level_; }
 
     /// Return whether log messages are timestamped.
+    /// @property
     bool GetTimeStamp() const { return timeStamp_; }
 
     /// Return last log message.
+    /// @property
     String GetLastMessage() const { return lastMessage_; }
 
     /// Return whether log is in quiet mode (only errors printed to standard error stream).
+    /// @property
     bool IsQuiet() const { return quiet_; }
 
     /// Write to the log. If logging level is higher than the level of the message, the message is ignored.
+    /// @nobind
     static void Write(int level, const String& message);
     /// Write raw output to the log.
     static void WriteRaw(const String& message, bool error = false);
@@ -113,7 +121,7 @@ public:
     const File* GetLogFile() const { return logFile_; }
 
     // ATOMIC END
-
+	
 private:
     /// Handle end of frame. Process the threaded log messages.
     void HandleEndFrame(StringHash eventType, VariantMap& eventData);
@@ -137,22 +145,26 @@ private:
 };
 
 #ifdef ATOMIC_LOGGING
+#define ATOMIC_LOGTRACE(message) Atomic::Log::Write(Atomic::LOG_TRACE, message)
 #define ATOMIC_LOGDEBUG(message) Atomic::Log::Write(Atomic::LOG_DEBUG, message)
 #define ATOMIC_LOGINFO(message) Atomic::Log::Write(Atomic::LOG_INFO, message)
 #define ATOMIC_LOGWARNING(message) Atomic::Log::Write(Atomic::LOG_WARNING, message)
 #define ATOMIC_LOGERROR(message) Atomic::Log::Write(Atomic::LOG_ERROR, message)
 #define ATOMIC_LOGRAW(message) Atomic::Log::WriteRaw(message)
+#define ATOMIC_LOGTRACEF(format, ...) Atomic::Log::Write(Atomic::LOG_TRACE, Atomic::ToString(format, ##__VA_ARGS__))
 #define ATOMIC_LOGDEBUGF(format, ...) Atomic::Log::Write(Atomic::LOG_DEBUG, Atomic::ToString(format, ##__VA_ARGS__))
 #define ATOMIC_LOGINFOF(format, ...) Atomic::Log::Write(Atomic::LOG_INFO, Atomic::ToString(format, ##__VA_ARGS__))
 #define ATOMIC_LOGWARNINGF(format, ...) Atomic::Log::Write(Atomic::LOG_WARNING, Atomic::ToString(format, ##__VA_ARGS__))
 #define ATOMIC_LOGERRORF(format, ...) Atomic::Log::Write(Atomic::LOG_ERROR, Atomic::ToString(format, ##__VA_ARGS__))
 #define ATOMIC_LOGRAWF(format, ...) Atomic::Log::WriteRaw(Atomic::ToString(format, ##__VA_ARGS__))
 #else
+#define ATOMIC_LOGTRACE(message) ((void)0)
 #define ATOMIC_LOGDEBUG(message) ((void)0)
 #define ATOMIC_LOGINFO(message) ((void)0)
 #define ATOMIC_LOGWARNING(message) ((void)0)
 #define ATOMIC_LOGERROR(message) ((void)0)
 #define ATOMIC_LOGRAW(message) ((void)0)
+#define ATOMIC_LOGTRACEF(...) ((void)0)
 #define ATOMIC_LOGDEBUGF(...) ((void)0)
 #define ATOMIC_LOGINFOF(...) ((void)0)
 #define ATOMIC_LOGWARNINGF(...) ((void)0)

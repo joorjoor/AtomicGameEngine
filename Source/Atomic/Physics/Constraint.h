@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
+
+/// \file
 
 #pragma once
 
@@ -51,50 +53,62 @@ class ATOMIC_API Constraint : public Component
 
 public:
     /// Construct.
-    Constraint(Context* context);
+    explicit Constraint(Context* context);
     /// Destruct.
-    ~Constraint();
+    ~Constraint() override;
     /// Register object factory.
     static void RegisterObject(Context* context);
 
-    /// Handle attribute write access.
-    virtual void OnSetAttribute(const AttributeInfo& attr, const Variant& src);
     /// Apply attribute changes that can not be applied immediately. Called after scene load or a network update.
-    virtual void ApplyAttributes();
+    void ApplyAttributes() override;
     /// Handle enabled/disabled state change.
-    virtual void OnSetEnabled();
+    void OnSetEnabled() override;
     /// Return the depended on nodes to order network updates.
-    virtual void GetDependencyNodes(PODVector<Node*>& dest);
+    void GetDependencyNodes(PODVector<Node*>& dest) override;
     /// Visualize the component as debug geometry.
-    virtual void DrawDebugGeometry(DebugRenderer* debug, bool depthTest);
+    void DrawDebugGeometry(DebugRenderer* debug, bool depthTest) override;
 
     /// Set constraint type and recreate the constraint.
+    /// @property
     void SetConstraintType(ConstraintType type);
     /// Set other body to connect to. Set to null to connect to the static world.
+    /// @property
     void SetOtherBody(RigidBody* body);
     /// Set constraint position relative to own body.
+    /// @property
     void SetPosition(const Vector3& position);
     /// Set constraint rotation relative to own body.
+    /// @property
     void SetRotation(const Quaternion& rotation);
     /// Set constraint rotation relative to own body by specifying the axis.
+    /// @property
     void SetAxis(const Vector3& axis);
     /// Set constraint position relative to the other body. If connected to the static world, is a world space position.
+    /// @property
     void SetOtherPosition(const Vector3& position);
     /// Set constraint rotation relative to the other body. If connected to the static world, is a world space rotation.
+    /// @property
     void SetOtherRotation(const Quaternion& rotation);
     /// Set constraint rotation relative to the other body by specifying the axis.
+    /// @property
     void SetOtherAxis(const Vector3& axis);
     /// Set constraint world space position. Resets both own and other body relative position, ie. zeroes the constraint error.
+    /// @property
     void SetWorldPosition(const Vector3& position);
     /// Set high limit. Interpretation is constraint type specific.
+    /// @property
     void SetHighLimit(const Vector2& limit);
     /// Set low limit. Interpretation is constraint type specific.
+    /// @property
     void SetLowLimit(const Vector2& limit);
     /// Set constraint error reduction parameter. Zero = leave to default.
+    /// @property{set_erp}
     void SetERP(float erp);
     /// Set constraint force mixing parameter. Zero = leave to default.
+    /// @property{set_cfm}
     void SetCFM(float cfm);
     /// Set whether to disable collisions between connected bodies.
+    /// @property
     void SetDisableCollision(bool disable);
 
     /// Return physics world.
@@ -104,42 +118,55 @@ public:
     btTypedConstraint* GetConstraint() const { return constraint_.Get(); }
 
     /// Return constraint type.
+    /// @property
     ConstraintType GetConstraintType() const { return constraintType_; }
 
     /// Return rigid body in own scene node.
+    /// @property
     RigidBody* GetOwnBody() const { return ownBody_; }
 
     /// Return the other rigid body. May be null if connected to the static world.
+    /// @property
     RigidBody* GetOtherBody() const { return otherBody_; }
 
     /// Return constraint position relative to own body.
+    /// @property
     const Vector3& GetPosition() const { return position_; }
 
     /// Return constraint rotation relative to own body.
+    /// @property
     const Quaternion& GetRotation() const { return rotation_; }
 
     /// Return constraint position relative to other body.
+    /// @property
     const Vector3& GetOtherPosition() const { return otherPosition_; }
 
     /// Return constraint rotation relative to other body.
+    /// @property
     const Quaternion& GetOtherRotation() const { return otherRotation_; }
 
     /// Return constraint world position, calculated from own body.
+    /// @property
     Vector3 GetWorldPosition() const;
 
     /// Return high limit.
+    /// @property
     const Vector2& GetHighLimit() const { return highLimit_; }
 
     /// Return low limit.
+    /// @property
     const Vector2& GetLowLimit() const { return lowLimit_; }
 
     /// Return constraint error reduction parameter.
+    /// @property{get_erp}
     float GetERP() const { return erp_; }
 
     /// Return constraint force mixing parameter.
+    /// @property{get_cfm}
     float GetCFM() const { return cfm_; }
 
     /// Return whether collisions between connected bodies are disabled.
+    /// @property
     bool GetDisableCollision() const { return disableCollision_; }
 
     /// Release the constraint.
@@ -149,17 +176,23 @@ public:
 
 protected:
     /// Handle node being assigned.
-    virtual void OnNodeSet(Node* node);
+    void OnNodeSet(Node* node) override;
     /// Handle scene being assigned.
-    virtual void OnSceneSet(Scene* scene);
+    void OnSceneSet(Scene* scene) override;
     /// Handle node transform being dirtied.
-    virtual void OnMarkedDirty(Node* node);
+    void OnMarkedDirty(Node* node) override;
 
 private:
     /// Create the constraint.
     void CreateConstraint();
     /// Apply high and low constraint limits.
     void ApplyLimits();
+    /// Adjust other body position.
+    void AdjustOtherBodyPosition();
+    /// Mark constraint dirty.
+    void MarkConstraintDirty() { recreateConstraint_ = true; }
+    /// Mark frames dirty.
+    void MarkFramesDirty() { framesDirty_ = true; }
 
     /// Physics world.
     WeakPtr<PhysicsWorld> physicsWorld_;

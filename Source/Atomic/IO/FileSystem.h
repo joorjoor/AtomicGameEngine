@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -65,15 +65,17 @@ class ATOMIC_API FileSystem : public Object
 
 public:
     /// Construct.
-    FileSystem(Context* context);
+    explicit FileSystem(Context* context);
     /// Destruct.
-    ~FileSystem();
+    ~FileSystem() override;
 
     /// Set the current working directory.
+    /// @property
     bool SetCurrentDir(const String& pathName);
     /// Create a directory.
     bool CreateDir(const String& pathName);
     /// Set whether to execute engine console commands as OS-specific system command.
+    /// @property
     void SetExecuteConsoleCommands(bool enable);
     /// Run a program using the command interpreter, block until it exits and return the exit code. Will fail if any allowed paths are defined.
     int SystemCommand(const String& commandLine, bool redirectStdOutToLog = false);
@@ -91,15 +93,17 @@ public:
     bool Rename(const String& srcFileName, const String& destFileName);
     /// Delete a file. Return true if successful.
     bool Delete(const String& fileName);
-    /// Register a path as allowed to access. If no paths are registered, all are allowed. Registering allowed paths is considered securing the Urho3D execution environment: running programs and opening files externally through the system will fail afterward.
+    /// Register a path as allowed to access. If no paths are registered, all are allowed. Registering allowed paths is considered securing the Atomic execution environment: running programs and opening files externally through the system will fail afterward.
     void RegisterPath(const String& pathName);
     /// Set a file's last modified time as seconds since 1.1.1970. Return true on success.
     bool SetLastModifiedTime(const String& fileName, unsigned newTime);
 
     /// Return the absolute current working directory.
+    /// @property
     String GetCurrentDir() const;
 
     /// Return whether is executing engine console commands as OS-specific system command.
+    /// @property
     bool GetExecuteConsoleCommands() const { return executeConsoleCommands_; }
 
     /// Return whether paths have been registered.
@@ -116,11 +120,16 @@ public:
     /// Scan a directory for specified files.
     void ScanDir(Vector<String>& result, const String& pathName, const String& filter, unsigned flags, bool recursive) const;
     /// Return the program's directory.
+    /// @property
     String GetProgramDir() const;
     /// Return the user documents directory.
+    /// @property
     String GetUserDocumentsDir() const;
     /// Return the application preferences directory.
     String GetAppPreferencesDir(const String& org, const String& app) const;
+    /// Return path of temporary directory. Path always ends with a forward slash.
+    /// @property
+    String GetTemporaryDir() const;
 
 // ATOMIC BEGIN
     /// Scan specified files, returning them as an iterator
@@ -151,9 +160,9 @@ private:
     /// Async execution queue.
     List<AsyncExecRequest*> asyncExecQueue_;
     /// Next async execution ID.
-    unsigned nextAsyncExecID_;
+    unsigned nextAsyncExecID_{1};
     /// Flag for executing engine console commands as OS-specific system command. Default to true.
-    bool executeConsoleCommands_;
+    bool executeConsoleCommands_{};
 };
 
 /// Split a full path to path, filename and extension. The extension will be converted to lowercase by default.
@@ -166,16 +175,16 @@ ATOMIC_API String GetFileName(const String& fullPath);
 /// Return the extension from a full path, converted to lowercase by default.
 ATOMIC_API String GetExtension(const String& fullPath, bool lowercaseExtension = true);
 /// Return the filename and extension from a full path. The case of the extension is preserved by default, so that the file can be opened in case-sensitive operating systems.
-ATOMIC_API String GetFileNameAndExtension(const String& fullPath, bool lowercaseExtension = false);
+ATOMIC_API String GetFileNameAndExtension(const String& fileName, bool lowercaseExtension = false);
 /// Replace the extension of a file name with another.
 ATOMIC_API String ReplaceExtension(const String& fullPath, const String& newExtension);
-/// Add a slash at the end of the path if missing and convert to internal format (use slashes.)
+/// Add a slash at the end of the path if missing and convert to internal format (use slashes).
 ATOMIC_API String AddTrailingSlash(const String& pathName);
-/// Remove the slash from the end of a path if exists and convert to internal format (use slashes.)
+/// Remove the slash from the end of a path if exists and convert to internal format (use slashes).
 ATOMIC_API String RemoveTrailingSlash(const String& pathName);
 /// Return the parent path, or the path itself if not available.
-ATOMIC_API String GetParentPath(const String& pathName);
-/// Convert a path to internal format (use slashes.)
+ATOMIC_API String GetParentPath(const String& path);
+/// Convert a path to internal format (use slashes).
 ATOMIC_API String GetInternalPath(const String& pathName);
 /// Convert a path to the format required by the operating system.
 ATOMIC_API String GetNativePath(const String& pathName);

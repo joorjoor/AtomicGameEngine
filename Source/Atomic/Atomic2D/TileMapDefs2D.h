@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -47,11 +47,12 @@ enum Orientation2D
     O_ISOMETRIC,
     /// Staggered.
     O_STAGGERED,
-    /// Hexagonal
+    /// Hexagonal.
     O_HEXAGONAL
 };
 
 /// Tile map information.
+/// @fakeref
 struct ATOMIC_API TileMapInfo2D
 {
     /// Orientation.
@@ -66,8 +67,10 @@ struct ATOMIC_API TileMapInfo2D
     float tileHeight_;
 
     /// Return map width.
+    /// @property
     float GetMapWidth() const;
     /// return map height.
+    /// @property
     float GetMapHeight() const;
     /// Convert tmx position to Urho position.
     Vector2 ConvertPosition(const Vector2& position) const;
@@ -143,20 +146,26 @@ public:
     Tile2D();
 
     /// Return gid.
+    /// @property
     unsigned GetGid() const { return gid_ & ~FLIP_ALL; }
     /// Return flip X.
+    /// @property
     bool GetFlipX() const { return gid_ & FLIP_HORIZONTAL; }
     /// Return flip Y.
+    /// @property
     bool GetFlipY() const { return gid_ & FLIP_VERTICAL; }
     /// Return swap X and Y.
+    /// @property
     bool GetSwapXY() const { return gid_ & FLIP_DIAGONAL; }
 
     /// Return sprite.
+    /// @property
     Sprite2D* GetSprite() const;
     /// Return has property.
     bool HasProperty(const String& name) const;
     /// Return property.
     const String& GetProperty(const String& name) const;
+
 
     // ATOMIC BEGIN
 
@@ -179,46 +188,57 @@ private:
     /// Object group (collision)
     SharedPtr<TmxObjectGroup2D> objectGroup_;
     // ATOMIC END
+	
 };
 
 /// Tile map object.
 class ATOMIC_API TileMapObject2D : public RefCounted
 {
 	ATOMIC_REFCOUNTED(TileMapObject2D)
-	
 public:
     TileMapObject2D();
 
     /// Return type.
+    /// @property
     TileMapObjectType2D GetObjectType() const { return objectType_; }
 
     /// Return name.
+    /// @property
     const String& GetName() const { return name_; }
 
     /// Return type.
+    /// @property
     const String& GetType() const { return type_; }
 
     /// Return position.
+    /// @property
     const Vector2& GetPosition() const { return position_; }
 
     /// Return size (for rectangle and ellipse).
+    /// @property
     const Vector2& GetSize() const { return size_; }
 
     /// Return number of points (use for script).
+    /// @property
     unsigned GetNumPoints() const;
     /// Return point at index (use for script).
     const Vector2& GetPoint(unsigned index) const;
 
     /// Return tile Gid.
+    /// @property
     unsigned GetTileGid() const { return gid_ & ~FLIP_ALL; }
     /// Return tile flip X.
+    /// @property
     bool GetTileFlipX() const { return gid_ & FLIP_HORIZONTAL; }
     /// Return tile flip Y.
+    /// @property
     bool GetTileFlipY() const { return gid_ & FLIP_VERTICAL; }
     /// Return tile swap X and Y.
+    /// @property
     bool GetTileSwapXY() const { return gid_ & FLIP_DIAGONAL; }
 
     /// Return tile sprite.
+    /// @property
     Sprite2D* GetTileSprite() const;
     /// Return has property.
     bool HasProperty(const String& name) const;

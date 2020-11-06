@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,29 +41,39 @@ public:
     static void RegisterObject(Context* context);
 
     /// Set other body ground anchor point.
+    /// @property
     void SetOwnerBodyGroundAnchor(const Vector2& groundAnchor);
     /// Set other body ground anchor point.
+    /// @property
     void SetOtherBodyGroundAnchor(const Vector2& groundAnchor);
     /// Set owner body anchor point.
+    /// @property
     void SetOwnerBodyAnchor(const Vector2& anchor);
     /// Set other body anchor point.
+    /// @property
     void SetOtherBodyAnchor(const Vector2& anchor);
     /// Set ratio.
+    /// @property
     void SetRatio(float ratio);
 
     /// Return owner body ground anchor.
+    /// @property
     const Vector2& GetOwnerBodyGroundAnchor() const { return ownerBodyGroundAnchor_; }
 
     /// return other body ground anchor.
+    /// @property
     const Vector2& GetOtherBodyGroundAnchor() const { return otherBodyGroundAnchor_; }
 
     /// Return owner body anchor.
+    /// @property
     const Vector2& GetOwnerBodyAnchor() const { return ownerBodyAnchor_; }
 
     /// Return other body anchor.
+    /// @property
     const Vector2& GetOtherBodyAnchor() const { return otherBodyAnchor_; }
 
     /// Return ratio.
+    /// @property
     float GetRatio() const { return jointDef_.ratio; }
 
 

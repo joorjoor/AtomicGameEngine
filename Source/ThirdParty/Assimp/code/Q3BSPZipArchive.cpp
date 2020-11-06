@@ -43,7 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Q3BSPZipArchive.h"
 #include <cassert>
-#include "../include/assimp/ai_assert.h"
+#include <assimp/ai_assert.h>
 
 namespace Assimp {
 namespace Q3BSP {

@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2019 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,16 +41,20 @@ public:
     static void RegisterObject(Context* context);
 
     /// Set radius.
+    /// @property
     void SetRadius(float radius);
     /// Set center.
+    /// @property
     void SetCenter(const Vector2& center);
     /// Set center.
     void SetCenter(float x, float y);
 
     /// Return radius.
+    /// @property
     float GetRadius() const { return radius_; }
 
     /// Return center.
+    /// @property
     const Vector2& GetCenter() const { return center_; }
 
 protected:
@@ -59,13 +63,13 @@ protected:
     /// Visualize the component as debug geometry.
     virtual void DrawDebugGeometry(DebugRenderer* debug, bool depthTest);
 	//ATOMIC END
-
+	
 private:
     /// Apply node world scale.
     void ApplyNodeWorldScale() override;
     /// Recreate fixture.
     void RecreateFixture();
-	
+
     /// Circle shape.
     b2CircleShape circleShape_;
     /// Radius.

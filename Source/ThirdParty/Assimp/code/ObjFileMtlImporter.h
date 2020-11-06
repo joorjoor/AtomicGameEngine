@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <vector>
 #include <string>
-#include "../include/assimp/defs.h"
+#include <assimp/defs.h>
 
 struct aiColor3D;
 struct aiString;

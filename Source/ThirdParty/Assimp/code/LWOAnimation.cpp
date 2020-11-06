@@ -54,7 +54,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // internal headers
 #include "LWOFileData.h"
-#include "../include/assimp/anim.h"
+#include <assimp/anim.h>
 
 using namespace Assimp;
 using namespace Assimp::LWO;

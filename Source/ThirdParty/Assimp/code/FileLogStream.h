@@ -42,9 +42,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef ASSIMP_FILELOGSTREAM_H_INC
 #define ASSIMP_FILELOGSTREAM_H_INC
 
-#include "../include/assimp/LogStream.hpp"
-#include "../include/assimp/IOStream.hpp"
-#include "../include/assimp/DefaultIOSystem.h"
+#include <assimp/LogStream.hpp>
+#include <assimp/IOStream.hpp>
+#include <assimp/DefaultIOSystem.h>
 
 namespace Assimp    {
 

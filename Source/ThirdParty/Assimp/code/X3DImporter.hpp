@@ -50,10 +50,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "X3DImporter_Node.hpp"
 
 // Header files, Assimp.
-#include "../include/assimp/DefaultLogger.hpp"
-#include "../include/assimp/importerdesc.h"
-#include "../include/assimp/ProgressHandler.hpp"
-#include "../include/assimp/types.h"
+#include <assimp/DefaultLogger.hpp>
+#include <assimp/importerdesc.h>
+#include <assimp/ProgressHandler.hpp>
+#include <assimp/types.h>
 #include "BaseImporter.h"
 #include "irrXMLWrapper.h"
 #include "FIReader.hpp"

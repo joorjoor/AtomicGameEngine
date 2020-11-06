@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,18 @@
 // THE SOFTWARE.
 //
 
+/// \file
+/// @nobindfile
+
 #pragma once
 
 #include "../Math/Quaternion.h"
 #include "../Math/Vector3.h"
 
-// ATOMIC BEGIN
+//ATOMIC BEGIN
 #include <Bullet/src/LinearMath/btVector3.h>
 #include <Bullet/src/LinearMath/btQuaternion.h>
-// ATOMIC END
+//ATOMIC END
 
 namespace Atomic
 {
