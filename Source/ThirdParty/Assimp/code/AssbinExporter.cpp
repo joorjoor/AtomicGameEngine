@@ -42,10 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  ASSBIN exporter main code
  */
 #include "assbin_chunks.h"
-#include <assimp/version.h>
-#include <assimp/IOStream.hpp>
-#include <assimp/IOSystem.hpp>
-#include <assimp/Exporter.hpp>
+#include "../include/assimp/version.h"
+#include "../include/assimp/IOStream.hpp"
+#include "../include/assimp/IOSystem.hpp"
+#include "../include/assimp/Exporter.hpp"
 #include "ProcessHelper.h"
 #include "Exceptional.h"
 

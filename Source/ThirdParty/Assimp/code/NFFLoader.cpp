@@ -52,10 +52,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "qnan.h"
 #include "fast_atof.h"
 #include "RemoveComments.h"
-#include <assimp/IOSystem.hpp>
-#include <assimp/DefaultLogger.hpp>
-#include <assimp/scene.h>
-#include <assimp/importerdesc.h>
+#include "../include/assimp/IOSystem.hpp"
+#include "../include/assimp/DefaultLogger.hpp"
+#include "../include/assimp/scene.h"
+#include "../include/assimp/importerdesc.h"
 #include <memory>
 
 

@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_GLTF2IMPORTER_H_INC
 
 #include "BaseImporter.h"
-#include <assimp/DefaultIOSystem.h>
+#include "../include/assimp/DefaultIOSystem.h"
 
 struct aiNode;
 

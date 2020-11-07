@@ -47,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "IFCUtil.h"
 #include <limits>
-#include <assimp/material.h>
+#include "../include/assimp/material.h"
 
 namespace Assimp {
 namespace IFC {

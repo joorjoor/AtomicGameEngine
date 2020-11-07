@@ -38,8 +38,7 @@ woven in by Terry Thorsen 1/2003.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "zlib.h"
-#include "unzip.h"
+#include "./unzip.h"
 
 #ifdef STDC
 #  include <stddef.h>
@@ -147,7 +146,7 @@ typedef struct
     int encrypted;
 #    ifndef NOUNCRYPT
     unsigned long keys[3];     /* keys defining the pseudo-random sequence */
-    const z_crc_t* pcrc_32_tab;
+    const unsigned long* pcrc_32_tab;
 #    endif
 } unz_s;
 
@@ -163,10 +162,10 @@ typedef struct
 */
 
 
-local int unzlocal_getByte OF((
+local int unzlocal_getByte (
     const zlib_filefunc_def* pzlib_filefunc_def,
     voidpf filestream,
-    int *pi));
+    int *pi);
 
 local int unzlocal_getByte(pzlib_filefunc_def,filestream,pi)
     const zlib_filefunc_def* pzlib_filefunc_def;
@@ -193,10 +192,10 @@ local int unzlocal_getByte(pzlib_filefunc_def,filestream,pi)
 /* ===========================================================================
    Reads a long in LSB order from the given gz_stream. Sets
 */
-local int unzlocal_getShort OF((
+local int unzlocal_getShort (
     const zlib_filefunc_def* pzlib_filefunc_def,
     voidpf filestream,
-    uLong *pX));
+    uLong *pX);
 
 local int unzlocal_getShort (pzlib_filefunc_def,filestream,pX)
     const zlib_filefunc_def* pzlib_filefunc_def;
@@ -204,7 +203,7 @@ local int unzlocal_getShort (pzlib_filefunc_def,filestream,pX)
     uLong *pX;
 {
     uLong x ;
-    int i = 0;
+    int i;
     int err;
 
     err = unzlocal_getByte(pzlib_filefunc_def,filestream,&i);
@@ -221,10 +220,10 @@ local int unzlocal_getShort (pzlib_filefunc_def,filestream,pX)
     return err;
 }
 
-local int unzlocal_getLong OF((
+local int unzlocal_getLong (
     const zlib_filefunc_def* pzlib_filefunc_def,
     voidpf filestream,
-    uLong *pX));
+    uLong *pX);
 
 local int unzlocal_getLong (pzlib_filefunc_def,filestream,pX)
     const zlib_filefunc_def* pzlib_filefunc_def;
@@ -232,7 +231,7 @@ local int unzlocal_getLong (pzlib_filefunc_def,filestream,pX)
     uLong *pX;
 {
     uLong x ;
-    int i = 0;
+    int i;
     int err;
 
     err = unzlocal_getByte(pzlib_filefunc_def,filestream,&i);
@@ -324,9 +323,9 @@ extern int ZEXPORT unzStringFileNameCompare (fileName1,fileName2,iCaseSensitivit
   Locate the Central directory of a zipfile (at the end, just before
     the global comment)
 */
-local uLong unzlocal_SearchCentralDir OF((
+local uLong unzlocal_SearchCentralDir (
     const zlib_filefunc_def* pzlib_filefunc_def,
-    voidpf filestream));
+    voidpf filestream);
 
 local uLong unzlocal_SearchCentralDir(pzlib_filefunc_def,filestream)
     const zlib_filefunc_def* pzlib_filefunc_def;
@@ -563,7 +562,7 @@ local void unzlocal_DosDateToTmuDate (ulDosDate, ptm)
 /*
   Get Info about the current file in the zipfile, with internal only info
 */
-local int unzlocal_GetCurrentFileInfoInternal OF((unzFile file,
+local int unzlocal_GetCurrentFileInfoInternal    (unzFile file,
                                                   unz_file_info *pfile_info,
                                                   unz_file_info_internal
                                                   *pfile_info_internal,
@@ -572,7 +571,7 @@ local int unzlocal_GetCurrentFileInfoInternal OF((unzFile file,
                                                   void *extraField,
                                                   uLong extraFieldBufferSize,
                                                   char *szComment,
-                                                  uLong commentBufferSize));
+                                                  uLong commentBufferSize);
 
 local int unzlocal_GetCurrentFileInfoInternal (file,
                                               pfile_info,
@@ -610,13 +609,9 @@ local int unzlocal_GetCurrentFileInfoInternal (file,
     if (err==UNZ_OK)
     {
         if (unzlocal_getLong(&s->z_filefunc, s->filestream,&uMagic) != UNZ_OK)
-        {
             err=UNZ_ERRNO;
-        }
         else if (uMagic!=0x02014b50)
-        {
             err=UNZ_BADZIPFILE;
-        }
     }
 
     if (unzlocal_getShort(&s->z_filefunc, s->filestream,&file_info.version) != UNZ_OK)
@@ -706,9 +701,8 @@ local int unzlocal_GetCurrentFileInfoInternal (file,
         lSeek += file_info.size_file_extra - uSizeRead;
     }
     else
-    {
         lSeek+=file_info.size_file_extra;
-    }
+
 
     if ((err==UNZ_OK) && (szComment!=NULL))
     {
@@ -719,22 +713,22 @@ local int unzlocal_GetCurrentFileInfoInternal (file,
             uSizeRead = file_info.size_file_comment;
         }
         else
-        {
             uSizeRead = commentBufferSize;
-        }
 
         if (lSeek!=0)
         {
-            if (ZSEEK(s->z_filefunc, s->filestream,lSeek,ZLIB_FILEFUNC_SEEK_CUR)!=0)
+            if (ZSEEK(s->z_filefunc, s->filestream,lSeek,ZLIB_FILEFUNC_SEEK_CUR)==0)
+                lSeek=0;
+            else
                 err=UNZ_ERRNO;
         }
         if ((file_info.size_file_comment>0) && (commentBufferSize>0))
             if (ZREAD(s->z_filefunc, s->filestream,szComment,uSizeRead)!=uSizeRead)
                 err=UNZ_ERRNO;
+        lSeek+=file_info.size_file_comment - uSizeRead;
     }
     else
-    {
-    }
+        lSeek+=file_info.size_file_comment;
 
     if ((err==UNZ_OK) && (pfile_info!=NULL))
         *pfile_info=file_info;
@@ -994,7 +988,7 @@ local int unzlocal_CheckCurrentFileCoherencyHeader (s,piSizeVar,
         else if (uMagic!=0x04034b50)
             err=UNZ_BADZIPFILE;
     }
-
+    
     if (unzlocal_getShort(&s->z_filefunc, s->filestream,&uData) != UNZ_OK)
         err=UNZ_ERRNO;
 /*
@@ -1125,7 +1119,7 @@ extern int ZEXPORT unzOpenCurrentFile3 (file, method, level, raw, password)
 
     if ((s->cur_file_info.compression_method!=0) &&
         (s->cur_file_info.compression_method!=Z_DEFLATED))
-        return UNZ_BADZIPFILE;
+        err=UNZ_BADZIPFILE;
 
     pfile_in_zip_read_info->crc32_wait=s->cur_file_info.crc;
     pfile_in_zip_read_info->crc32=0;
@@ -1547,7 +1541,6 @@ extern int ZEXPORT unzGetGlobalComment (file, szComment, uSizeBuf)
     char *szComment;
     uLong uSizeBuf;
 {
-    int err=UNZ_OK;
     unz_s* s;
     uLong uReadThis ;
     if (file==NULL)

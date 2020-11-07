@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <set>
 
 #include "FBXDocument.h" //ObjectMap::value_type
-#include <assimp/DefaultLogger.hpp>
+#include "../include/assimp/DefaultLogger.hpp"
 
 //
 #if _MSC_VER > 1500 || (defined __GNUC___)

@@ -57,6 +57,8 @@ private:
 
     void WriteIncludes(String& source);
 
+	String CSModuleWriter::InputGenerator(const String& module, const String& name, String& value);
+
 };
 
 }

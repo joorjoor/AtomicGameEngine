@@ -48,7 +48,7 @@
 
 #include "irrXMLWrapper.h"
 #include "ColladaHelper.h"
-#include <assimp/ai_assert.h>
+#include "../include/assimp/ai_assert.h"
 #include "TinyFormatter.h"
 
 namespace Assimp

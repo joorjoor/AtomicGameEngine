@@ -480,8 +480,15 @@ Input::Input(Context* context) :
 
 #if defined(__ANDROID__)
     // Prevent mouse events from being registered as synthetic touch events and vice versa
-    SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
-    SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
+
+	//ATOMIC TIME BEGIN
+	/*
+		SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
+		SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
+	*/
+	SDL_SetHint(SDL_HINT_ANDROID_SEPARATE_MOUSE_AND_TOUCH, "1");
+	//ATOMIC TIME END
+	
 #elif defined(__EMSCRIPTEN__)
     emscriptenInput_ = new EmscriptenInput(this);
 #endif

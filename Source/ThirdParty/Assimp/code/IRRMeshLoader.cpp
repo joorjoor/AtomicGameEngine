@@ -50,12 +50,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ParsingUtils.h"
 #include "fast_atof.h"
 #include <memory>
-#include <assimp/IOSystem.hpp>
-#include <assimp/mesh.h>
-#include <assimp/DefaultLogger.hpp>
-#include <assimp/material.h>
-#include <assimp/scene.h>
-#include <assimp/importerdesc.h>
+#include "../include/assimp/IOSystem.hpp"
+#include "../include/assimp/mesh.h"
+#include "../include/assimp/DefaultLogger.hpp"
+#include "../include/assimp/material.h"
+#include "../include/assimp/scene.h"
+#include "../include/assimp/importerdesc.h"
 #include "Macros.h"
 
 using namespace Assimp;

@@ -51,8 +51,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "fast_atof.h"
 #include "ParsingUtils.h"
 #include "StringComparison.h"
-#include <assimp/DefaultLogger.hpp>
-#include <assimp/mesh.h>
+#include "../include/assimp/DefaultLogger.hpp"
+#include "../include/assimp/mesh.h"
 
 
 

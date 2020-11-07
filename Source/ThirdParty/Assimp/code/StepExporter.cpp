@@ -49,7 +49,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Bitmap.h"
 #include "BaseImporter.h"
 #include "fast_atof.h"
-#include <assimp/SceneCombiner.h>
+#include "../include/assimp/SceneCombiner.h"
 #include <iostream>
 #include <ctime>
 #include <set>
@@ -57,10 +57,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <list>
 #include <memory>
 #include "Exceptional.h"
-#include <assimp/DefaultIOSystem.h>
-#include <assimp/IOSystem.hpp>
-#include <assimp/scene.h>
-#include <assimp/light.h>
+#include "../include/assimp/DefaultIOSystem.h"
+#include "../include/assimp/IOSystem.hpp"
+#include "../include/assimp/scene.h"
+#include "../include/assimp/light.h"
 
 //
 #if _MSC_VER > 1500 || (defined __GNUC___)

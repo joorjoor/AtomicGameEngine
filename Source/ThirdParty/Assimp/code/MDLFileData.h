@@ -53,9 +53,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AI_MDLFILEHELPER_H_INC
 #define AI_MDLFILEHELPER_H_INC
 
-#include <assimp/anim.h>
-#include <assimp/mesh.h>
-#include <assimp/Compiler/pushpack1.h>
+#include "../include/assimp/anim.h"
+#include "../include/assimp/mesh.h"
+#include "../include/assimp/Compiler/pushpack1.h"
 #include "ByteSwapper.h"
 #include <stdint.h>
 #include <vector>

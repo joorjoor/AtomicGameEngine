@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_SIBIMPORTER_H_INCLUDED
 
 #include "BaseImporter.h"
-#include <assimp/types.h>
+#include "../include/assimp/types.h"
 #include <vector>
 
 namespace Assimp    {

@@ -55,11 +55,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MDLDefaultColorMap.h"
 #include "MD2FileData.h"
 #include "StringUtils.h"
-#include <assimp/Importer.hpp>
-#include <assimp/IOSystem.hpp>
-#include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
-#include <assimp/importerdesc.h>
+#include "../include/assimp/Importer.hpp"
+#include "../include/assimp/IOSystem.hpp"
+#include "../include/assimp/scene.h"
+#include "../include/assimp/DefaultLogger.hpp"
+#include "../include/assimp/importerdesc.h"
 
 #include <memory>
 

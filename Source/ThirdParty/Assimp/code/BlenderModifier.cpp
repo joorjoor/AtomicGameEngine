@@ -46,9 +46,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef ASSIMP_BUILD_NO_BLEND_IMPORTER
 
 #include "BlenderModifier.h"
-#include <assimp/SceneCombiner.h>
+#include "../include/assimp/SceneCombiner.h"
 #include "Subdivision.h"
-#include <assimp/scene.h>
+#include "../include/assimp/scene.h"
 #include <memory>
 
 #include <functional>

@@ -44,9 +44,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  @brief Implementation of the CPP-API class #Importer
  */
 
-#include <assimp/version.h>
-#include <assimp/config.h>
-#include <assimp/importerdesc.h>
+#include "../include/assimp/version.h"
+#include "../include/assimp/config.h"
+#include "../include/assimp/importerdesc.h"
 
 // ------------------------------------------------------------------------------------------------
 /* Uncomment this line to prevent Assimp from catching unknown exceptions.
@@ -81,8 +81,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <cctype>
 
-#include <assimp/DefaultIOStream.h>
-#include <assimp/DefaultIOSystem.h>
+#include "../include/assimp/DefaultIOStream.h"
+#include "../include/assimp/DefaultIOSystem.h"
 
 #ifndef ASSIMP_BUILD_NO_VALIDATEDS_PROCESS
 #   include "ValidateDataStructure.h"

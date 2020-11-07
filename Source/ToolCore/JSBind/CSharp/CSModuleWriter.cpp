@@ -22,6 +22,7 @@
 
 #include <Atomic/IO/File.h>
 #include <Atomic/IO/FileSystem.h>
+#include <Atomic/IO/Log.h>
 
 #include "../JSBind.h"
 #include "../JSBPackage.h"
@@ -265,6 +266,8 @@ void CSModuleWriter::GenerateManagedEnumsAndConstants(String& source)
                 else if (name == "BT_DYNAMIC")
                     value = "2";
             }
+			
+			value =	InputGenerator(module_->GetName(), name, value);
 
             if (value.Length())
             {
@@ -318,55 +321,15 @@ void CSModuleWriter::GenerateManagedEnumsAndConstants(String& source)
             String managedType = GetManagedPrimitiveType(constant.type);
 
             String value = constant.value;
-
-            if (!value.Length())
-                continue;
-
-            //static const unsigned M_MIN_UNSIGNED = 0x00000000;
-//            /static const unsigned M_MAX_UNSIGNED = 0xffffffff;
-
-            if (cname == "M_MIN_INT")
-                value = "int.MinValue";
-
-            if (cname == "M_INFINITY")
-                value = "float.MaxValue";
-
-            if (value == "M_MAX_UNSIGNED")
-                value = "0xffffffff";
-
+		
+       
             // Input stuff
+			
+			if (!value.Length())
+				return;
 
-            if (module_->GetName() == "Input")
-            {
-                if (cname.StartsWith("KEY_"))
-                {
-                    if (value.Length() == 1 && (IsAlpha(value[0]) || IsDigit(value[0])))
-                        value = "'" + value + "'";
-                }
-
-                // https://raw.githubusercontent.com/flibitijibibo/SDL2-CS/master/src/SDL2.cs
-
-                if (value.StartsWith("SDL_BUTTON_") || value.StartsWith("SDL_HAT_"))
-                {
-                    value = "(int) SDL." + value;
-                }
-                else if (value.StartsWith("SDLK_"))
-                {
-                    value = "(int) SDL.SDL_Keycode." + value;
-                }
-                else if (value.StartsWith("SDL_SCANCODE_"))
-                {
-                    value = "(int) SDL.SDL_Scancode." + value;
-                }
-                else if (value.StartsWith("SDL_CONTROLLER_BUTTON_"))
-                {
-                    value = "(int) SDL.SDL_GameControllerButton." + value;
-                }
-                else if (value.StartsWith("SDL_CONTROLLER_AXIS_"))
-                {
-                    value = "(int) SDL.SDL_GameControllerAxis." + value;
-                }
-            }
+			value = InputGenerator(module_->GetName(), cname, value);
+            
 
             String line = "public const " + managedType + " " + cname + " = ";
 
@@ -636,6 +599,60 @@ void CSModuleWriter::GenerateSource()
 {
     GenerateNativeSource();
     GenerateManagedSource();
+}
+
+String CSModuleWriter::InputGenerator(const String& module, const String& name, String& value)
+{
+
+	//static const unsigned M_MIN_UNSIGNED = 0x00000000;
+//            /static const unsigned M_MAX_UNSIGNED = 0xffffffff;
+
+	if (name == "M_MIN_INT")
+		value = "int.MinValue";
+
+	if (name == "M_INFINITY")
+		value = "float.MaxValue";
+
+	if (name == "MOUSEB_ANY")
+		value = "unchecked((int)0xffffffff)";
+
+	if (value == "M_MAX_UNSIGNED")
+		value = "0xffffffff";
+
+	
+	
+	if (module == "Input")
+	{
+		if (name.StartsWith("KEY_"))
+		{
+			if (value.Length() == 1 && (IsAlpha(value[0]) || IsDigit(value[0])))
+				value = "'" + value + "'";
+		}
+
+		// https://raw.githubusercontent.com/flibitijibibo/SDL2-CS/master/src/SDL2.cs
+
+		if (value.StartsWith("SDL_BUTTON_") || value.StartsWith("SDL_HAT_"))
+		{
+			value = "(int) SDL." + value;
+		}
+		else if (value.StartsWith("SDLK_"))
+		{
+			value = "(int) SDL.SDL_Keycode." + value;
+		}
+		else if (value.StartsWith("SDL_SCANCODE_"))
+		{
+			value = "(int) SDL.SDL_Scancode." + value;
+		}
+		else if (value.StartsWith("SDL_CONTROLLER_BUTTON_"))
+		{
+			value = "(int) SDL.SDL_GameControllerButton." + value;
+		}
+		else if (value.StartsWith("SDL_CONTROLLER_AXIS_"))
+		{
+			value = "(int) SDL.SDL_GameControllerAxis." + value;
+		}
+	}
+	return value;
 }
 
 }

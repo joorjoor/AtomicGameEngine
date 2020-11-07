@@ -53,11 +53,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "StringComparison.h"
 #include "SkeletonMeshBuilder.h"
 #include "TargetAnimation.h"
-#include <assimp/Importer.hpp>
-#include <assimp/IOSystem.hpp>
-#include <assimp/DefaultLogger.hpp>
-#include <assimp/scene.h>
-#include <assimp/importerdesc.h>
+#include "../include/assimp/Importer.hpp"
+#include "../include/assimp/IOSystem.hpp"
+#include "../include/assimp/DefaultLogger.hpp"
+#include "../include/assimp/scene.h"
+#include "../include/assimp/importerdesc.h"
 
 #include <memory>
 

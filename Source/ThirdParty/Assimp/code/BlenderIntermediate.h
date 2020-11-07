@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "BlenderDNA.h"
 #include "BlenderScene.h"
 #include <deque>
-#include <assimp/material.h>
+#include "../include/assimp/material.h"
 
 struct aiTexture;
 

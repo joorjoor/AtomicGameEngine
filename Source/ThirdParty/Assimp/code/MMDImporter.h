@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "BaseImporter.h"
 #include "MMDPmxParser.h"
-#include <assimp/material.h>
+#include "../include/assimp/material.h"
 #include <vector>
 
 struct aiMesh;

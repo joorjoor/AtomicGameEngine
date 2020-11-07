@@ -48,10 +48,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FileSystemFilter.h"
 #include "Importer.h"
 #include "ByteSwapper.h"
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
-#include <assimp/importerdesc.h>
+#include "../include/assimp/scene.h"
+#include "../include/assimp/Importer.hpp"
+#include "../include/assimp/postprocess.h"
+#include "../include/assimp/importerdesc.h"
 #include <ios>
 #include <list>
 #include <memory>

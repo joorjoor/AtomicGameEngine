@@ -47,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AI_STROSTREAMLOGSTREAM_H_INC
 #define AI_STROSTREAMLOGSTREAM_H_INC
 
-#include <assimp/LogStream.hpp>
+#include "../include/assimp/LogStream.hpp"
 #include <ostream>
 
 namespace Assimp    {

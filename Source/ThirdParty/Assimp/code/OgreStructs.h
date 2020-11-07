@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "MemoryIOWrapper.h"
 #include <memory>
-#include <assimp/mesh.h>
+#include "../include/assimp/mesh.h"
 #include <map>
 #include <vector>
 #include <set>

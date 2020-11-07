@@ -43,17 +43,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "D3MFExporter.h"
 
-#include <assimp/scene.h>
-#include <assimp/IOSystem.hpp>
-#include <assimp/IOStream.hpp>
-#include <assimp/Exporter.hpp>
-#include <assimp/DefaultLogger.hpp>
+#include "../include/assimp/scene.h"
+#include "../include/assimp/IOSystem.hpp"
+#include "../include/assimp/IOStream.hpp"
+#include "../include/assimp/Exporter.hpp"
+#include "../include/assimp/DefaultLogger.hpp"
 
 #include "Exceptional.h"
 #include "3MFXmlTags.h"
 #include "D3MFOpcPackage.h"
 
-#include <contrib/zip/src/zip.h>
+#include "../contrib/zip/src/zip.h"
 
 namespace Assimp {
 

@@ -78,7 +78,7 @@ bool FindDegeneratesProcess::IsActive( unsigned int pFlags) const {
 void FindDegeneratesProcess::SetupProperties(const Importer* pImp) {
     // Get the current value of AI_CONFIG_PP_FD_REMOVE
     mConfigRemoveDegenerates = (0 != pImp->GetPropertyInteger(AI_CONFIG_PP_FD_REMOVE,0));
-    mConfigCheckAreaOfTriangle = ( 0 != pImp->GetPropertyInteger(AI_CONFIG_PP_FD_CHECKAREA) );
+    mConfigCheckAreaOfTriangle = ( 0 != pImp->GetPropertyInteger(AI_CONFIG_PP_FD_CHECKAREA));
 }
 
 // ------------------------------------------------------------------------------------------------

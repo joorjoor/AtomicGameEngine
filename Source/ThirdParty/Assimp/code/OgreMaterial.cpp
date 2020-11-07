@@ -45,9 +45,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "OgreImporter.h"
 #include "TinyFormatter.h"
-#include <assimp/material.h>
-#include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
+#include "../include/assimp/material.h"
+#include "../include/assimp/scene.h"
+#include "../include/assimp/DefaultLogger.hpp"
 #include "fast_atof.h"
 
 #include <vector>

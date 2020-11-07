@@ -50,7 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 
 #include "BaseImporter.h"
-#include <assimp/material.h>
+#include "../include/assimp/material.h"
 
 namespace Assimp {
 namespace COB {

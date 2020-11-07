@@ -48,11 +48,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <stdint.h>
 
-#include <assimp/types.h>
-#include <assimp/quaternion.h>
-#include <assimp/mesh.h>
-#include <assimp/anim.h>
-#include <assimp/Defines.h>
+#include "../include/assimp/types.h"
+#include "../include/assimp/quaternion.h"
+#include "../include/assimp/mesh.h"
+#include "../include/assimp/anim.h"
+#include "../include/assimp/Defines.h"
 
 namespace Assimp
 {

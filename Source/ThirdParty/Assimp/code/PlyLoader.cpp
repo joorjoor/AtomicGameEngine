@@ -50,9 +50,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IOStreamBuffer.h"
 #include "Macros.h"
 #include <memory>
-#include <assimp/IOSystem.hpp>
-#include <assimp/scene.h>
-#include <assimp/importerdesc.h>
+#include "../include/assimp/IOSystem.hpp"
+#include "../include/assimp/scene.h"
+#include "../include/assimp/importerdesc.h"
 
 using namespace Assimp;
 

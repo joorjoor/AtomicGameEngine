@@ -47,12 +47,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "BVHLoader.h"
 #include "fast_atof.h"
 #include "SkeletonMeshBuilder.h"
-#include <assimp/Importer.hpp>
+#include "../include/assimp/Importer.hpp"
 #include <memory>
 #include "TinyFormatter.h"
-#include <assimp/IOSystem.hpp>
-#include <assimp/scene.h>
-#include <assimp/importerdesc.h>
+#include "../include/assimp/IOSystem.hpp"
+#include "../include/assimp/scene.h"
+#include "../include/assimp/importerdesc.h"
 
 using namespace Assimp;
 using namespace Assimp::Formatter;
