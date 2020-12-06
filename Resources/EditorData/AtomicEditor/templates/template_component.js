@@ -1,16 +1,14 @@
-
 "atomic component";
 
 var component = function (self) {
 
+	self.start = function() {
 
-  self.start = function() {
+	}
 
-  }
+	self.update = function(timeStep) {
 
-  self.update = function(timeStep) {
-
-  }
+	}
 
 }
 

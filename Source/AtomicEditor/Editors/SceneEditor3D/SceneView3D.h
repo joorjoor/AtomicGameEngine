@@ -25,7 +25,7 @@
 #pragma once
 
 #include <Atomic/Core/Object.h>
-
+#include <Atomic/Input/Input.h>
 #include <Atomic/UI/UISceneView.h>
 
 using namespace Atomic;
@@ -68,7 +68,12 @@ public:
 
     DebugRenderer* GetDebugRenderer() { return debugRenderer_; }
     SceneEditor3D* GetSceneEditor3D() { return sceneEditor_; }
-
+	
+	/// Set camera mode orthographic
+	void CameraOrthoChange(int mode);
+	/// Get camera editor
+	Camera* getCameraEditor() { return camera_; }
+	
 private:
 
     bool MouseInView();

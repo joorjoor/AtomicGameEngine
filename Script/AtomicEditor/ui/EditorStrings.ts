@@ -43,7 +43,17 @@ export enum StringID {
     ShortcutBuildSettings,
     ShortcutFrameSelected,
     ShortcutScreenshot,
-	ShortcutDuplicateNode
+	ShortcutDuplicateNode,
+	ShortcutFullscreen,
+	ShortcutGrid,
+	ShortcutOrthoEn,
+	ShortcutOrthoDis,
+	ShortcutOrthoTop,
+	ShortcutOrthoBottom,
+	ShortcutOrthoLeft,
+	ShortcutOrthoRight,
+	ShortcutOrthoFront,
+	ShortcutOrthoBack
 }
 
 export class EditorString {
@@ -99,8 +109,21 @@ export class EditorString {
 
         lookup[StringID.ShortcutBuild] = shortcutKey + "B";
         lookup[StringID.ShortcutScreenshot] = shortcutKey + "9";
-		
+
         lookup[StringID.ShortcutDuplicateNode] = shortcutKey + "D";
+
+        lookup[StringID.ShortcutFullscreen] = "F11";
+
+
+        lookup[StringID.ShortcutGrid] = "G";
+        lookup[StringID.ShortcutOrthoEn] = "O";
+        lookup[StringID.ShortcutOrthoDis] = "P";
+        lookup[StringID.ShortcutOrthoTop] = "1";
+        lookup[StringID.ShortcutOrthoBottom] = "2";
+        lookup[StringID.ShortcutOrthoLeft] = "3";
+        lookup[StringID.ShortcutOrthoRight] = "4";
+        lookup[StringID.ShortcutOrthoFront] = "5";
+        lookup[StringID.ShortcutOrthoBack] = "6";
 
     })();
 

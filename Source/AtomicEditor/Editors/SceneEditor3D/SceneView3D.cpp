@@ -410,6 +410,9 @@ void SceneView3D::SelectView()
     {
         Input* input = GetSubsystem<Input>();
 
+        if (input->GetKeyPress(KEY_G))
+            gridEnabled_ = !gridEnabled_;
+
         int snapView = 0;
 
         if (!camera_->IsOrthographic() && !fromOrthographic_)
@@ -449,8 +452,59 @@ void SceneView3D::SelectView()
 
             camera_->SetOrthographic(!camera_->IsOrthographic());
         }
-
     }
+}
+
+void SceneView3D::CameraOrthoChange(int mode)
+{
+
+    int snapView = 0;
+
+    if (!camera_->IsOrthographic() && !fromOrthographic_)
+        SavePerspectiveCameraPosition();
+
+	switch(mode)
+	{
+		case 1://ORTHO TOP
+			snapView = CAMERASNAP_TOP;
+			break;
+		case 2://ORTHO BOTTOM
+			snapView = CAMERASNAP_BOTTOM;
+			break;
+		case 3://ORTHO LEFT
+			snapView = CAMERASNAP_LEFT;
+			break;
+		case 4://ORTHO RIGHT
+			snapView = CAMERASNAP_RIGHT;
+			break;
+		case 5://ORTHO FRONT
+			snapView = CAMERASNAP_FRONT;
+			break;
+		case 6://ORTHO BACK
+			snapView = CAMERASNAP_BACK;
+			break;
+		case 7://ORTHO OFF
+			fromOrthographic_ = false;
+			camera_->SetOrthographic(false);
+
+			pitch_ = perspectivePitch_;
+			yaw_ = perspectiveYaw_;
+			cameraNode_->SetPosition(perspectCamPosition_);
+			cameraNode_->SetRotation(Quaternion(pitch_, yaw_, 0));
+			break;
+		case 8://ORTHO ON
+			if (!camera_->IsOrthographic())
+            SavePerspectiveCameraPosition();
+
+			camera_->SetOrthographic(!camera_->IsOrthographic());
+			break;
+		case 9://GRID ON/OFF
+			gridEnabled_ = !gridEnabled_;
+			break;
+	}
+
+    if (snapView != 0)
+        SnapCameraToView(snapView);
 
 }
 
@@ -518,7 +572,6 @@ void SceneView3D::HandleUIUnhandledShortcut(StringHash eventType, VariantMap& ev
         sceneEditor_->Cut();
     else if (id == TBIDC("paste"))
         sceneEditor_->Paste();
-
     return;
 
 }
@@ -646,14 +699,8 @@ bool SceneView3D::OnEvent(const TBWidgetEvent &ev)
         }
     }
     if (ev.type == EVENT_TYPE_KEY_DOWN)
-    {
-        Input* input = GetSubsystem<Input>();
-
-        if (input->GetKeyPress(KEY_G))
-            gridEnabled_ = !gridEnabled_;
-
         SelectView();
-    }
+    
 
     return sceneEditor_->OnEvent(ev);
 }

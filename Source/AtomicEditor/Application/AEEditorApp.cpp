@@ -95,7 +95,7 @@ namespace AtomicEditor
         ToolSystem* system = new ToolSystem(context_);
         context_->RegisterSubsystem(system);
 
-        engineParameters_["WindowTitle"] = "AtomicEditor";
+        engineParameters_["WindowTitle"] = "AtomicGameEngine";
         engineParameters_["WindowResizable"] = true;
         engineParameters_["FullScreen"] = false;
         engineParameters_["LogLevel"] = LOG_DEBUG;

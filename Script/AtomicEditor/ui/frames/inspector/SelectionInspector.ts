@@ -138,6 +138,14 @@ class JSComponentSection extends ComponentSection {
         this.hasDynamicAttr = true;
 
         this.subscribeToEvent(this, Editor.AttributeEditResourceChangedEvent((ev) => this.handleAttributeEditResourceChanged(ev)));
+		
+		
+		this.subscribeToEvent(Atomic.FileChangedEvent((data) => {
+			if (data.fileName.split('.').pop() == "js" && Atomic.getFileSystem().fileExists(data.fileName))
+				this.handleAttributeEditResourceChanged({"attrInfoEdit": null, "resource": null});
+        }));
+		
+		
         this.updateTitleFromComponentClass();
     }
 
@@ -147,10 +155,14 @@ class JSComponentSection extends ComponentSection {
 
         if (!jsc)
             return;
-
+		
+		for (var i in attrInfos)
+			if (attrInfos[i].name == "run")
+				delete attrInfos[i];
         var attrInfos = jsc.getAttributes();
         this.updateDynamicAttrInfos(attrInfos);
         this.updateTitleFromComponentClass();
+			
     }
 
     private updateTitleFromComponentClass() {

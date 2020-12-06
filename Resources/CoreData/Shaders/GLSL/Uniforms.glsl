@@ -26,6 +26,7 @@ uniform mat4 cModel;
 uniform mat4 cView;
 uniform mat4 cViewInv;
 uniform mat4 cViewProj;
+uniform mat4 cProj;
 uniform vec4 cUOffset;
 uniform vec4 cVOffset;
 uniform mat4 cZone;
@@ -112,6 +113,7 @@ uniform CameraVS
     mat4 cView;
     mat4 cViewInv;
     mat4 cViewProj;
+	mat4 cProj;
     vec4 cClipPlane;
 };
 

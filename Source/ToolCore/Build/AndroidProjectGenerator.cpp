@@ -275,6 +275,7 @@ bool AndroidProjectGenerator::GenerateAndroidManifest()
     AndroidBuildSettings* settings = project->GetBuildSettings()->GetAndroidBuildSettings();
 
     String package = settings->GetPackageName();
+    String version = settings->GetVersion();
 
 
     if (!package.Length())
@@ -294,14 +295,16 @@ bool AndroidProjectGenerator::GenerateAndroidManifest()
     String manifest  = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     manifest += "<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n";
     manifest.AppendWithFormat("package=\"%s\"\n", package.CString());
-    manifest += "android:versionCode=\"1\"\n";
-    manifest += "android:versionName=\"1.0\">\n";
+	manifest.AppendWithFormat("android:versionCode=\"%s\"\n", version.CString());
+	manifest.AppendWithFormat("android:versionName=\"%s.0\">\n", version.CString());
+    //manifest += "android:versionCode=\"1\"\n";
+    //manifest += "android:versionName=\"1.0\">\n";
     manifest += "android:installLocation=\"auto\">\n";
 
     manifest += "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>\n";
     manifest += "<uses-permission android:name=\"android.permission.INTERNET\" />\n";
     manifest += "<uses-feature android:glEsVersion=\"0x00020000\" />\n";
-    manifest += "<uses-sdk android:targetSdkVersion=\"12\" android:minSdkVersion=\"10\" />\n";
+    manifest += "<uses-sdk android:targetSdkVersion=\"29\" android:minSdkVersion=\"10\" />\n";
 
     manifest += "<application\n";
     manifest += "android:label=\"@string/app_name\"\n";

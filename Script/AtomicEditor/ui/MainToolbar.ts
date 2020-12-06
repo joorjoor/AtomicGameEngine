@@ -31,6 +31,9 @@ class MainToolbar extends Atomic.UIWidget {
     playButton: Atomic.UIButton;
     pauseButton: Atomic.UIButton;
     stepButton: Atomic.UIButton;
+	fillSolidButton: Atomic.UIButton;
+	fillWireFrameButton: Atomic.UIButton;
+	fillPointButton: Atomic.UIButton;
 
     constructor(parent: Atomic.UIWidget) {
 
@@ -41,6 +44,10 @@ class MainToolbar extends Atomic.UIWidget {
         this.translateButton = <Atomic.UIButton>this.getWidget("3d_translate");
         this.rotateButton = <Atomic.UIButton>this.getWidget("3d_rotate");
         this.scaleButton = <Atomic.UIButton>this.getWidget("3d_scale");
+		
+        this.fillSolidButton = <Atomic.UIButton>this.getWidget("fillSolid");
+        this.fillWireFrameButton = <Atomic.UIButton>this.getWidget("fillWireFrame");
+        this.fillPointButton = <Atomic.UIButton>this.getWidget("fillPoint");
 
         this.axisButton = <Atomic.UIButton>this.getWidget("3d_axismode");
 
@@ -51,7 +58,7 @@ class MainToolbar extends Atomic.UIWidget {
         this.stepButton = <Atomic.UIButton>this.getWidget("maintoolbar_step");
 
         this.translateButton.value = 1;
-
+		
         parent.addChild(this);
 
         this.subscribeToEvent(Editor.GizmoAxisModeChangedEvent((ev) => this.handleGizmoAxisModeChanged(ev)));
@@ -89,6 +96,14 @@ class MainToolbar extends Atomic.UIWidget {
         this.subscribeToEvent(ToolCore.NETBuildResultEvent((data) => {
             this.playButton.enable();
         }));
+		
+		this.subscribeToEvent(Editor.EditorProjectClosedEvent(() => this.refreshFillModeButtons(0)));
+
+        this.subscribeToEvent(Editor.EditorSceneClosedEvent(() => this.refreshFillModeButtons(0)));
+		
+		this.subscribeToEvent(Editor.EditorResourceEditorChangedEvent(() => this.refreshFillModeButtons(4)));
+		
+		this.subscribeToEvent(Editor.EditorActiveSceneEditorChangeEvent(() => this.refreshFillModeButtons(1)));
 
     }
 
@@ -138,7 +153,30 @@ class MainToolbar extends Atomic.UIWidget {
 
                 return true;
 
-            } else if (ev.target.id == "3d_axismode") {
+            } 
+			else if (ev.target.id == "fillSolid" || ev.target.id == "fillWireFrame" || ev.target.id == "fillPoint") {
+				var editor = EditorUI.getCurrentResourceEditor();
+				if (editor && editor instanceof Editor.SceneEditor3D)
+					switch(ev.target.id)
+					{
+						case 'fillSolid':
+							editor.getSceneView3D().getCameraEditor().setFillMode(Atomic.FillMode.FILL_SOLID);
+							this.refreshFillModeButtons(1);
+							break;
+						case 'fillWireFrame':
+							editor.getSceneView3D().getCameraEditor().setFillMode(Atomic.FillMode.FILL_WIREFRAME);
+							this.refreshFillModeButtons(2);
+							break;
+						case 'fillPoint':
+							editor.getSceneView3D().getCameraEditor().setFillMode(Atomic.FillMode.FILL_POINT);
+							this.refreshFillModeButtons(3);
+							break;
+					}
+				else
+					this.refreshFillModeButtons(0);
+                return true;
+
+			} else if (ev.target.id == "3d_axismode") {
 
                 EditorUI.getShortcuts().toggleGizmoAxisMode();
                 return true;
@@ -159,6 +197,41 @@ class MainToolbar extends Atomic.UIWidget {
         }
 
     }
+	
+	refreshFillModeButtons(but: number)
+	{
+		this.fillSolidButton.value = 0;
+		this.fillWireFrameButton.value = 0;
+		this.fillPointButton.value = 0;
+		switch(but)
+		{
+			case 1:
+				this.fillSolidButton.value = 1;
+				break;
+			case 2:
+				this.fillWireFrameButton.value = 1;
+				break;
+			case 3:
+				this.fillPointButton.value = 1;
+				break;
+			case 4:
+				var editor = EditorUI.getCurrentResourceEditor();
+				if (editor && editor instanceof Editor.SceneEditor3D)
+					switch(editor.getSceneView3D().getCameraEditor().getFillMode())
+					{
+						case Atomic.FillMode.FILL_SOLID:
+							this.refreshFillModeButtons(1);
+							break;
+						case Atomic.FillMode.FILL_WIREFRAME:
+							this.refreshFillModeButtons(2);
+							break;
+						case Atomic.FillMode.FILL_POINT:
+							this.refreshFillModeButtons(3);
+							break;
+					}
+				break;
+		}
+	}
 
 }
 

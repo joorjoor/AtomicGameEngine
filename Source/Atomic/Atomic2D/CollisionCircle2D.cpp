@@ -108,7 +108,7 @@ void CollisionCircle2D::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
 	if (debug && IsEnabledEffective())
 	{	
 		float radius = radius_ * cachedWorldScale_.x_;
-		Vector3 pos_ = node_->GetPosition() + Vector3(center_);
+		Vector3 pos_ = node_->GetWorldPosition() + Vector3(center_);
 		Vector3 v1(pos_.x_, pos_.y_, 0.0f);
 		debug->AddCircle(v1, Vector3::FORWARD, radius, Color::WHITE, 64, depthTest);
 	}

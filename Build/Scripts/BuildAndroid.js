@@ -31,13 +31,21 @@ namespace('build', function() {
 
             var editorResourceFolder = config.artifactsRoot + (os.platform() == "win32" ? "AtomicEditor/Resources/" : "AtomicEditor/AtomicEditor.app/Contents/Resources/");
 
-            // Install Deployment
+            // Install Deployment for armeabi-v7a
             fs.copySync(buildDir + "Source/AtomicPlayer/Application/libAtomicPlayer.so",
             editorResourceFolder + "ToolData/Deployment/Android/libs/armeabi-v7a/libAtomicPlayer.so");
 
-            // Install local deployment
+            // Install local deployment for armeabi-v7a
             fs.copySync(buildDir + "Source/AtomicPlayer/Application/libAtomicPlayer.so",
             atomicRoot + "Artifacts/AtomicEditor/Resources/ToolData/Deployment/Android/libs/armeabi-v7a/libAtomicPlayer.so");
+			
+			// Install Deployment for arm64-v8a
+            fs.copySync(buildDir + "Source/AtomicPlayer/Application/libAtomicPlayer.so",
+            editorResourceFolder + "ToolData/Deployment/Android/libs/arm64-v8a/libAtomicPlayer.so");
+
+            // Install local deployment for arm64-v8a
+            fs.copySync(buildDir + "Source/AtomicPlayer/Application/libAtomicPlayer.so",
+            atomicRoot + "Artifacts/AtomicEditor/Resources/ToolData/Deployment/Android/libs/arm64-v8a/libAtomicPlayer.so");
 
             complete();
 

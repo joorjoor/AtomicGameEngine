@@ -1,0 +1,153 @@
+
+#ifndef COMPILEGS //ONLY IF NOT GS Shader
+
+#include "Uniforms.glsl"
+#include "Samplers.glsl"
+#include "Transform.glsl"
+#include "ScreenPos.glsl"
+#include "Fog.glsl"
+
+#endif //ONLY IF NOT GS Shader
+
+//---------------------------------------------VS-----------------------------------------------------
+#ifdef COMPILEVS
+
+out vec2 vTexCoord;
+//out vec4 vWorldPos;
+out vec3 vNormal;
+
+#ifdef VERTEXCOLOR
+    out vec4 vColor;
+#endif
+
+void VS()
+{
+    gl_Position = iPos;
+    vNormal = iNormal;
+    vTexCoord = GetTexCoord(iTexCoord);
+    
+    //mat4 modelMatrix = iModelMatrix;
+    //vec3 worldPos = GetWorldPos(modelMatrix);
+    //gl_Position = GetClipPos(worldPos);
+    //vNormal = GetWorldNormal(modelMatrix);
+    //vTexCoord = GetTexCoord(iTexCoord);
+    //vWorldPos = vec4(worldPos, GetDepth(gl_Position));
+
+    #ifdef VERTEXCOLOR
+        vColor = iColor;
+    #endif
+}
+#endif // COMPILEVS
+
+//---------------------------------------------GS-----------------------------------------------------
+#ifdef COMPILEGS
+
+#include "Uniforms.glsl"
+#include "Transform.glsl"
+
+uniform mat4 cModel;
+uniform mat4 cViewProj;
+uniform vec4 cDepthMode;
+uniform float cOffset;
+
+
+layout(triangles) in;
+layout(triangle_strip, max_vertices = 3) out;
+
+in vec2 vTexCoord[];
+//in vec4 vWorldPos[];
+in vec3 vNormal[];
+
+out vec2 gTexCoord;
+out vec4 gWorldPos;
+out vec3 gNormal;
+
+mat3 GetNormalMatrix(mat4 modelMatrix)
+{
+    return mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz);
+}
+
+float GetDepth(vec4 clipPos)
+{
+    return dot(clipPos.zw, cDepthMode.zw);
+}
+
+void GS()
+{ 
+    mat4 modelMatrix = cModel;
+    vec3 faceNormal = vec3(0);
+    for ( int i=0; i<gl_in.length(); i++) 
+    {
+        faceNormal +=  normalize(vNormal[i] * GetNormalMatrix(modelMatrix)); 
+    }
+    
+    faceNormal /= gl_in.length();
+    
+    for ( int i = 0; i < gl_in.length(); i++ )
+    {
+        vec4 iPos = gl_in[i].gl_Position;
+        vec3 worldPos = (iPos * modelMatrix).xyz + faceNormal * cOffset;
+        gNormal = normalize(vNormal[i] * GetNormalMatrix(modelMatrix)); 
+        gl_Position = vec4(vec3(worldPos), 1.0) * cViewProj;
+        gWorldPos = vec4(worldPos, GetDepth(gl_Position));
+        gTexCoord = vTexCoord[i];
+        EmitVertex ();
+    }
+    EndPrimitive ();
+}
+#endif // COMPILEGS
+//---------------------------------------------PS-----------------------------------------------------
+#ifdef COMPILEPS
+
+in vec2 gTexCoord;
+in vec4 gWorldPos;
+in vec3 gNormal;
+
+#ifdef VERTEXCOLOR
+    varying vec4 gColor;
+#endif
+
+void PS()
+{
+    // Get material diffuse albedo
+    #ifdef DIFFMAP
+        vec4 diffColor = cMatDiffColor * texture2D(sDiffMap, gTexCoord);
+        #ifdef ALPHAMASK
+            if (diffColor.a < 0.5)
+                discard;
+        #endif
+    #else
+        vec4 diffColor = cMatDiffColor;
+    #endif
+
+    #ifdef VERTEXCOLOR
+        diffColor *= gColor;
+    #endif
+
+    // Get fog factor
+    #ifdef HEIGHTFOG
+        float fogFactor = GetHeightFogFactor(gWorldPos.w, gWorldPos.y);
+    #else
+        float fogFactor = GetFogFactor(gWorldPos.w);
+    #endif
+
+    #if defined(PREPASS)
+        // Fill light pre-pass G-Buffer
+        gl_FragData[0] = vec4(0.5, 0.5, 0.5, 1.0);
+        gl_FragData[1] = vec4(EncodeDepth(gWorldPos.w), 0.0);
+    #elif defined(DEFERRED)
+        gl_FragData[0] = vec4(GetFog(diffColor.rgb, fogFactor), diffColor.a);
+        gl_FragData[1] = vec4(0.0, 0.0, 0.0, 0.0);
+        gl_FragData[2] = vec4(0.5, 0.5, 0.5, 1.0);
+        gl_FragData[3] = vec4(EncodeDepth(gWorldPos.w), 0.0);
+    #else
+        #ifndef MRT1
+            gl_FragColor = vec4(GetFog(diffColor.rgb, fogFactor), diffColor.a);
+        #else
+            gl_FragData[0] = vec4(GetFog(diffColor.rgb, fogFactor), diffColor.a);
+            gl_FragData[1] = vec4(1.0);
+        #endif
+    #endif
+}
+
+#endif

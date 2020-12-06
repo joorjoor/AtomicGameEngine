@@ -229,9 +229,8 @@ ATOMIC_EVENT(E_REQUESTPROJECTLOAD, RequestProjectLoad)
 }
 
 // emitted once a project has been loaded
-ATOMIC_EVENT(E_LOADPROJECTNOTIFICATION,LoadProjectNotification)
+ATOMIC_EVENT(E_LOADPROJECTNOTIFICATION, LoadProjectNotification)
 {
     ATOMIC_PARAM(P_PATH, Path);     // string (Full path to the .atomic file)
 }
-
 }

@@ -124,6 +124,8 @@ void AndroidBuildSettings::Write(JSONValue& parent)
     json.Set("minSDKVersion", minSDKVersion_);
     json.Set("activityName", activityName_);
     json.Set("iconPath", iconPath_);
+	
+    json.Set("version", version_);
 
     parent.Set("AndroidBuildSettings", json);
 
@@ -146,6 +148,8 @@ void AndroidBuildSettings::Read(JSONValue& parent)
     minSDKVersion_ = json.Get("minSDKVersion").GetString();
     activityName_ = json.Get("activityName").GetString();
     iconPath_ = json.Get("iconPath").GetString();
+	
+    version_ = json.Get("version").GetString();
 
 }
 

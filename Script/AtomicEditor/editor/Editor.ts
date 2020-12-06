@@ -63,7 +63,7 @@ class AtomicEditor extends Atomic.ScriptObject {
         this.subscribeToEvent(Editor.EditorLoadProjectEvent((data) => this.handleEditorLoadProject(data)));
         this.subscribeToEvent(Editor.EditorCloseProjectEvent((data) => this.handleEditorCloseProject(data)));
         this.subscribeToEvent(Editor.ProjectUnloadedNotificationEvent((data) => {
-            Atomic.graphics.windowTitle = "AtomicEditor";
+            Atomic.graphics.windowTitle = "AtomicGameEngine";
             this.handleProjectUnloaded(data);
         }));
 
@@ -87,7 +87,7 @@ class AtomicEditor extends Atomic.ScriptObject {
         this.subscribeToEvent(Atomic.ExitRequestedEvent((data) => this.handleExitRequested(data)));
 
         this.subscribeToEvent(ToolCore.ProjectLoadedEvent((data) => {
-            Atomic.graphics.windowTitle = "AtomicEditor - " + data.projectPath;
+            Atomic.graphics.windowTitle = "AtomicGameEngine - " + data.projectPath;
             Preferences.getInstance().registerRecentProject(data.projectPath);
         }));
 

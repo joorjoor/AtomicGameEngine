@@ -388,8 +388,8 @@ void BuildAndroid::Build(const String& buildPath)
     mfile->WriteString(manifest);
     mfile->Close();
 
-    //check for Deployment/Android/libs/armeabi-v7a/libAtomicPlayer.so
-    if ( !fileSystem->FileExists(androidProject + "/libs/armeabi-v7a/libAtomicPlayer.so")  )
+    //check for Deployment/Android/libs/armeabi-v7a/libAtomicPlayer.so and Deployment/Android/libs/arm64-v8a/libAtomicPlayer.so
+    if ( !fileSystem->FileExists(androidProject + "/libs/armeabi-v7a/libAtomicPlayer.so") || !fileSystem->FileExists(androidProject + "/libs/arm64-v8a/libAtomicPlayer.so") )
     {
         FailBuild( "The file libAtomicPlayer.so is not found. This is required for APK generation." );
         return;

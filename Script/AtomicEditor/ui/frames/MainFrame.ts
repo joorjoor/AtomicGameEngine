@@ -42,20 +42,21 @@ class MainFrame extends ScriptWidget {
         this.load("AtomicEditor/editor/ui/mainframe.tb.txt");
 
         this.inspectorlayout = <Atomic.UILayout> this.getWidget("inspectorlayout");
-
+		this.projecthierarchylayout = <Atomic.UILayout> this.getWidget("projecthierarchylayout");
+		
         this.getWidget("consolecontainer").visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_GONE;
 
         this.statusText = <Atomic.UIEditField>this.getWidget("editorStatusText");
         this.statusText.subscribeToEvent(Atomic.UpdateEvent((ev) => this.handleStatusAging(ev)));
 
-        this.inspectorframe = new InspectorFrame();
-        this.inspectorlayout.addChild(this.inspectorframe);
+        this.inspectorFrame = new InspectorFrame();
+        this.inspectorlayout.addChild(this.inspectorFrame);
 
-        this.projectframe = new ProjectFrame(this);
+        this.projectFrame = new ProjectFrame(this);
         this.hierarchyFrame = new HierarchyFrame(this);
 
         this.welcomeFrame = new WelcomeFrame(this);
-        this.resourceframe = new ResourceFrame(this);
+        this.resourceFrame = new ResourceFrame(this);
 
         this.mainToolbar = new MainToolbar(this.getWidget("maintoolbarcontainer"));
 
@@ -96,12 +97,20 @@ class MainFrame extends ScriptWidget {
 
         if (show) {
             this.showInspectorFrame(false);
+			this.showProjectFrame(false);
+			this.showHierarchyFrame(false);
+			this.showMainToolbar(false);
+            this.projecthierarchylayout.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_GONE;
             this.welcomeFrame.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_VISIBLE;
-            this.resourceframe.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_GONE;
+            this.resourceFrame.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_GONE;
         }
         else {
             this.showInspectorFrame(true);
-            this.resourceframe.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_VISIBLE;
+			this.showProjectFrame(true);
+			this.showHierarchyFrame(true);
+			this.showMainToolbar(true);
+			this.projecthierarchylayout.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_VISIBLE;
+            this.resourceFrame.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_VISIBLE;
             this.welcomeFrame.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_GONE;
         }
 
@@ -112,17 +121,45 @@ class MainFrame extends ScriptWidget {
         if (show) {
 
             this.inspectorlayout.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_VISIBLE;
-            this.inspectorframe.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_VISIBLE;
+            this.inspectorFrame.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_VISIBLE;
 
         } else {
 
-            this.inspectorframe.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_GONE;
+            this.inspectorFrame.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_GONE;
             this.inspectorlayout.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_GONE;
 
         }
 
     }
+	
+	showProjectFrame(show: boolean) {
 
+        if (show)
+			this.projectFrame.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_VISIBLE;
+		else
+			this.projectFrame.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_GONE;
+    }
+	
+	showHierarchyFrame(show: boolean) {
+
+        if (show)
+            this.hierarchyFrame.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_VISIBLE;
+		else
+            this.hierarchyFrame.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_GONE;
+
+
+    }
+	showMainToolbar(show: boolean) {
+
+        if (show)
+            this.mainToolbar.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_VISIBLE;
+		else
+            this.mainToolbar.visibility = Atomic.UI_WIDGET_VISIBILITY.UI_WIDGET_VISIBILITY_GONE;
+
+
+    }
+	
+	
     onEventClick(target: Atomic.UIWidget, refid: string): boolean {
 
         if (this.menu.handlePopupMenu(target, refid))
@@ -154,7 +191,7 @@ class MainFrame extends ScriptWidget {
 
     shutdown() {
 
-        this.resourceframe.shutdown();
+        this.resourceFrame.shutdown();
         this.deleteAllChildren();
 
     }
@@ -199,12 +236,13 @@ class MainFrame extends ScriptWidget {
     }
 
 
-    projectframe: ProjectFrame;
-    resourceframe: ResourceFrame;
-    inspectorframe: InspectorFrame;
+    projectFrame: ProjectFrame;
+    resourceFrame: ResourceFrame;
+    inspectorFrame: InspectorFrame;
     hierarchyFrame: HierarchyFrame;
     welcomeFrame: WelcomeFrame;
     inspectorlayout: Atomic.UILayout;
+    projecthierarchylayout: Atomic.UILayout;
     mainToolbar: MainToolbar;
     animationToolbar: AnimationToolbar;
     menu: MainFrameMenu;

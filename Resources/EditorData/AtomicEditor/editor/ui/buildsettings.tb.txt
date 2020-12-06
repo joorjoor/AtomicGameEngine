@@ -1,5 +1,5 @@
 TBLayout: axis: y, distribution: gravity, position: left
-	lp: min-height: 512
+	lp: min-height: 530
 	TBLayout: distribution: gravity, position: top
 		TBLayout: id: platformcontainer
 		TBLayout: id: settingscontainer

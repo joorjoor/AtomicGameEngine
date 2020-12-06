@@ -356,7 +356,7 @@ export class UIServicesProvider extends ServicesProvider<Editor.HostExtensions.U
         // Only set these once
         if (this.mainFrame == null) {
             this.mainFrame = mainFrame;
-            this.inspectorFrame = this.mainFrame.inspectorframe;
+            this.inspectorFrame = this.mainFrame.inspectorFrame;
         }
         if (this.modalOps == null) {
             this.modalOps = modalOps;
@@ -387,7 +387,7 @@ export class UIServicesProvider extends ServicesProvider<Editor.HostExtensions.U
      * @return {Editor.ResourceEditor}
      */
     getCurrentResourceEditor(): Editor.ResourceEditor {
-        return this.mainFrame.resourceframe.currentResourceEditor;
+        return this.mainFrame.resourceFrame.currentResourceEditor;
     }
 
     /**
@@ -397,8 +397,8 @@ export class UIServicesProvider extends ServicesProvider<Editor.HostExtensions.U
      * @return {Editor.ResourceEditor}
      */
     loadResourceEditor(resourcePath: string, lineNumber?: number): Editor.ResourceEditor {
-        this.mainFrame.resourceframe.sendEvent(Editor.EditorEditResourceEventData({path: resourcePath, lineNumber: lineNumber}));
-        return this.mainFrame.resourceframe.currentResourceEditor;
+        this.mainFrame.resourceFrame.sendEvent(Editor.EditorEditResourceEventData({path: resourcePath, lineNumber: lineNumber}));
+        return this.mainFrame.resourceFrame.currentResourceEditor;
     }
 
     /**
@@ -426,7 +426,7 @@ export class UIServicesProvider extends ServicesProvider<Editor.HostExtensions.U
      * @return {Atomic.UIMenuItemSource}
      */
     createProjectContextMenuItemSource(id: string, items: any): Atomic.UIMenuItemSource {
-        return this.mainFrame.projectframe.menu.createPluginItemSource(id, items);
+        return this.mainFrame.projectFrame.menu.createPluginItemSource(id, items);
     }
 
     /**
@@ -434,7 +434,7 @@ export class UIServicesProvider extends ServicesProvider<Editor.HostExtensions.U
      * @param  {string} id
      */
     removeProjectContextMenuItemSource(id: string) {
-        this.mainFrame.projectframe.menu.removePluginItemSource(id);
+        this.mainFrame.projectFrame.menu.removePluginItemSource(id);
     }
 
     /**
@@ -498,7 +498,7 @@ export class UIServicesProvider extends ServicesProvider<Editor.HostExtensions.U
      * @param  {Editor.Extensions.ResourceEditorBuilder} editorBuilder
      */
     registerCustomEditor(editorBuilder: Editor.Extensions.ResourceEditorBuilder) {
-        this.mainFrame.resourceframe.resourceEditorProvider.registerCustomEditor(editorBuilder);
+        this.mainFrame.resourceFrame.resourceEditorProvider.registerCustomEditor(editorBuilder);
     }
 
     /**
@@ -506,7 +506,7 @@ export class UIServicesProvider extends ServicesProvider<Editor.HostExtensions.U
      * @param  {Editor.Extensions.ResourceEditorBuilder} editorBuilder
      */
     unregisterCustomEditor(editorBuilder: Editor.Extensions.ResourceEditorBuilder) {
-        this.mainFrame.resourceframe.resourceEditorProvider.unregisterCustomEditor(editorBuilder);
+        this.mainFrame.resourceFrame.resourceEditorProvider.unregisterCustomEditor(editorBuilder);
     }
 
     /**

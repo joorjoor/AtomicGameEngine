@@ -16,6 +16,12 @@ TBLayout: axis: y, distribution: gravity, position: left
 		TBLayout: gravity: left right, distribution-position: right bottom
 			TBEditField: id: company_name, autofocus: 1
 				lp: min-width: 220
+	TBLayout: distribution: gravity
+		TBTextField: text: "Version:"
+		TBLayout: gravity: left right, distribution-position: right bottom
+			TBEditField: id: version, autofocus: 1
+				lp: min-width: 220
+				tooltip The version code and version name is : 1
 	TBLayout: axis: y, position: left, distribution: gravity
 		TBLayout: gravity: left right, distribution-position: right bottom
 			TBButton: id: choose_icon, lp: min-width: 48, min-height: 48, max-width: 48, max-height: 48

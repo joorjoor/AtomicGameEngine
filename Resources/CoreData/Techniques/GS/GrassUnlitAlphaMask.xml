@@ -1,0 +1,3 @@
+<technique vs="UnlitGSGrass" ps="UnlitGSGrass" gs="UnlitGSGrass"  vsdefines="VERTEXCOLOR" gsdefines="VERTEXCOLOR" psdefines="DIFFMAP ALPHAMASK VERTEXCOLOR">
+    <pass name="alpha" depthwrite="true" blend="replace" />
+</technique>

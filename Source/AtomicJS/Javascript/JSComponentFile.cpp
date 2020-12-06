@@ -182,6 +182,7 @@ bool JSComponentFile::InitModule()
 
 bool JSComponentFile::BeginLoad(Deserializer& source)
 {
+	Clear();
     typescriptClass_ = false;
 
     if (!InitModule())
@@ -305,7 +306,6 @@ bool JSComponentFile::BeginLoad(Deserializer& source)
                 while (duk_next(ctx, -1, 1)) {
 
                     String name = duk_get_string(ctx, -2);
-
                     VariantType variantType = VAR_NONE;
                     Variant defaultValue;
 
@@ -417,7 +417,6 @@ bool JSComponentFile::BeginLoad(Deserializer& source)
                     if (defaultValue.GetType() != VAR_NONE)
                     {
                         AddDefaultValue(name, defaultValue);
-
                     }
 
                     if (variantType != VAR_NONE)

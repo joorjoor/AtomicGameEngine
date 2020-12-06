@@ -73,7 +73,7 @@ export function showEditorStatus(message:string) {
 }
 
 export function getCurrentResourceEditor():Editor.ResourceEditor {
-    return getMainFrame().resourceframe.currentResourceEditor;
+    return getMainFrame().resourceFrame.currentResourceEditor;
 }
 
 class EditorUI extends Atomic.ScriptObject {

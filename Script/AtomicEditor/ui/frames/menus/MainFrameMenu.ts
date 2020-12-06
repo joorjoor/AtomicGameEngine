@@ -74,6 +74,13 @@ class MainFrameMenu extends Atomic.ScriptObject {
         }
     }
 
+    cameraOrthoChange(mode)
+    {
+        var editor = EditorUI.getCurrentResourceEditor();
+        if (editor && editor instanceof Editor.SceneEditor3D) 
+            editor.getSceneView3D().cameraOrthoChange(mode);
+    }
+
     handlePopupMenu(target: Atomic.UIWidget, refid: string): boolean {
 
         if (target.id == "menu edit popup") {
@@ -142,8 +149,52 @@ class MainFrameMenu extends Atomic.ScriptObject {
                 EditorUI.getShortcuts().invokeFrameSelected();
                 return true;
             }
-
-
+            
+            if (refid == "edit grid") {
+                this.cameraOrthoChange(9);
+                return true;
+            }
+            
+            if (refid == "edit ortho on") {
+                this.cameraOrthoChange(8);
+                return true;
+            }
+            
+            if (refid == "edit ortho off") {
+                this.cameraOrthoChange(7);
+                return true;
+            }
+            
+            if (refid == "edit mode ortho top") {
+                this.cameraOrthoChange(1);
+                return true;
+            }
+            
+            if (refid == "edit mode ortho bottom") {
+                this.cameraOrthoChange(2);
+                return true;
+            }
+            
+            if (refid == "edit mode ortho left") {
+                this.cameraOrthoChange(3);
+                return true;
+            }
+            
+            if (refid == "edit mode ortho right") {
+                this.cameraOrthoChange(4);
+                return true;
+            }
+            
+            if (refid == "edit mode ortho front") {
+                this.cameraOrthoChange(5);
+                return true;
+            }
+            
+            if (refid == "edit mode ortho back") {
+                this.cameraOrthoChange(6);
+				return true;
+            }
+            
             return false;
 
         } else if (target.id == "menu file popup") {
@@ -247,6 +298,11 @@ class MainFrameMenu extends Atomic.ScriptObject {
             if ( refid == "screenshot") {
                 this.subscribeToEvent(Atomic.UpdateEvent((ev) => this.handleScreenshot(ev)));
                 this.goScreenshot = 19;  // number of ticks to wait for the menu to close
+                return true;
+            }
+
+            if ( refid == "fullscreen") {
+                EditorUI.getShortcuts().invokeFullscreen();
                 return true;
             }
 
@@ -405,7 +461,21 @@ var editItems = {
     "Paste": ["edit paste", StringID.ShortcutPaste],
     "Select All": ["edit select all", StringID.ShortcutSelectAll],
     "-2": null,
-    "Frame Selected": ["edit frame selected", StringID.ShortcutFrameSelected],
+    "Scene": {
+        "Frame Selected": ["edit frame selected", StringID.ShortcutFrameSelected],
+        "Scene Grid": ["edit grid", StringID.ShortcutGrid],
+        "-1": null,
+        "Orthographic enable": ["edit ortho on", StringID.ShortcutOrthoEn],
+        "Orthographic mode": {
+			"Orthographic top": ["edit mode ortho top", StringID.ShortcutOrthoTop],
+			"Orthographic bottom": ["edit mode ortho bottom", StringID.ShortcutOrthoBottom],
+			"Orthographic left": ["edit mode ortho left", StringID.ShortcutOrthoLeft],
+			"Orthographic right": ["edit mode ortho right", StringID.ShortcutOrthoRight],
+			"Orthographic front": ["edit mode ortho front", StringID.ShortcutOrthoFront],
+			"Orthographic back": ["edit mode ortho back", StringID.ShortcutOrthoBack]
+		},
+        "Orthographic disable": ["edit ortho off", StringID.ShortcutOrthoDis]
+    },
     "-3": null,
     "Find": ["edit find", StringID.ShortcutFind],
     "Find Next": ["edit find next", StringID.ShortcutFindNext],
@@ -451,7 +521,8 @@ var developerItems = {
             "2x": ["developer ui width project 2x"],
             "3x": ["developer ui width project 3x"],
             "4x": ["developer ui width project 4x"]
-        }
+        },
+        "Fullscreen": ["developer ui fullscreen", StringID.ShortcutFullscreen]
     },
     "Theme": {
         "Toggle Theme": ["toggle theme"],

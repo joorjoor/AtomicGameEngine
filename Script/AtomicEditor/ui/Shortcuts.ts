@@ -145,8 +145,7 @@ class Shortcuts extends Atomic.ScriptObject {
     invokeFrameSelected() {
         this.invokeResourceFrameShortcut("frameselected");
     }
-
-
+	
     invokeSelectAll() {
         this.invokeResourceFrameShortcut("selectall");
     }
@@ -168,7 +167,7 @@ class Shortcuts extends Atomic.ScriptObject {
 
     invokeResourceFrameShortcut(shortcut: Editor.EditorShortcutType) {
         if (!ToolCore.toolSystem.project) return;
-        var resourceFrame = EditorUI.getMainFrame().resourceframe.currentResourceEditor;
+        var resourceFrame = EditorUI.getMainFrame().resourceFrame.currentResourceEditor;
         if (resourceFrame) {
             resourceFrame.invokeShortcut(shortcut);
         }
@@ -197,6 +196,10 @@ class Shortcuts extends Atomic.ScriptObject {
         else EditorUI.showEditorStatus ( "Error - could not take screenshot.");
     }
 
+	invokeFullscreen(){
+		Atomic.getGraphics().toggleFullscreen();
+	}
+
     handleKeyDown(ev: Atomic.KeyDownEvent) {
 
         // if the right mouse buttons isn't down
@@ -223,7 +226,9 @@ class Shortcuts extends Atomic.ScriptObject {
                     this.toggleGizmoAxisMode();
                 } else if (ev.key == Atomic.Key.KEY_F) {
                     this.invokeFrameSelected();
-                }
+                } else if (ev.key == Atomic.Key.KEY_F11) {
+					this.invokeFullscreen();
+				}
             }
 
         }

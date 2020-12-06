@@ -84,11 +84,11 @@ class ProjectFrame extends ScriptWidget {
         // this.subscribeToEvent(EditorEvents.ResourceFolderCreated, (ev: EditorEvents.ResourceFolderCreatedEvent) => this.handleResourceFolderCreated(ev));
 
         // this uses FileWatcher which doesn't catch subfolder creation
-        this.subscribeToEvent(Atomic.FileChangedEvent((data) => {
+        //this.subscribeToEvent(Atomic.FileChangedEvent((data) => {
 
             // console.log("File CHANGED! ", data.fileName);
 
-        }));
+        //}));
 
         // Development support for project frame resizing, including hierarchy frame
         this.subscribeToEvent("DevelopmentUIEvent", (data) => {

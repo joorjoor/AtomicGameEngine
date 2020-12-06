@@ -138,7 +138,7 @@ void CollisionBox2D::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
 		float halfWidth = size_.x_ * 0.5f * cachedWorldScale_.x_;
 		float halfHeight = size_.y_ * 0.5f * cachedWorldScale_.y_;
 		
-		Vector3 pos_ = node_->GetPosition() + Vector3(center_);
+		Vector3 pos_ = node_->GetWorldPosition() + Vector3(center_);
 		
 		Vector3 v1(pos_.x_ - halfWidth, pos_.y_ - halfHeight, 0);
 		Vector3 v2(pos_.x_ + halfWidth, pos_.y_ - halfHeight, 0);

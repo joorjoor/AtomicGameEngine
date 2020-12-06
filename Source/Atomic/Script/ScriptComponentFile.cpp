@@ -22,6 +22,7 @@
 
 
 #include "ScriptComponentFile.h"
+#include "../Atomic/IO/Log.h"
 
 namespace Atomic
 {

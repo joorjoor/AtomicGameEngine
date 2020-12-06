@@ -299,16 +299,15 @@ void TmxObjectGroup2D::StoreObject(const XMLElement& objectElem, const SharedPtr
 		}
 		else
 		{
-			Vector2 nposition = position;
-
-			nposition.x_ *= PIXEL_SIZE;
-			nposition.y_ *= PIXEL_SIZE;
+			Vector2 nposition = info.ConvertPosition(Vector2(position.x_, position.y_ + size.y_));
+			
+			//nposition.x_ *= PIXEL_SIZE;
+			//nposition.y_ *= PIXEL_SIZE;
 
 			nposition.x_ = nposition.x_ + object->size_.x_ / 2.0f;
 			nposition.y_ = nposition.y_ + object->size_.y_ / 2.0f;
-
-			nposition.y_ = info.tileHeight_  - nposition.y_;
-
+			//nposition.y_ = info.tileHeight_  - nposition.y_;
+			
 			object->position_ = nposition;
 		}
 		// ATOMIC END

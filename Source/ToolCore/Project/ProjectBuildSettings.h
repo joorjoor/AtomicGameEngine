@@ -143,6 +143,8 @@ public:
     const String& GetActivityName() const { return activityName_; }
     const String& GetIconPath() const { return iconPath_; }
 
+	const String& GetVersion() const { return version_; }
+
     void SetAppName(const String& name) { appName_ = name; }
     void SetPackageName(const String& packageName) { packageName_ = packageName; }
     void SetCompanyName(const String& companyName) { companyName_ = companyName; }
@@ -152,6 +154,8 @@ public:
     void SetMinSDKVersion(const String& value) { minSDKVersion_ = value; }
     void SetActivityName(const String& value) { activityName_ = value; }
     void SetIconPath(const String& value) { iconPath_ = value; }
+
+    void SetVersion(const String& version) { version_ = version; }
 
     void Write(JSONValue& parent);
     void Read(JSONValue& parent);
@@ -167,6 +171,8 @@ private:
     String minSDKVersion_;
     String activityName_;
     String iconPath_;
+	
+	String version_;
 };
 
 class IOSBuildSettings : public RefCounted
