@@ -1,6 +1,6 @@
 [submodule "Submodules/CEF"]
 	path = Submodules/CEF
-	url = https://github.com/AtomicGameEngine/CEF3Binaries
+	url = https://github.com/joorjoor/CEF3Binaries
 [submodule "Submodules/AtomicExamples"]
 	path = Submodules/AtomicExamples
-	url = https://github.com/AtomicGameEngine/AtomicExamples
+	url = https://github.com/joorjoor/AtomicExamples
