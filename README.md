@@ -36,7 +36,7 @@ The Atomic Editor can be built for your platform using these <a href="https://gi
 
 ##### Community
 
-<a href="https://discord.gg/7yy3HayK/">Discord</a>  
+[![Atomic Game Engine Discord Invite](https://img.shields.io/discord/772690225776033853?color=%237289DA&label=chat&logo=discord&logoColor=white)](https://discord.com/invite/rx9FDke5BP)
 
 #### Atomic History
 
