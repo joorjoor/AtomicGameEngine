@@ -41,5 +41,3 @@ The Atomic Editor can be built for your platform using these <a href="https://gi
 #### Atomic History
 
 THUNDERBEAST GAMES began developing the Atomic Game Engine on November 12th, 2014 by forking Urho3D.  It was released under the permissive MIT license during GDC 2016.  Atomic is now being used in production environments, <a href="https://github.com/joorjoor/AtomicGameEngine/graphs/contributors" target="_blank">has 27 contributors</a>, and runs on Windows, macOS, Android, iOS, Linux, and WebGL!
-
-<iframe width="728" height="200" src="https://widget.qiwi.com/widgets/big-widget-728x200?publicKey=48e7qUxn9T7RyYE1MVZswX1FRSbE6iyCj2gCRwwF3Dnh5XrasNTx3BGPiMsyXQFNKQhvukniQG8RTVhYm3iP3gB63pqksAJeNNrjf3MCoaKq9acGgVyhKk9DmYm7mXFeDgq5UU2G746tqJMrH5Nc14779ExiP9RMFh7bGkqd1no2E3AEcRqwnvp9TTqTF" allowtransparency="true" scrolling="no" frameborder="0"></iframe>
