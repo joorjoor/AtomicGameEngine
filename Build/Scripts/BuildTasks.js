@@ -44,6 +44,7 @@ function installBuildTasks(rootTask) {
     if (config["with-android"]) {
         var androidTask = jake.Task['build:android_native'];
         task.prereqs.push("build:android_native")
+        task.prereqs.push("build:android_native64")
         task = androidTask;
     }
 

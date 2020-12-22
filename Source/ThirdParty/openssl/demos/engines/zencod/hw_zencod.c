@@ -610,7 +610,7 @@ static int zencod_init(ENGINE *e)
     ptr_zencod_rc4_cipher = ptr_rc4_1;
 
     /*
-     * We should peform a test to see if there is actually any unit runnig on
+     * We should perform a test to see if there is actually any unit runnig on
      * the system ... Even if the cryptozen library is loaded the module coul
      * not be loaded on the system ... For now we may just open and close the
      * device !!
@@ -1289,10 +1289,10 @@ static const EVP_MD engine_sha1_md = {
     engine_md_cleanup,          /* dev_crypto_sha_cleanup */
     EVP_PKEY_RSA_method,
     SHA_CBLOCK,
-    /* sizeof ( EVP_MD * ) + sizeof ( SHA_CTX ) */
+    /* sizeof(EVP_MD *) + sizeof(SHA_CTX) */
     sizeof(ZEN_MD_DATA)
         /*
-         * sizeof ( MD_CTX_DATA ) The message digest data structure ...
+         * sizeof(MD_CTX_DATA) The message digest data structure ...
          */
 };
 
@@ -1315,10 +1315,10 @@ static const EVP_MD engine_md5_md = {
     engine_md_cleanup,          /* dev_crypto_md5_cleanup */
     EVP_PKEY_RSA_method,
     MD5_CBLOCK,
-    /* sizeof ( EVP_MD * ) + sizeof ( MD5_CTX ) */
+    /* sizeof(EVP_MD *) + sizeof(MD5_CTX) */
     sizeof(ZEN_MD_DATA)
         /*
-         * sizeof ( MD_CTX_DATA ) The message digest data structure ...
+         * sizeof(MD_CTX_DATA) The message digest data structure ...
          */
 };
 

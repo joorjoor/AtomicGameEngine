@@ -133,17 +133,13 @@ const DSA_METHOD *DSA_OpenSSL(void)
 static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa)
 {
     BIGNUM *kinv = NULL, *r = NULL, *s = NULL;
-    BIGNUM m;
-    BIGNUM xr;
+    BIGNUM *m, *blind, *blindm, *tmp;
     BN_CTX *ctx = NULL;
     int reason = ERR_R_BN_LIB;
     DSA_SIG *ret = NULL;
     int noredo = 0;
 
-    BN_init(&m);
-    BN_init(&xr);
-
-    if (!dsa->p || !dsa->q || !dsa->g) {
+    if (dsa->p == NULL || dsa->q == NULL || dsa->g == NULL) {
         reason = DSA_R_MISSING_PARAMETERS;
         goto err;
     }
@@ -154,6 +150,13 @@ static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa)
     ctx = BN_CTX_new();
     if (ctx == NULL)
         goto err;
+    m = BN_CTX_get(ctx);
+    blind = BN_CTX_get(ctx);
+    blindm = BN_CTX_get(ctx);
+    tmp = BN_CTX_get(ctx);
+    if (tmp == NULL)
+        goto err;
+
  redo:
     if ((dsa->kinv == NULL) || (dsa->r == NULL)) {
         if (!DSA_sign_setup(dsa, ctx, &kinv, &r))
@@ -173,23 +176,52 @@ static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa)
          * 4.2
          */
         dlen = BN_num_bytes(dsa->q);
-    if (BN_bin2bn(dgst, dlen, &m) == NULL)
+    if (BN_bin2bn(dgst, dlen, m) == NULL)
         goto err;
 
-    /* Compute  s = inv(k) (m + xr) mod q */
-    if (!BN_mod_mul(&xr, dsa->priv_key, r, dsa->q, ctx))
-        goto err;               /* s = xr */
-    if (!BN_add(s, &xr, &m))
-        goto err;               /* s = m + xr */
-    if (BN_cmp(s, dsa->q) > 0)
-        if (!BN_sub(s, s, dsa->q))
+    /*
+     * The normal signature calculation is:
+     *
+     *   s := k^-1 * (m + r * priv_key) mod q
+     *
+     * We will blind this to protect against side channel attacks
+     *
+     *   s := blind^-1 * k^-1 * (blind * m + blind * r * priv_key) mod q
+     */
+
+    /* Generate a blinding value */
+    do {
+        if (!BN_rand(blind, BN_num_bits(dsa->q) - 1, -1, 0))
             goto err;
+    } while (BN_is_zero(blind));
+    BN_set_flags(blind, BN_FLG_CONSTTIME);
+    BN_set_flags(blindm, BN_FLG_CONSTTIME);
+    BN_set_flags(tmp, BN_FLG_CONSTTIME);
+
+    /* tmp := blind * priv_key * r mod q */
+    if (!BN_mod_mul(tmp, blind, dsa->priv_key, dsa->q, ctx))
+        goto err;
+    if (!BN_mod_mul(tmp, tmp, r, dsa->q, ctx))
+        goto err;
+
+    /* blindm := blind * m mod q */
+    if (!BN_mod_mul(blindm, blind, m, dsa->q, ctx))
+        goto err;
+
+    /* s : = (blind * priv_key * r) + (blind * m) mod q */
+    if (!BN_mod_add_quick(s, tmp, blindm, dsa->q))
+        goto err;
+
+    /* s := s * k^-1 mod q */
     if (!BN_mod_mul(s, s, kinv, dsa->q, ctx))
         goto err;
 
-    ret = DSA_SIG_new();
-    if (ret == NULL)
+    /* s:= s * blind^-1 mod q */
+    if (BN_mod_inverse(blind, blind, dsa->q, ctx) == NULL)
         goto err;
+    if (!BN_mod_mul(s, s, blind, dsa->q, ctx))
+        goto err;
+
     /*
      * Redo if r or s is zero as required by FIPS 186-3: this is very
      * unlikely.
@@ -201,22 +233,21 @@ static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa)
         }
         goto redo;
     }
+    ret = DSA_SIG_new();
+    if (ret == NULL)
+        goto err;
     ret->r = r;
     ret->s = s;
 
  err:
-    if (!ret) {
+    if (ret == NULL) {
         DSAerr(DSA_F_DSA_DO_SIGN, reason);
         BN_free(r);
         BN_free(s);
     }
-    if (ctx != NULL)
-        BN_CTX_free(ctx);
-    BN_clear_free(&m);
-    BN_clear_free(&xr);
-    if (kinv != NULL)           /* dsa->kinv is NULL now if we used it */
-        BN_clear_free(kinv);
-    return (ret);
+    BN_CTX_free(ctx);
+    BN_clear_free(kinv);
+    return ret;
 }
 
 static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp,
@@ -224,7 +255,9 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp,
 {
     BN_CTX *ctx;
     BIGNUM k, kq, *K, *kinv = NULL, *r = NULL;
+    BIGNUM l, m;
     int ret = 0;
+    int q_bits;
 
     if (!dsa->p || !dsa->q || !dsa->g) {
         DSAerr(DSA_F_DSA_SIGN_SETUP, DSA_R_MISSING_PARAMETERS);
@@ -233,6 +266,8 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp,
 
     BN_init(&k);
     BN_init(&kq);
+    BN_init(&l);
+    BN_init(&m);
 
     if (ctx_in == NULL) {
         if ((ctx = BN_CTX_new()) == NULL)
@@ -243,14 +278,23 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp,
     if ((r = BN_new()) == NULL)
         goto err;
 
+    /* Preallocate space */
+    q_bits = BN_num_bits(dsa->q);
+    if (!BN_set_bit(&k, q_bits)
+        || !BN_set_bit(&l, q_bits)
+        || !BN_set_bit(&m, q_bits))
+        goto err;
+
     /* Get random k */
     do
         if (!BN_rand_range(&k, dsa->q))
             goto err;
-    while (BN_is_zero(&k)) ;
+    while (BN_is_zero(&k));
+
     if ((dsa->flags & DSA_FLAG_NO_EXP_CONSTTIME) == 0) {
         BN_set_flags(&k, BN_FLG_CONSTTIME);
     }
+
 
     if (dsa->flags & DSA_FLAG_CACHE_MONT_P) {
         if (!BN_MONT_CTX_set_locked(&dsa->method_mont_p,
@@ -261,27 +305,29 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp,
     /* Compute r = (g^k mod p) mod q */
 
     if ((dsa->flags & DSA_FLAG_NO_EXP_CONSTTIME) == 0) {
-        if (!BN_copy(&kq, &k))
-            goto err;
-
         /*
          * We do not want timing information to leak the length of k, so we
-         * compute g^k using an equivalent exponent of fixed length. (This
-         * is a kludge that we need because the BN_mod_exp_mont() does not
-         * let us specify the desired timing behaviour.)
+         * compute G^k using an equivalent scalar of fixed bit-length.
+         *
+         * We unconditionally perform both of these additions to prevent a
+         * small timing information leakage.  We then choose the sum that is
+         * one bit longer than the modulus.
+         *
+         * TODO: revisit the BN_copy aiming for a memory access agnostic
+         * conditional copy.
          */
-
-        if (!BN_add(&kq, &kq, dsa->q))
+        if (!BN_add(&l, &k, dsa->q)
+            || !BN_add(&m, &l, dsa->q)
+            || !BN_copy(&kq, BN_num_bits(&l) > q_bits ? &l : &m))
             goto err;
-        if (BN_num_bits(&kq) <= BN_num_bits(dsa->q)) {
-            if (!BN_add(&kq, &kq, dsa->q))
-                goto err;
-        }
+
+        BN_set_flags(&kq, BN_FLG_CONSTTIME);
 
         K = &kq;
     } else {
         K = &k;
     }
+
     DSA_BN_MOD_EXP(goto err, dsa, r, dsa->g, K, dsa->p, ctx,
                    dsa->method_mont_p);
     if (!BN_mod(r, r, dsa->q, ctx))
@@ -309,7 +355,9 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp,
         BN_CTX_free(ctx);
     BN_clear_free(&k);
     BN_clear_free(&kq);
-    return (ret);
+    BN_clear_free(&l);
+    BN_clear_free(&m);
+    return ret;
 }
 
 static int dsa_do_verify(const unsigned char *dgst, int dgst_len,
@@ -398,11 +446,7 @@ static int dsa_do_verify(const unsigned char *dgst, int dgst_len,
     ret = (BN_ucmp(&u1, sig->r) == 0);
 
  err:
-    /*
-     * XXX: surely this is wrong - if ret is 0, it just didn't verify; there
-     * is no error in BN. Test should be ret == -1 (Ben)
-     */
-    if (ret != 1)
+    if (ret < 0)
         DSAerr(DSA_F_DSA_DO_VERIFY, ERR_R_BN_LIB);
     if (ctx != NULL)
         BN_CTX_free(ctx);

@@ -1,8 +1,11 @@
 TBLayout: axis: y, distribution: gravity, position: left
-	lp: min-height: 530
+	lp: min-height: 480
 	TBLayout: distribution: gravity, position: top
 		TBLayout: id: platformcontainer
-		TBLayout: id: settingscontainer
+		TBScrollContainer: scroll-mode:y
+			lp: min-width: 350
+			axis: y
+			TBLayout: id: settingscontainer
 	TBSeparator: gravity: left right, skin: AESeparator
 	TBLayout: distribution: gravity
 		TBLayout: axis: y

@@ -419,7 +419,7 @@ static long conn_ctrl(BIO *b, int cmd, long num, void *ptr)
 {
     BIO *dbio;
     int *ip;
-    const char **pptr;
+    const char **pptr = NULL;
     long ret = 1;
     BIO_CONNECT *data;
 
@@ -442,19 +442,28 @@ static long conn_ctrl(BIO *b, int cmd, long num, void *ptr)
     case BIO_C_GET_CONNECT:
         if (ptr != NULL) {
             pptr = (const char **)ptr;
-            if (num == 0) {
-                *pptr = data->param_hostname;
+        }
 
-            } else if (num == 1) {
-                *pptr = data->param_port;
-            } else if (num == 2) {
-                *pptr = (char *)&(data->ip[0]);
-            } else if (num == 3) {
-                *((int *)ptr) = data->port;
+        if (b->init) {
+            if (pptr != NULL) {
+                ret = 1;
+                if (num == 0) {
+                    *pptr = data->param_hostname;
+                } else if (num == 1) {
+                    *pptr = data->param_port;
+                } else if (num == 2) {
+                    *pptr = (char *)&(data->ip[0]);
+                } else {
+                    ret = 0;
+                }
             }
-            if ((!b->init) || (ptr == NULL))
+            if (num == 3) {
+                ret = data->port;
+            }
+        } else {
+            if (pptr != NULL)
                 *pptr = "not initialized";
-            ret = 1;
+            ret = 0;
         }
         break;
     case BIO_C_SET_CONNECT:
@@ -472,7 +481,7 @@ static long conn_ctrl(BIO *b, int cmd, long num, void *ptr)
                 char buf[16];
                 unsigned char *p = ptr;
 
-                BIO_snprintf(buf, sizeof buf, "%d.%d.%d.%d",
+                BIO_snprintf(buf, sizeof(buf), "%d.%d.%d.%d",
                              p[0], p[1], p[2], p[3]);
                 if (data->param_hostname != NULL)
                     OPENSSL_free(data->param_hostname);
@@ -481,7 +490,7 @@ static long conn_ctrl(BIO *b, int cmd, long num, void *ptr)
             } else if (num == 3) {
                 char buf[DECIMAL_SIZE(int) + 1];
 
-                BIO_snprintf(buf, sizeof buf, "%d", *(int *)ptr);
+                BIO_snprintf(buf, sizeof(buf), "%d", *(int *)ptr);
                 if (data->param_port != NULL)
                     OPENSSL_free(data->param_port);
                 data->param_port = BUF_strdup(buf);
@@ -585,7 +594,7 @@ static int conn_puts(BIO *bp, const char *str)
     return (ret);
 }
 
-BIO *BIO_new_connect(char *str)
+BIO *BIO_new_connect(const char *str)
 {
     BIO *ret;
 

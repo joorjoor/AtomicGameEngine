@@ -213,14 +213,16 @@ int BN_X931_generate_Xpq(BIGNUM *Xp, BIGNUM *Xq, int nbits, BN_CTX *ctx)
      * exceeded.
      */
     if (!BN_rand(Xp, nbits, 1, 0))
-        return 0;
+        goto err;
 
     BN_CTX_start(ctx);
     t = BN_CTX_get(ctx);
+    if (t == NULL)
+        goto err;
 
     for (i = 0; i < 1000; i++) {
         if (!BN_rand(Xq, nbits, 1, 0))
-            return 0;
+            goto err;
         /* Check that |Xp - Xq| > 2^(nbits - 100) */
         BN_sub(t, Xp, Xq);
         if (BN_num_bits(t) > (nbits - 100))
@@ -234,6 +236,9 @@ int BN_X931_generate_Xpq(BIGNUM *Xp, BIGNUM *Xq, int nbits, BN_CTX *ctx)
 
     return 0;
 
+ err:
+    BN_CTX_end(ctx);
+    return 0;
 }
 
 /*
@@ -252,10 +257,12 @@ int BN_X931_generate_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
     int ret = 0;
 
     BN_CTX_start(ctx);
-    if (!Xp1)
+    if (Xp1 == NULL)
         Xp1 = BN_CTX_get(ctx);
-    if (!Xp2)
+    if (Xp2 == NULL)
         Xp2 = BN_CTX_get(ctx);
+    if (Xp1 == NULL || Xp2 == NULL)
+        goto error;
 
     if (!BN_rand(Xp1, 101, 0, 0))
         goto error;

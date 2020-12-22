@@ -2,6 +2,7 @@
 
 =head1 NAME
 
+openssl-dgst,
 dgst, sha, sha1, mdc2, ripemd160, sha224, sha256, sha384, sha512, md2, md4, md5, dss1 - message digests
 
 =head1 SYNOPSIS
@@ -13,7 +14,6 @@ B<openssl> B<dgst>
 [B<-hex>]
 [B<-binary>]
 [B<-r>]
-[B<-hmac arg>]
 [B<-non-fips-allow>]
 [B<-out filename>]
 [B<-sign filename>]
@@ -63,10 +63,6 @@ output the digest or signature in binary form.
 =item B<-r>
 
 output the digest in the "coreutils" format used by programs like B<sha1sum>.
-
-=item B<-hmac arg>
-
-set the HMAC key to "arg".
 
 =item B<-non-fips-allow>
 

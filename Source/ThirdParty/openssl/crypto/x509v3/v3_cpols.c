@@ -186,6 +186,10 @@ static STACK_OF(POLICYINFO) *r2i_certpol(X509V3_EXT_METHOD *method,
                 goto err;
             }
             pol = POLICYINFO_new();
+            if (pol == NULL) {
+                X509V3err(X509V3_F_R2I_CERTPOL, ERR_R_MALLOC_FAILURE);
+                goto err;
+            }
             pol->policyid = pobj;
         }
         if (!sk_POLICYINFO_push(pols, pol)) {
@@ -386,10 +390,10 @@ static int nref_nos(STACK_OF(ASN1_INTEGER) *nnums, STACK_OF(CONF_VALUE) *nos)
     return 1;
 
  merr:
+    ASN1_INTEGER_free(aint);
     X509V3err(X509V3_F_NREF_NOS, ERR_R_MALLOC_FAILURE);
 
  err:
-    sk_ASN1_INTEGER_pop_free(nnums, ASN1_STRING_free);
     return 0;
 }
 
@@ -454,9 +458,15 @@ static void print_notice(BIO *out, USERNOTICE *notice, int indent)
             num = sk_ASN1_INTEGER_value(ref->noticenos, i);
             if (i)
                 BIO_puts(out, ", ");
-            tmp = i2s_ASN1_INTEGER(NULL, num);
-            BIO_puts(out, tmp);
-            OPENSSL_free(tmp);
+            if (num == NULL)
+                BIO_puts(out, "(null)");
+            else {
+                tmp = i2s_ASN1_INTEGER(NULL, num);
+                if (tmp == NULL)
+                    return;
+                BIO_puts(out, tmp);
+                OPENSSL_free(tmp);
+            }
         }
         BIO_puts(out, "\n");
     }
