@@ -26,21 +26,38 @@ audioCreateSource.addItem(new Atomic.UIMenuItem("SoundListener", "SoundListener"
 audioCreateSource.addItem(new Atomic.UIMenuItem("SoundSource", "SoundSource"));
 audioCreateSource.addItem(new Atomic.UIMenuItem("SoundSource3D", "SoundSource3D"));
 
+var _ = new Atomic.UIMenuItemSource();
+_.addItem(new Atomic.UIMenuItem("ConstraintDistance2D", "ConstraintDistance2D"));
+_.addItem(new Atomic.UIMenuItem("ConstraintFriction2D", "ConstraintFriction2D"));
+_.addItem(new Atomic.UIMenuItem("ConstraintGear2D", "ConstraintGear2D"));
+_.addItem(new Atomic.UIMenuItem("ConstraintMotor2D", "ConstraintMotor2D"));
+_.addItem(new Atomic.UIMenuItem("ConstraintMouse2D", "ConstraintMouse2D"));
+_.addItem(new Atomic.UIMenuItem("ConstraintPrismatic2D", "ConstraintPrismatic2D"));
+_.addItem(new Atomic.UIMenuItem("ConstraintPulley2D", "ConstraintPulley2D"));
+_.addItem(new Atomic.UIMenuItem("ConstraintRevolute2D", "ConstraintRevolute2D"));
+_.addItem(new Atomic.UIMenuItem("ConstraintRope2D", "ConstraintRope2D"));
+_.addItem(new Atomic.UIMenuItem("ConstraintWeld2D", "ConstraintWeld2D"));
+_.addItem(new Atomic.UIMenuItem("ConstraintWheel2D", "ConstraintWheel2D"));
+
+var __ = new Atomic.UIMenuItem("Constraint2D");
+__.subSource = _;
+
 var _2DCreateSource = new Atomic.UIMenuItemSource();
-_2DCreateSource.addItem(new Atomic.UIMenuItem("PhysicsWorld2D", "PhysicsWorld2D"));
-_2DCreateSource.addItem(new Atomic.UIMenuItem("StaticSprite2D", "StaticSprite2D"));
+
 _2DCreateSource.addItem(new Atomic.UIMenuItem("AnimatedSprite2D", "AnimatedSprite2D"));
-_2DCreateSource.addItem(new Atomic.UIMenuItem("ParticleEmitter2D", "ParticleEmitter2D"));
-_2DCreateSource.addItem(new Atomic.UIMenuItem("PointLight2D", "PointLight2D"));
-_2DCreateSource.addItem(new Atomic.UIMenuItem("DirectionalLight2D", "DirectionalLight2D"));
-_2DCreateSource.addItem(new Atomic.UIMenuItem("RigidBody2D", "RigidBody2D"));
 _2DCreateSource.addItem(new Atomic.UIMenuItem("CollisionBox2D", "CollisionBox2D"));
 _2DCreateSource.addItem(new Atomic.UIMenuItem("CollisionCircle2D", "CollisionCircle2D"));
+_2DCreateSource.addItem(__);
+_2DCreateSource.addItem(new Atomic.UIMenuItem("DirectionalLight2D", "DirectionalLight2D"));
+_2DCreateSource.addItem(new Atomic.UIMenuItem("PointLight2D", "PointLight2D"));
+_2DCreateSource.addItem(new Atomic.UIMenuItem("ParticleEmitter2D", "ParticleEmitter2D"));
+_2DCreateSource.addItem(new Atomic.UIMenuItem("PhysicsWorld2D", "PhysicsWorld2D"));
+_2DCreateSource.addItem(new Atomic.UIMenuItem("RigidBody2D", "RigidBody2D"));
+_2DCreateSource.addItem(new Atomic.UIMenuItem("StaticSprite2D", "StaticSprite2D"));
 _2DCreateSource.addItem(new Atomic.UIMenuItem("TileMap2D", "TileMap2D"));
 
 var geometryCreateSource = new Atomic.UIMenuItemSource();
 
-geometryCreateSource.addItem(new Atomic.UIMenuItem("StaticModel", "StaticModel"));
 geometryCreateSource.addItem(new Atomic.UIMenuItem("AnimatedModel", "AnimatedModel"));
 geometryCreateSource.addItem(new Atomic.UIMenuItem("AnimationController", "AnimationController"));
 geometryCreateSource.addItem(new Atomic.UIMenuItem("BillboardSet", "BillboardSet"));
@@ -48,6 +65,7 @@ geometryCreateSource.addItem(new Atomic.UIMenuItem("CustomGeometry", "CustomGeom
 geometryCreateSource.addItem(new Atomic.UIMenuItem("ParticleEmitter", "ParticleEmitter"));
 geometryCreateSource.addItem(new Atomic.UIMenuItem("RibbonTrail", "RibbonTrail"));
 geometryCreateSource.addItem(new Atomic.UIMenuItem("Skybox", "SkyBox"));
+geometryCreateSource.addItem(new Atomic.UIMenuItem("StaticModel", "StaticModel"));
 geometryCreateSource.addItem(new Atomic.UIMenuItem("StaticModelGroup", "StaticModelGroup"));
 geometryCreateSource.addItem(new Atomic.UIMenuItem("Terrain", "Terrain"));
 geometryCreateSource.addItem(new Atomic.UIMenuItem("Text3D", "create component"));

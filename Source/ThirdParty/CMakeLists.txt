@@ -39,6 +39,7 @@ add_subdirectory(PugiXml)
 add_subdirectory(STB)
 add_subdirectory(TurboBadger)
 add_subdirectory(zlib)
+add_subdirectory(ETCPACK)
 
 if (NOT ATOMIC_BUILD_2D)
     add_subdirectory(Bullet)

@@ -436,7 +436,8 @@ export default class TypescriptLanguageServiceWebWorker {
                     sortText: completion.sortText,
                     completionKind: completion.kind,
                     kind: -1,
-                    positionOffset: eventData.positionOffset
+                    positionOffset: eventData.positionOffset,
+					insertText: ""
                 };
                 return completionItem;
             });

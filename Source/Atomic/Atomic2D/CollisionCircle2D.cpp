@@ -98,8 +98,13 @@ void CollisionCircle2D::RecreateFixture()
     float worldScale = cachedWorldScale_.x_;
     circleShape_.m_radius = radius_ * worldScale;
     circleShape_.m_p = ToB2Vec2(center_ * worldScale);
-
-    CreateFixture();
+    
+	//ATOMIC BEGIN
+    if (IsEnabledEffective())
+    {
+		CreateFixture();
+	}
+    //ATOMIC END
 }
 
 //ATOMIC BEGIN

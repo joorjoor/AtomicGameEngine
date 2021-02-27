@@ -1,6 +1,10 @@
 ## Atomic Game Engine™
 ------------------
 
+#### Current developer:
+
+- JoorJoor (https://github.com/joorjoor)
+
 #### THUNDERBEAST GAMES LLC:
 
 - Josh Engebretson (https://github.com/JoshEngebretson)

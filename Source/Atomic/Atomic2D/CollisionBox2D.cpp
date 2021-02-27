@@ -114,6 +114,7 @@ void CollisionBox2D::ApplyNodeWorldScale()
 
 void CollisionBox2D::RecreateFixture()
 {
+
     ReleaseFixture();
 
     float worldScaleX = cachedWorldScale_.x_;
@@ -127,7 +128,12 @@ void CollisionBox2D::RecreateFixture()
     else
         boxShape_.SetAsBox(halfWidth, halfHeight, ToB2Vec2(scaledCenter), angle_ * M_DEGTORAD);
 
-    CreateFixture();
+    //ATOMIC BEGIN
+    if (IsEnabledEffective())
+    {
+        CreateFixture();
+    }
+    //ATOMIC END
 }
 
 //ATOMIC BEGIN

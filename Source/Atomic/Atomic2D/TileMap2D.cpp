@@ -145,7 +145,11 @@ void TileMap2D::SetTmxFile(TmxFile2D* tmxFile)
         const TmxLayer2D* tmxLayer = tmxFile_->GetLayer(i);
 
         Node* layerNode(rootNode_->CreateTemporaryChild(tmxLayer->GetName(), LOCAL));
-
+		
+		//ATOMIC BEGIN
+		layerNode->SetPosition2D(tmxLayer->GetOffset());
+		//ATOMIC END
+		
         auto* layer = layerNode->CreateComponent<TileMapLayer2D>();
         layer->Initialize(this, tmxLayer);
         layer->SetDrawOrder(i * 10);
@@ -167,7 +171,7 @@ TileMapLayer2D* TileMap2D::GetLayer(unsigned index) const
     return layers_[index];
 }
 
-Vector2 TileMap2D::TileIndexToPosition(int x, int y) const
+Vector2 TileMap2D::TileIndexToPosition(float x, float y) const
 {
     return info_.TileIndexToPosition(x, y);
 }

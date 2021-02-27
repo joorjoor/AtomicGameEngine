@@ -59,7 +59,7 @@ function copyAtomicEditor() {
 
 namespace('build', function() {
 
-    // get CMake flags for generator, vsver parameter can be VS2017/VS2015, etc
+    // get CMake flags for generator, vsver parameter can be VS2017/VS2015/VS2019, etc
     function getCMakeFlags(vsver) {
 
       var flags = "\"";

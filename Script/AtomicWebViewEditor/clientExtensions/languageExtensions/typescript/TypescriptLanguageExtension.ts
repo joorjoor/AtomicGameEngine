@@ -340,7 +340,7 @@ export default class TypescriptLanguageExtension implements Editor.ClientExtensi
             .map(ann => {
                 return {
                     code: ann.code,
-                    severity: monaco.Severity.Error,
+                    severity: monaco.MarkerSeverity.Error,
                     message: ann.message,
                     //source?: string;
                     startLineNumber: model.getPositionAt(ann.start).lineNumber,
@@ -514,7 +514,7 @@ class CustomCompletionProvider extends BuiltinServiceProviderOverride implements
             });
     }
 
-    resolveCompletionItem(item: monaco.languages.CompletionItem, token: monaco.CancellationToken): monaco.languages.CompletionItem | monaco.Thenable<monaco.languages.CompletionItem> {
+    resolveCompletionItem(item: monaco.languages.CompletionItem, token: monaco.CancellationToken):  monaco.languages.CompletionItem | monaco.Thenable<monaco.languages.CompletionItem>{
         const message: WorkerProcessTypes.MonacoResolveCompletionItemMessageData = {
             command: WorkerProcessTypes.MonacoResolveCompletionItem,
             item: item as WorkerProcessTypes.MonacoWordCompletion
@@ -541,7 +541,7 @@ class CustomHoverProvider extends BuiltinServiceProviderOverride implements mona
         return { startLineNumber, startColumn, endLineNumber, endColumn };
     }
 
-    provideHover(model: monaco.editor.IReadOnlyModel, position: monaco.IPosition) {
+    provideHover(model: monaco.editor.ITextModel, position: monaco.Position, token: monaco.CancellationToken): monaco.languages.Hover | monaco.Thenable<monaco.languages.Hover> {
         let resource = model.uri;
         const message: WorkerProcessTypes.MonacoGetQuickInfoMessageData = {
             command: WorkerProcessTypes.MonacoGetQuickInfo,
@@ -555,7 +555,7 @@ class CustomHoverProvider extends BuiltinServiceProviderOverride implements mona
                 if (e.contents) {
                     return {
                         range: this._textSpanToRange(resource, e.textSpan),
-                        contents: [e.documentation, { language: "typescript", value: e.contents }]
+                        contents: [{value: e.documentation, isTrusted: true}, { /*language: "typescript", */value: e.contents, isTrusted: true }]
                     };
                 }
             });

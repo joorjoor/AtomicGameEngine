@@ -345,6 +345,7 @@ void TileMapLayer2D::SetTileLayer(const TmxTileLayer2D* tileLayer)
 
     int width = tileLayer->GetWidth();
     int height = tileLayer->GetHeight();
+	
     nodes_.Resize((unsigned)(width * height));
 
     const TileMapInfo2D& info = tileMap_->GetInfo();

@@ -64,6 +64,11 @@ public:
 
     /// Return is visible.
     bool IsVisible() const { return visible_; }
+	
+	//ATOMIC BEGIN
+	/// Return offsetX.
+    Vector2 GetOffset() const { return offset_; }
+	//ATOMIC END
 
     /// Return has property (use for script).
     bool HasProperty(const String& name) const;
@@ -89,6 +94,12 @@ protected:
     int height_{};
     /// Visible.
     bool visible_{};
+	
+	//ATOMIC BEGIN
+	/// Offset.
+    Vector2 offset_{};
+	//ATOMIC END
+	
     /// Property set.
     SharedPtr<PropertySet2D> propertySet_;
 };

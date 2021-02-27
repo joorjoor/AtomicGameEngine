@@ -3,7 +3,7 @@ Contributing to the Atomic Game Engine
 
 Please see this documentation on Atomic Build milestones, code style guides, branch naming conventions, and other developer information:
 
-https://github.com/AtomicGameEngine/AtomicGameEngine/wiki/Atomic-Developers
+https://github.com/joorjoor/AtomicGameEngine/wiki/Atomic-Developers
 
 
 Contribution Copyrights and Licensing

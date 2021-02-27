@@ -1,7 +1,7 @@
 ### Atomic Game Engine - Development Fund
 ------------------
 
-Thanks to the following backers who have contributed to the Atomic Development Fund: [http://atomicgameengine.com/funding/](http://atomicgameengine.com/funding/)
+Thanks to the following backers who have contributed to the Atomic Development Fund.
 
 Brandon Lamb: https://github.com/brandonlamb  
 Aaron Hibberd: http://www.hibbygames.com/  

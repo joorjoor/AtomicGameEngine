@@ -80,6 +80,16 @@ void TmxLayer2D::LoadInfo(const XMLElement& element)
         visible_ = element.GetInt("visible") != 0;
     else
         visible_ = true;
+		
+	//ATOMIC BEGIN	
+	float offsetX_ = 0, offsetY_ = 0;
+	if (element.HasAttribute("offsetx"))
+		offsetX_ = element.GetFloat("offsetx") * PIXEL_SIZE;
+	if (element.HasAttribute("offsety"))
+		offsetY_ = element.GetFloat("offsety") * -PIXEL_SIZE;
+	offset_ = Vector2(offsetX_, offsetY_);
+	//ATOMIC END
+	
 }
 
 void TmxLayer2D::LoadPropertySet(const XMLElement& element)
@@ -154,7 +164,7 @@ bool TmxTileLayer2D::Load(const XMLElement& element, const TileMapInfo2D& info)
                     tile->gid_ = gid;
                     tile->sprite_ = tmxFile_->GetTileSprite(gid & ~FLIP_ALL);
                     tile->propertySet_ = tmxFile_->GetTilePropertySet(gid & ~FLIP_ALL);
-								
+					
 					// ATOMIC BEGIN
                     tile->objectGroup_ = tmxFile_->GetTileObjectGroup(gid);
 					// ATOMIC END
@@ -299,14 +309,15 @@ void TmxObjectGroup2D::StoreObject(const XMLElement& objectElem, const SharedPtr
 		}
 		else
 		{
-			Vector2 nposition = info.ConvertPosition(Vector2(position.x_, position.y_ + size.y_));
+			Vector2 nposition = position;
 			
-			//nposition.x_ *= PIXEL_SIZE;
-			//nposition.y_ *= PIXEL_SIZE;
+			nposition.x_ *= PIXEL_SIZE;
+			nposition.y_ *= PIXEL_SIZE;
 
 			nposition.x_ = nposition.x_ + object->size_.x_ / 2.0f;
 			nposition.y_ = nposition.y_ + object->size_.y_ / 2.0f;
-			//nposition.y_ = info.tileHeight_  - nposition.y_;
+			
+			nposition.y_ = info.tileHeight_ - nposition.y_;
 			
 			object->position_ = nposition;
 		}
@@ -802,8 +813,10 @@ bool TmxFile2D::LoadTileSet(const XMLElement& element)
             {
                 SharedPtr<TileMapObject2D> object(new TileMapObject2D());
 
+				//ATOMIC BEGIN
                 // Convert Tiled local position (left top) to Urho3D local position (left bottom)
-                objectElem.SetAttribute("y", String(info_.GetMapHeight() / PIXEL_SIZE - (tileHeight - objectElem.GetFloat("y"))));
+                //objectElem.SetAttribute("y", String(info_.GetMapHeight() / PIXEL_SIZE - (tileHeight - objectElem.GetFloat("y"))));
+				//ATOMIC END
 
                 objectGroup.StoreObject(objectElem, object, info_, true);
                 objects.Push(object);

@@ -48,27 +48,23 @@ public:
     void DrawDebugGeometry(DebugRenderer* debug, bool depthTest) override;
 
     /// Set tmx file.
-    /// @property
     void SetTmxFile(TmxFile2D* tmxFile);
     /// Add debug geometry to the debug renderer.
     void DrawDebugGeometry();
 
     /// Return tmx file.
-    /// @property
     TmxFile2D* GetTmxFile() const;
 
     /// Return information.
-    /// @property
     const TileMapInfo2D& GetInfo() const { return info_; }
 
     /// Return number of layers.
-    /// @property
     unsigned GetNumLayers() const { return layers_.Size(); }
 
     /// Return tile map layer at index.
     TileMapLayer2D* GetLayer(unsigned index) const;
     /// Convert tile index to position.
-    Vector2 TileIndexToPosition(int x, int y) const;
+    Vector2 TileIndexToPosition(float x, float y) const;
     /// Convert position to tile index, if out of map return false.
     bool PositionToTileIndex(int& x, int& y, const Vector2& position) const;
 

@@ -236,7 +236,6 @@ public:
     float GetMargin() const { return margin_; }
 
     /// Return triangle mesh / convex hull model.
-    /// @property
     Model* GetModel() const { return model_; }
 
     /// Return model LOD level.

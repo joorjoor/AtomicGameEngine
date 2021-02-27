@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2017 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
+
+/// \file
 
 #pragma once
 
@@ -105,9 +107,9 @@ class ATOMIC_API ResourceCache : public Object
 
 public:
     /// Construct.
-    ResourceCache(Context* context);
+    explicit ResourceCache(Context* context);
     /// Destruct. Free all resources.
-    virtual ~ResourceCache();
+    ~ResourceCache() override;
 
     /// Add a resource load directory. Optional priority parameter which will control search order.
     bool AddResourceDir(const String& pathName, unsigned priority = PRIORITY_LAST);
@@ -161,7 +163,7 @@ public:
     // ATOMIC END
     /// Return a resource by type and name. Load if not loaded yet. Return null if not found or if fails, unless SetReturnFailedResources(true) has been called. Can be called only from the main thread.
     Resource* GetResource(StringHash type, const String& name, bool sendEventOnFailure = true);
-    /// Load a resource without storing it in the resource cache. Return null if not found or if fails. Can be called from outside the main thread if the resource itself is safe to load completely (it does not possess for example GPU data.)
+    /// Load a resource without storing it in the resource cache. Return null if not found or if fails. Can be called from outside the main thread if the resource itself is safe to load completely (it does not possess for example GPU data).
     SharedPtr<Resource> GetTempResource(StringHash type, const String& name, bool sendEventOnFailure = true);
     /// Background load a resource. An event will be sent when complete. Return true if successfully stored to the load queue, false if eg. already exists. Can be called from outside the main thread.
     bool BackgroundLoadResource(StringHash type, const String& name, bool sendEventOnFailure = true, Resource* caller = 0);
@@ -194,7 +196,7 @@ public:
     /// Template version of returning loaded resources of a specific type.
     template <class T> void GetResources(PODVector<T*>& result) const;
     /// Return whether a file exists in the resource directories or package files. Does not check manually added in-memory resources.
-    bool Exists(const String& name) const;
+    bool Exists(const String& nameIn) const;
     /// Return memory budget for a resource type.
     unsigned long long GetMemoryBudget(StringHash type) const;
     /// Return total memory use for a resource type.
@@ -233,7 +235,7 @@ public:
     /// Returns a formatted string containing the memory actively used.
     String PrintMemoryUsage() const;
 
-    // ATOMIC BEGIN
+	// ATOMIC BEGIN
     
     /// Get the number of resource directories
     unsigned GetNumResourceDirs() const { return resourceDirs_.Size(); }
@@ -262,9 +264,9 @@ private:
     /// Handle begin frame event. Automatic resource reloads and the finalization of background loaded resources are processed here.
     void HandleBeginFrame(StringHash eventType, VariantMap& eventData);
     /// Search FileSystem for file.
-    File* SearchResourceDirs(const String& nameIn);
+    File* SearchResourceDirs(const String& name);
     /// Search resource packages for file.
-    File* SearchPackages(const String& nameIn);
+    File* SearchPackages(const String& name);
 
     /// Mutex for thread-safe access to the resource directories, resource packages and resource dependencies.
     mutable Mutex resourceMutex_;
@@ -326,7 +328,7 @@ template <class T> bool ResourceCache::BackgroundLoadResource(const String& name
 
 template <class T> void ResourceCache::GetResources(PODVector<T*>& result) const
 {
-    PODVector<Resource*>& resources = reinterpret_cast<PODVector<Resource*>&>(result);
+    auto& resources = reinterpret_cast<PODVector<Resource*>&>(result);
     StringHash type = T::GetTypeStatic();
     GetResources(resources, type);
 

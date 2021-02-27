@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2008-2016 the Urho3D project.
+// Copyright (c) 2008-2020 the Urho3D project.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,6 @@ namespace Atomic
 const char* PAK_EXTENSION = ".pak";
 // ATOMIC END
 
-
 static const char* checkDirs[] =
 {
     "Fonts",
@@ -67,7 +66,7 @@ static const char* checkDirs[] =
     "Techniques",
     "Textures",
     "UI",
-    0
+    nullptr
 };
 
 static const SharedPtr<Resource> noResource;
@@ -83,7 +82,7 @@ ResourceCache::ResourceCache(Context* context) :
     // Register Resource library object factories
     RegisterResourceLibrary(context_);
 
-#ifdef ATOMIC_THREADING
+#ifdef ATOMIC_API_THREADING
     // Create resource background loader. Its thread will start on the first background request
     backgroundLoader_ = new BackgroundLoader(this);
 #endif
@@ -94,7 +93,7 @@ ResourceCache::ResourceCache(Context* context) :
 
 ResourceCache::~ResourceCache()
 {
-#ifdef ATOMIC_THREADING
+#ifdef ATOMIC_API_THREADING
     // Shut down the background loader first
     backgroundLoader_.Reset();
 #endif
@@ -104,7 +103,7 @@ bool ResourceCache::AddResourceDir(const String& pathName, unsigned priority)
 {
     MutexLock lock(resourceMutex_);
 
-    FileSystem* fileSystem = GetSubsystem<FileSystem>();
+    auto* fileSystem = GetSubsystem<FileSystem>();
     if (!fileSystem || !fileSystem->DirExists(pathName))
     {
         ATOMIC_LOGERROR("Could not open directory " + pathName);
@@ -161,7 +160,7 @@ bool ResourceCache::AddPackageFile(PackageFile* package, unsigned priority)
 bool ResourceCache::AddPackageFile(const String& fileName, unsigned priority)
 {
     SharedPtr<PackageFile> package(new PackageFile(context_));
-    return package->Open(fileName) && AddPackageFile(package);
+    return package->Open(fileName) && AddPackageFile(package, priority);
 }
 
 bool ResourceCache::AddManualResource(Resource* resource)
@@ -316,16 +315,15 @@ void ResourceCache::ReleaseResources(StringHash type, const String& partialName,
 
 void ResourceCache::ReleaseResources(const String& partialName, bool force)
 {
-    // Some resources refer to others, like materials to textures. Release twice to ensure these get released.
-    // This is not necessary if forcing release
-    unsigned repeat = force ? 1 : 2;
-
-    while (repeat--)
+    // Some resources refer to others, like materials to textures. Repeat the release logic as many times as necessary to ensure
+    // these get released. This is not necessary if forcing release
+    bool released;
+    do
     {
+        released = false;
+
         for (HashMap<StringHash, ResourceGroup>::Iterator i = resourceGroups_.Begin(); i != resourceGroups_.End(); ++i)
         {
-            bool released = false;
-
             for (HashMap<StringHash, SharedPtr<Resource> >::Iterator j = i->second_.resources_.Begin();
                  j != i->second_.resources_.End();)
             {
@@ -343,20 +341,20 @@ void ResourceCache::ReleaseResources(const String& partialName, bool force)
             if (released)
                 UpdateResourceGroup(i->first_);
         }
-    }
+
+    } while (released && !force);
 }
 
 void ResourceCache::ReleaseAllResources(bool force)
 {
-    unsigned repeat = force ? 1 : 2;
-
-    while (repeat--)
+    bool released;
+    do
     {
+        released = false;
+
         for (HashMap<StringHash, ResourceGroup>::Iterator i = resourceGroups_.Begin();
              i != resourceGroups_.End(); ++i)
         {
-            bool released = false;
-
             for (HashMap<StringHash, SharedPtr<Resource> >::Iterator j = i->second_.resources_.Begin();
                  j != i->second_.resources_.End();)
             {
@@ -371,7 +369,8 @@ void ResourceCache::ReleaseAllResources(bool force)
             if (released)
                 UpdateResourceGroup(i->first_);
         }
-    }
+
+    } while (released && !force);
 }
 
 bool ResourceCache::ReloadResource(Resource* resource)
@@ -380,6 +379,7 @@ bool ResourceCache::ReloadResource(Resource* resource)
         return false;
 
     resource->SendEvent(E_RELOADSTARTED);
+
 
 // ATOMIC BEGIN
 
@@ -513,6 +513,7 @@ void ResourceCache::RemoveResourceRouter(ResourceRouter* router)
         }
     }
 }
+
 // ATOMIC BEGIN
 SharedPtr<File> ResourceCache::GetFile(const String& nameIn, bool sendEventOnFailure, StringHash type)
 {
@@ -570,43 +571,43 @@ SharedPtr<File> ResourceCache::GetFile(const String& nameIn, bool sendEventOnFai
 }
 // ATOMIC END
 
-Resource* ResourceCache::GetExistingResource(StringHash type, const String& nameIn)
+Resource* ResourceCache::GetExistingResource(StringHash type, const String& name)
 {
-    String name = SanitateResourceName(nameIn);
+    String sanitatedName = SanitateResourceName(name);
 
     if (!Thread::IsMainThread())
     {
-        ATOMIC_LOGERROR("Attempted to get resource " + name + " from outside the main thread");
-        return 0;
+        ATOMIC_LOGERROR("Attempted to get resource " + sanitatedName + " from outside the main thread");
+        return nullptr;
     }
 
     // If empty name, return null pointer immediately
-    if (name.Empty())
-        return 0;
+    if (sanitatedName.Empty())
+        return nullptr;
 
-    StringHash nameHash(name);
+    StringHash nameHash(sanitatedName);
 
     const SharedPtr<Resource>& existing = FindResource(type, nameHash);
     return existing;
 }
 
-Resource* ResourceCache::GetResource(StringHash type, const String& nameIn, bool sendEventOnFailure)
+Resource* ResourceCache::GetResource(StringHash type, const String& name, bool sendEventOnFailure)
 {
-    String name = SanitateResourceName(nameIn);
+    String sanitatedName = SanitateResourceName(name);
 
     if (!Thread::IsMainThread())
     {
-        ATOMIC_LOGERROR("Attempted to get resource " + name + " from outside the main thread");
-        return 0;
+        ATOMIC_LOGERROR("Attempted to get resource " + sanitatedName + " from outside the main thread");
+        return nullptr;
     }
 
     // If empty name, return null pointer immediately
-    if (name.Empty())
-        return 0;
+    if (sanitatedName.Empty())
+        return nullptr;
 
-    StringHash nameHash(name);
+    StringHash nameHash(sanitatedName);
 
-#ifdef ATOMIC_THREADING
+#ifdef ATOMIC_API_THREADING
     // Check if the resource is being background loaded but is now needed immediately
     backgroundLoader_->WaitForResource(type, nameHash);
 #endif
@@ -631,18 +632,18 @@ Resource* ResourceCache::GetResource(StringHash type, const String& nameIn, bool
             SendEvent(E_UNKNOWNRESOURCETYPE, eventData);
         }
 
-        return 0;
+        return nullptr;
     }
 
-    // ATOMIC BEGIN
+	// ATOMIC BEGIN
     // Attempt to load the resource
     SharedPtr<File> file = GetFile(name, sendEventOnFailure, type);
     if (!file)
         return 0;   // Error is already logged
     // ATOMIC END
 
-    ATOMIC_LOGDEBUG("Loading resource " + name);
-    resource->SetName(name);
+    ATOMIC_LOGDEBUG("Loading resource " + sanitatedName);
+    resource->SetName(sanitatedName);
 
     if (!resource->Load(*(file.Get())))
     {
@@ -652,12 +653,12 @@ Resource* ResourceCache::GetResource(StringHash type, const String& nameIn, bool
             using namespace LoadFailed;
 
             VariantMap& eventData = GetEventDataMap();
-            eventData[P_RESOURCENAME] = name;
+            eventData[P_RESOURCENAME] = sanitatedName;
             SendEvent(E_LOADFAILED, eventData);
         }
 
         if (!returnFailedResources_)
-            return 0;
+            return nullptr;
     }
 
     // Store to cache
@@ -668,32 +669,32 @@ Resource* ResourceCache::GetResource(StringHash type, const String& nameIn, bool
     return resource;
 }
 
-bool ResourceCache::BackgroundLoadResource(StringHash type, const String& nameIn, bool sendEventOnFailure, Resource* caller)
+bool ResourceCache::BackgroundLoadResource(StringHash type, const String& name, bool sendEventOnFailure, Resource* caller)
 {
-#ifdef ATOMIC_THREADING
+#ifdef ATOMIC_API_THREADING
     // If empty name, fail immediately
-    String name = SanitateResourceName(nameIn);
-    if (name.Empty())
+    String sanitatedName = SanitateResourceName(name);
+    if (sanitatedName.Empty())
         return false;
 
     // First check if already exists as a loaded resource
-    StringHash nameHash(name);
+    StringHash nameHash(sanitatedName);
     if (FindResource(type, nameHash) != noResource)
         return false;
 
-    return backgroundLoader_->QueueResource(type, name, sendEventOnFailure, caller);
+    return backgroundLoader_->QueueResource(type, sanitatedName, sendEventOnFailure, caller);
 #else
     // When threading not supported, fall back to synchronous loading
-    return GetResource(type, nameIn, sendEventOnFailure);
+    return GetResource(type, name, sendEventOnFailure);
 #endif
 }
 
-SharedPtr<Resource> ResourceCache::GetTempResource(StringHash type, const String& nameIn, bool sendEventOnFailure)
+SharedPtr<Resource> ResourceCache::GetTempResource(StringHash type, const String& name, bool sendEventOnFailure)
 {
-    String name = SanitateResourceName(nameIn);
+    String sanitatedName = SanitateResourceName(name);
 
     // If empty name, return null pointer immediately
-    if (name.Empty())
+    if (sanitatedName.Empty())
         return SharedPtr<Resource>();
 
     SharedPtr<Resource> resource;
@@ -743,7 +744,7 @@ SharedPtr<Resource> ResourceCache::GetTempResource(StringHash type, const String
     if (!file)
         return SharedPtr<Resource>();  // Error is already logged
 
-    ATOMIC_LOGDEBUG("Loading temporary resource " + name);
+    ATOMIC_LOGDEBUG("Loading temporary resource " + sanitatedName);
     resource->SetName(file->GetName());
 
     if (!resource->Load(*(file.Get())))
@@ -754,7 +755,7 @@ SharedPtr<Resource> ResourceCache::GetTempResource(StringHash type, const String
             using namespace LoadFailed;
 
             VariantMap& eventData = GetEventDataMap();
-            eventData[P_RESOURCENAME] = name;
+            eventData[P_RESOURCENAME] = sanitatedName;
             SendEvent(E_LOADFAILED, eventData);
         }
 
@@ -766,7 +767,7 @@ SharedPtr<Resource> ResourceCache::GetTempResource(StringHash type, const String
 
 unsigned ResourceCache::GetNumBackgroundLoadResources() const
 {
-#ifdef ATOMIC_THREADING
+#ifdef ATOMIC_API_THREADING
     return backgroundLoader_->GetNumQueuedResources();
 #else
     return 0;
@@ -809,7 +810,7 @@ bool ResourceCache::Exists(const String& nameIn) const
             return true;
     }
 
-    FileSystem* fileSystem = GetSubsystem<FileSystem>();
+    auto* fileSystem = GetSubsystem<FileSystem>();
     for (unsigned i = 0; i < resourceDirs_.Size(); ++i)
     {
         if (fileSystem->FileExists(resourceDirs_[i] + name))
@@ -842,21 +843,22 @@ unsigned long long ResourceCache::GetTotalMemoryUse() const
 
 String ResourceCache::GetResourceFileName(const String& name) const
 {
-    MutexLock lock(resourceMutex_);
-
-    FileSystem* fileSystem = GetSubsystem<FileSystem>();
+    auto* fileSystem = GetSubsystem<FileSystem>();
     for (unsigned i = 0; i < resourceDirs_.Size(); ++i)
     {
         if (fileSystem->FileExists(resourceDirs_[i] + name))
             return resourceDirs_[i] + name;
     }
 
-    return String();
+    if (IsAbsolutePath(name) && fileSystem->FileExists(name))
+        return name;
+    else
+        return String();
 }
 
 ResourceRouter* ResourceCache::GetResourceRouter(unsigned index) const
 {
-    return index < resourceRouters_.Size() ? resourceRouters_[index] : (ResourceRouter*)0;
+    return index < resourceRouters_.Size() ? resourceRouters_[index] : nullptr;
 }
 
 String ResourceCache::GetPreferredResourceDir(const String& path) const
@@ -866,9 +868,9 @@ String ResourceCache::GetPreferredResourceDir(const String& path) const
     bool pathHasKnownDirs = false;
     bool parentHasKnownDirs = false;
 
-    FileSystem* fileSystem = GetSubsystem<FileSystem>();
+    auto* fileSystem = GetSubsystem<FileSystem>();
 
-    for (unsigned i = 0; checkDirs[i] != 0; ++i)
+    for (unsigned i = 0; checkDirs[i] != nullptr; ++i)
     {
         if (fileSystem->DirExists(fixedPath + checkDirs[i]))
         {
@@ -879,7 +881,7 @@ String ResourceCache::GetPreferredResourceDir(const String& path) const
     if (!pathHasKnownDirs)
     {
         String parentPath = GetParentPath(fixedPath);
-        for (unsigned i = 0; checkDirs[i] != 0; ++i)
+        for (unsigned i = 0; checkDirs[i] != nullptr; ++i)
         {
             if (fileSystem->DirExists(parentPath + checkDirs[i]))
             {
@@ -895,18 +897,21 @@ String ResourceCache::GetPreferredResourceDir(const String& path) const
     return fixedPath;
 }
 
-String ResourceCache::SanitateResourceName(const String& nameIn) const
+String ResourceCache::SanitateResourceName(const String& name) const
 {
     // Sanitate unsupported constructs from the resource name
-    String name = GetInternalPath(nameIn);
-    name.Replace("../", "");
-    name.Replace("./", "");
+    String sanitatedName = GetInternalPath(name);
+    
+    //ATOMIC BEGIN
+    //sanitatedName.Replace("../", "");
+    //sanitatedName.Replace("./", "");
+    //ATOMIC END
 
     // If the path refers to one of the resource directories, normalize the resource name
-    FileSystem* fileSystem = GetSubsystem<FileSystem>();
+    auto* fileSystem = GetSubsystem<FileSystem>();
     if (resourceDirs_.Size())
     {
-        String namePath = GetPath(name);
+        String namePath = GetPath(sanitatedName);
         String exePath = fileSystem->GetProgramDir().Replaced("/./", "/");
         for (unsigned i = 0; i < resourceDirs_.Size(); ++i)
         {
@@ -920,15 +925,15 @@ String ResourceCache::SanitateResourceName(const String& nameIn) const
                 namePath = namePath.Substring(relativeResourcePath.Length());
         }
 
-        name = namePath + GetFileNameAndExtension(name);
+        sanitatedName = namePath + GetFileNameAndExtension(sanitatedName);
     }
 
-    return name.Trimmed();
+    return sanitatedName.Trimmed();
 }
 
-String ResourceCache::SanitateResourceDirName(const String& nameIn) const
+String ResourceCache::SanitateResourceDirName(const String& name) const
 {
-    String fixedPath = AddTrailingSlash(nameIn);
+    String fixedPath = AddTrailingSlash(name);
     if (!IsAbsolutePath(fixedPath))
         fixedPath = GetSubsystem<FileSystem>()->GetCurrentDir() + fixedPath;
 
@@ -1147,45 +1152,45 @@ void ResourceCache::HandleBeginFrame(StringHash eventType, VariantMap& eventData
     }
 
     // Check for background loaded resources that can be finished
-#ifdef ATOMIC_THREADING
+#ifdef ATOMIC_API_THREADING
     {
-        ATOMIC_PROFILE(FinishBackgroundResources);
+        ATOMIC_API_PROFILE(FinishBackgroundResources);
         backgroundLoader_->FinishResources(finishBackgroundResourcesMs_);
     }
 #endif
 }
 
-File* ResourceCache::SearchResourceDirs(const String& nameIn)
+File* ResourceCache::SearchResourceDirs(const String& name)
 {
-    FileSystem* fileSystem = GetSubsystem<FileSystem>();
+    auto* fileSystem = GetSubsystem<FileSystem>();
     for (unsigned i = 0; i < resourceDirs_.Size(); ++i)
     {
-        if (fileSystem->FileExists(resourceDirs_[i] + nameIn))
+        if (fileSystem->FileExists(resourceDirs_[i] + name))
         {
             // Construct the file first with full path, then rename it to not contain the resource path,
-            // so that the file's name can be used in further GetFile() calls (for example over the network)
-            File* file(new File(context_, resourceDirs_[i] + nameIn));
-            file->SetName(nameIn);
+            // so that the file's sanitatedName can be used in further GetFile() calls (for example over the network)
+            File* file(new File(context_, resourceDirs_[i] + name));
+            file->SetName(name);
             return file;
         }
     }
 
     // Fallback using absolute path
-    if (fileSystem->FileExists(nameIn))
-        return new File(context_, nameIn);
+    if (fileSystem->FileExists(name))
+        return new File(context_, name);
 
-    return 0;
+    return nullptr;
 }
 
-File* ResourceCache::SearchPackages(const String& nameIn)
+File* ResourceCache::SearchPackages(const String& name)
 {
     for (unsigned i = 0; i < packages_.Size(); ++i)
     {
-        if (packages_[i]->Exists(nameIn))
-            return new File(context_, packages_[i], nameIn);
+        if (packages_[i]->Exists(name))
+            return new File(context_, packages_[i], name);
     }
 
-    return 0;
+    return nullptr;
 }
 
 void RegisterResourceLibrary(Context* context)

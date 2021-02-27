@@ -466,7 +466,7 @@ void AnimatedSprite2D::UpdateSourceBatchesSpriter()
             sprite->GetDrawRectangle(drawRect, flipX_, flipY_);
         else
             sprite->GetDrawRectangle(drawRect, Vector2(timelineKey->pivotX_, timelineKey->pivotY_), flipX_, flipY_);
-
+            
         if (!sprite->GetTextureRectangle(textureRect, flipX_, flipY_))
             return;
 

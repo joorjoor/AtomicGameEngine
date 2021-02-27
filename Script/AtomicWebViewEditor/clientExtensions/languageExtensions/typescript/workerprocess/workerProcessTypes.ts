@@ -25,7 +25,7 @@ export interface WorkerProcessMessage<T> extends MessageEvent {
 }
 
 export interface WorkerProcessMessageData {
-    command: string;
+    command?: string | monaco.languages.Command;
 }
 
 export interface SaveMessageData extends WorkerProcessMessageData, Editor.ClientExtensions.CodeSavedEvent { }

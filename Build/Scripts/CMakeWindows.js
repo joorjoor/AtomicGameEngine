@@ -17,7 +17,7 @@ namespace('build', function() {
     return path.replace(/\//g, "\\").replace(/\\$/, "");
   }
 
-  // get CMake flags for generator, vsver parameter can be VS2017/VS2015, etc
+  // get CMake flags for generator, vsver parameter can be VS2017/VS2015/VS2019, etc
   function getCMakeFlags(vsver) {
 
     // local cmake builds are always dev builds
@@ -44,7 +44,7 @@ namespace('build', function() {
     // Windows batch file which runs cmake
     args.push(fixpath(atomicRoot + "\\Build\\Scripts\\Windows\\GenerateVSSolution.bat"));
 
-    // vsver VS2015/VS2017
+    // vsver VS2015/VS2017/VS2019
     args.push(vsver);
 
     // Atomic root source dir
@@ -81,7 +81,7 @@ namespace('build', function() {
 
   }
 
-    
+  // Generate a Visual Studio 2019 solution  
   task('genvs2019', {
     async: true
   }, function() {
@@ -93,6 +93,7 @@ namespace('build', function() {
     printStderr: true
   });
 
+  // Generate a Visual Studio 2017 solution
   task('genvs2017', {
     async: true
   }, function() {

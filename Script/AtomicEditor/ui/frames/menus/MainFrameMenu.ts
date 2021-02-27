@@ -522,7 +522,7 @@ var developerItems = {
             "3x": ["developer ui width project 3x"],
             "4x": ["developer ui width project 4x"]
         },
-        "Fullscreen": ["developer ui fullscreen", StringID.ShortcutFullscreen]
+        "Fullscreen": ["fullscreen", StringID.ShortcutFullscreen]
     },
     "Theme": {
         "Toggle Theme": ["toggle theme"],

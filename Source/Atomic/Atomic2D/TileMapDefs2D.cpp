@@ -77,7 +77,7 @@ Vector2 TileMapInfo2D::ConvertPosition(const Vector2& position) const
     }
 }
 
-Vector2 TileMapInfo2D::TileIndexToPosition(int x, int y) const
+Vector2 TileMapInfo2D::TileIndexToPosition(float x, float y) const
 {
     switch (orientation_)
     {
@@ -85,13 +85,13 @@ Vector2 TileMapInfo2D::TileIndexToPosition(int x, int y) const
         return Vector2((width_ + x - y - 1) * tileWidth_ * 0.5f, (height_ * 2 - x - y - 2) * tileHeight_ * 0.5f);
 
     case O_STAGGERED:
-        if (y % 2 == 0)
+        if (remainder(y, 2) == 0)
             return Vector2(x * tileWidth_, (height_ - 1 - y) * 0.5f * tileHeight_);
         else
             return Vector2((x + 0.5f) * tileWidth_, (height_ - 1 - y) * 0.5f * tileHeight_);
 
     case O_HEXAGONAL:
-        if (y % 2 == 0)
+        if (remainder(y, 2) == 0)
             return Vector2(x * tileWidth_, (height_ - 1 - y) * 0.75f * tileHeight_);
         else
             return Vector2((x + 0.5f) * tileWidth_, (height_ - 1 - y)  * 0.75f * tileHeight_);

@@ -8,30 +8,27 @@ TBLayout: axis: y, distribution: gravity, position: left
 	TBLayout: distribution: gravity
 		TBTextField: text: "App Package:"
 		TBLayout: gravity: left right, distribution-position: right bottom
-			TBEditField: id: app_package, autofocus: 1
+			TBEditField: id: app_package, autofocus: 0
 				lp: min-width: 220
 				tooltip The naming convention is : com.companyname.appname
 	TBLayout: distribution: gravity
 		TBTextField: text: "Company Name:"
 		TBLayout: gravity: left right, distribution-position: right bottom
-			TBEditField: id: company_name, autofocus: 1
+			TBEditField: id: company_name, autofocus: 0
 				lp: min-width: 220
 	TBLayout: distribution: gravity
 		TBTextField: text: "Version:"
 		TBLayout: gravity: left right, distribution-position: right bottom
-			TBEditField: id: version, autofocus: 1
+			TBEditField: id: version, autofocus: 0
 				lp: min-width: 220
 				tooltip The version code and version name is : 1
-	TBLayout: axis: y, position: left, distribution: gravity
+	TBLayout: distribution: gravity
+		TBButton: id: choose_icon, lp: min-width: 48, min-height: 48, max-width: 48, max-height: 48
+			tooltip Location of the drawable folders for app icons
+			TBImageWidget: id: and_icon, filename: "Resources/ToolData/Deployment/Android/res/drawable-ldpi/icon.png"
 		TBLayout: gravity: left right, distribution-position: right bottom
-			TBButton: id: choose_icon, lp: min-width: 48, min-height: 48, max-width: 48, max-height: 48
-				tooltip Location of the drawable folders for app icons
-				TBImageWidget: id: and_icon, filename: "Resources/ToolData/Deployment/Android/res/drawable-ldpi/icon.png"
-					lp: min-width: 36, min-height: 36, max-width: 36, max-height: 36
-			TBWidget: gravity: left right
-				lp: min-width: 36, min-height: 36, max-width: 36, max-height: 36
 			TBEditField: id: icon_root, autofocus: 0
-				lp: min-width: 220
+				lp: min-width: 180
 	TBSeparator: gravity: left right, skin: AESeparator
 	TBLayout: axis: y, position: left, distribution: gravity
 		TBTextField: text: "Android SDK Path:", skin: DarkGrayText

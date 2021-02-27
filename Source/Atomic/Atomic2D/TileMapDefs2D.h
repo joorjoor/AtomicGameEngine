@@ -67,15 +67,13 @@ struct ATOMIC_API TileMapInfo2D
     float tileHeight_;
 
     /// Return map width.
-    /// @property
     float GetMapWidth() const;
     /// return map height.
-    /// @property
     float GetMapHeight() const;
     /// Convert tmx position to Urho position.
     Vector2 ConvertPosition(const Vector2& position) const;
     /// Convert tile index to position.
-    Vector2 TileIndexToPosition(int x, int y) const;
+    Vector2 TileIndexToPosition(float x, float y) const;
     /// Convert position to tile index, if out of map return false.
     bool PositionToTileIndex(int& x, int& y, const Vector2& position) const;
 };
@@ -146,20 +144,15 @@ public:
     Tile2D();
 
     /// Return gid.
-    /// @property
     unsigned GetGid() const { return gid_ & ~FLIP_ALL; }
     /// Return flip X.
-    /// @property
     bool GetFlipX() const { return gid_ & FLIP_HORIZONTAL; }
     /// Return flip Y.
-    /// @property
     bool GetFlipY() const { return gid_ & FLIP_VERTICAL; }
     /// Return swap X and Y.
-    /// @property
     bool GetSwapXY() const { return gid_ & FLIP_DIAGONAL; }
 
     /// Return sprite.
-    /// @property
     Sprite2D* GetSprite() const;
     /// Return has property.
     bool HasProperty(const String& name) const;

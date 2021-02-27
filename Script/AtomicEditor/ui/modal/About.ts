@@ -94,6 +94,7 @@ class About extends ModalWindow {
         var buildString = `<color #FFFFFF>'${buildName}' - ${buildDate} ${buildTime}\nGit: ${buildSHA}\nVendor: <color #76D6FF>${buildVendor}</color></color>`;
 
         text += "<widget TBImageWidget: filename: 'AtomicEditor/editor/images/atomic_logo.png'>\n\n";
+        text += "(c) 2019-2021 JoorJoor\n\n";
         text += "(c) 2014-2016 THUNDERBEAST GAMES LLC\n\n";
 
         text += "<color #76D6FF>Build Information:</color>\n";

@@ -28,6 +28,15 @@ if (ATOMIC_DEV_BUILD)
     add_definitions("-DATOMIC_DEV_BUILD=1")
 endif ()
 
+#set(ATOMIC_BUILD_VENDOR "joorjoor")
+#set(ATOMIC_BUILD_NAME "Atomic Game Engine v3.0.0")
+
+#add_definitions("-DATOMIC_BUILD_VENDOR=${ATOMIC_BUILD_VENDOR}")
+#add_definitions("-DATOMIC_BUILD_NAME=${ATOMIC_BUILD_NAME}")
+
+add_definitions(-DATOMIC_BUILD_VENDOR=\"joorjoor\")
+add_definitions(-DATOMIC_BUILD_NAME=\"Atomic-Game-Engine-v3.0.0\")
+
 include(AtomicPlatform)
 
 find_program(CLDOC cldoc)
